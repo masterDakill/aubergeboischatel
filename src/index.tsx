@@ -371,54 +371,6 @@ app.get('/', (c) => {
 
         /* Removed .hero-right - now using full-width hero with centered content */
 
-        /* Welcome Video Section */
-        .welcome-video-section {
-            background: linear-gradient(135deg, var(--cream) 0%, white 100%);
-            padding: 4rem 2rem;
-            margin: 0;
-            max-width: 100%;
-        }
-
-        .welcome-video-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .welcome-video-header {
-            margin-bottom: 2.5rem;
-        }
-
-        .welcome-video-header h2 {
-            font-family: var(--font-serif);
-            font-size: 2.5rem;
-            color: var(--anthracite);
-            margin-bottom: 1rem;
-        }
-
-        .welcome-video-header p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .video-wrapper {
-            position: relative;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            background: #000;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .video-wrapper video {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
         /* Liquid Image Effect */
         .liquid-image {
             position: relative;
@@ -590,6 +542,39 @@ app.get('/', (c) => {
 
         .scroller-btn:active {
             transform: scale(0.95);
+        }
+
+        /* Ripple Transition Effect */
+        .ripple-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Apply ripple to buttons and interactive elements */
+        .hero-cta,
+        .hero-cta-secondary,
+        .scroller-btn,
+        .nav-links a,
+        .submit-btn,
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
         }
 
         /* Section Styling */
@@ -1604,22 +1589,6 @@ app.get('/', (c) => {
         </div>
     </section>
 
-    <!-- Welcome Video Section -->
-    <section class="welcome-video-section scroll-fade-in">
-        <div class="welcome-video-container">
-            <div class="welcome-video-header">
-                <h2>Mot de Bienvenue de la Direction</h2>
-                <p>Découvrez L'Auberge Boischatel à travers le message chaleureux de notre directrice</p>
-            </div>
-            <div class="video-wrapper">
-                <video controls poster="/static/images/facade-golden-hour.jpg">
-                    <source src="/static/videos/welcome-video.mp4" type="video/mp4">
-                    Votre navigateur ne supporte pas la lecture de vidéos.
-                </video>
-            </div>
-        </div>
-    </section>
-
     <section id="mission">
         <div class="section-header">
             <span class="section-badge">Notre Mission</span>
@@ -2558,6 +2527,46 @@ app.get('/', (c) => {
                 // Set initial cursor
                 scroller.style.cursor = 'grab';
             }
+        });
+
+        // Ripple Transition Effect
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+            
+            // Remove old ripples
+            const oldRipple = button.querySelector('.ripple');
+            if (oldRipple) {
+                oldRipple.remove();
+            }
+            
+            button.appendChild(ripple);
+            
+            // Remove ripple after animation
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+
+        // Apply ripple effect to all interactive elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const rippleElements = document.querySelectorAll(
+                '.hero-cta, .hero-cta-secondary, .scroller-btn, .nav-links a, .submit-btn, .gallery-item'
+            );
+            
+            rippleElements.forEach(element => {
+                element.addEventListener('click', createRipple);
+            });
         });
     </script>
 </body>
