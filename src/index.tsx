@@ -577,6 +577,134 @@ app.get('/', (c) => {
             overflow: hidden;
         }
 
+        /* Phone Extension Diagram Section */
+        .phone-diagram-section {
+            background: #F5EAD0;
+            padding: 4rem 2rem;
+            margin: 3rem 0;
+            border-radius: 20px;
+        }
+
+        .phone-diagram-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .phone-diagram-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: #314D61;
+            margin-bottom: 0.5rem;
+        }
+
+        .phone-diagram-header p {
+            font-family: 'Lora', serif;
+            color: #314D61;
+            opacity: 0.8;
+        }
+
+        .logo-3d-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 2rem;
+            perspective: 1000px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-3d-container:hover {
+            transform: scale(1.05) rotateY(5deg);
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+        }
+
+        .logo-3d-container model-viewer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .phone-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .phone-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(49, 77, 97, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phone-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(49, 77, 97, 0.15);
+        }
+
+        .phone-card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #C7A46E 0%, #D4B378 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .phone-card h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #314D61;
+            margin-bottom: 0.5rem;
+        }
+
+        .phone-card p {
+            font-family: 'Lora', serif;
+            color: #314D61;
+            opacity: 0.7;
+            margin-bottom: 1rem;
+        }
+
+        .phone-card-extensions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .extension-badge {
+            background: #F5EAD0;
+            color: #314D61;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .phone-card-tooltip {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(199, 164, 110, 0.95);
+            color: white;
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .phone-card:hover .phone-card-tooltip {
+            transform: translateY(0);
+        }
+
         /* Section Styling */
         section {
             padding: 5rem 2rem;
@@ -1529,8 +1657,19 @@ app.get('/', (c) => {
 
             .values-grid,
             .activities-grid,
-            .rooms-grid {
+            .rooms-grid,
+            .phone-cards-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .phone-diagram-section {
+                padding: 2rem 1rem;
+                margin: 2rem 0;
+            }
+            
+            .logo-3d-container {
+                width: 120px;
+                height: 120px;
             }
 
             .about-stats {
@@ -2239,6 +2378,74 @@ app.get('/', (c) => {
             </div>
         </div>
 
+        <!-- Phone Extension Diagram Section -->
+        <div class="phone-diagram-section">
+            <div class="phone-diagram-header">
+                <div class="logo-3d-container" id="logo3d" title="Cliquez pour revenir en haut">
+                    <model-viewer 
+                        src="/static/models/logo-3d.glb"
+                        alt="Logo 3D L'Auberge Boischatel"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        style="width: 100%; height: 100%;">
+                    </model-viewer>
+                </div>
+                <h3>Diagramme des postes téléphoniques internes</h3>
+                <p>Visualisez rapidement quel poste joint quel service à l'interne</p>
+            </div>
+
+            <div class="phone-cards-grid">
+                <!-- Direction Card -->
+                <div class="phone-card">
+                    <div class="phone-card-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4>Direction</h4>
+                    <p>Poste 200 – Bureau de la Directrice</p>
+                    <div class="phone-card-extensions">
+                        <span class="extension-badge">200</span>
+                    </div>
+                    <div class="phone-card-tooltip">
+                        Administration, gestion, demandes générales
+                    </div>
+                </div>
+
+                <!-- Soins Infirmiers Card -->
+                <div class="phone-card">
+                    <div class="phone-card-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h4>Soins infirmiers</h4>
+                    <p>Postes multiples pour l'infirmière de garde</p>
+                    <div class="phone-card-extensions">
+                        <span class="extension-badge">203</span>
+                        <span class="extension-badge">204</span>
+                        <span class="extension-badge">212</span>
+                        <span class="extension-badge">213</span>
+                    </div>
+                    <div class="phone-card-tooltip">
+                        Pour rejoindre l'infirmière de garde
+                    </div>
+                </div>
+
+                <!-- Cuisine Card -->
+                <div class="phone-card">
+                    <div class="phone-card-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h4>Cuisine</h4>
+                    <p>Poste 205 – Cuisine interne</p>
+                    <div class="phone-card-extensions">
+                        <span class="extension-badge">205</span>
+                    </div>
+                    <div class="phone-card-tooltip">
+                        Usage interne : repas et services alimentaires
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="map-container">
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2726.4536937853567!2d-71.15844492345898!3d46.90666997101488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8bcbc9c7e9e8f%3A0x7c9c9c9c9c9c9c9c!2s5424%20Avenue%20Royale%2C%20Boischatel%2C%20QC%20G0A%201H0!5e0!3m2!1sen!2sca!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
         </div>
@@ -2299,6 +2506,7 @@ app.get('/', (c) => {
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     <script>
         // Scroll Progress Bar
         window.addEventListener('scroll', () => {
@@ -2567,6 +2775,17 @@ app.get('/', (c) => {
             rippleElements.forEach(element => {
                 element.addEventListener('click', createRipple);
             });
+
+            // 3D Logo Click - Scroll to Top
+            const logo3d = document.getElementById('logo3d');
+            if (logo3d) {
+                logo3d.addEventListener('click', () => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
         });
     </script>
 </body>
