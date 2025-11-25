@@ -28,7 +28,7 @@ app.route('/api/users', usersRoutes)
 // API Routes
 app.get('/api/contact', (c) => {
   return c.json({ 
-    email: 'admin@aubergeboischatel.com',
+    email: 'info@aubergeboischatel.com',
     phone: '418-822-0347',
     address: '5424 Avenue Royale, Boischatel, QC G0A 1H0'
   })
@@ -2883,7 +2883,7 @@ app.get('/', (c) => {
                     </div>
                     <div class="contact-item-content">
                         <h4>Courriel</h4>
-                        <p>admin@aubergeboischatel.com<br>Réponse sous 24h</p>
+                        <p>info@aubergeboischatel.com<br>Réponse sous 24h</p>
                     </div>
                 </div>
 
@@ -2933,19 +2933,8 @@ app.get('/', (c) => {
         <!-- Phone Extension Diagram Section -->
         <div class="phone-diagram-section" id="phone-diagram">
             <div class="phone-diagram-header">
-                <!-- Logo 3D GLB - Bâtiment Auberge 3D -->
-                <div class="logo-3d-container">
-                    <model-viewer
-                        src="/static/models/auberge-3d.glb"
-                        alt="Modèle 3D L'Auberge Boischatel"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        environment-image="neutral"
-                        exposure="1"
-                        style="width: 100%; height: 100%;">
-                    </model-viewer>
-                </div>
+                <!-- Logo 3D GLB - Bâtiment Auberge 3D (Advanced Three.js) -->
+                <div id="advanced-3d-viewer" class="logo-3d-container"></div>
                 
                 <h3>Diagramme des postes téléphoniques internes</h3>
                 <p>Visualisez rapidement quel poste joint quel service à l'interne</p>
@@ -3043,7 +3032,7 @@ app.get('/', (c) => {
                     <li>5424 Avenue Royale</li>
                     <li>Boischatel, QC G0A 1H0</li>
                     <li>418-822-0347</li>
-                    <li>admin@aubergeboischatel.com</li>
+                    <li>info@aubergeboischatel.com</li>
                     <li style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; color: var(--copper);">
                         <div class="moon-sleep-icon" style="width: 20px; height: 20px;">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3211,6 +3200,11 @@ app.get('/', (c) => {
       }
     </style>
 
+    <!-- Three.js for Advanced 3D Viewer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    
     <!-- Firebase SDK (CDN) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -3220,6 +3214,7 @@ app.get('/', (c) => {
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="/static/3d-viewer.js"></script>
     <script src="/static/auth.js"></script>
     <script>
         // Scroll Progress Bar
@@ -3398,17 +3393,31 @@ app.get('/', (c) => {
             }
         });
 
-        // Navbar scroll effect - Enhanced transparency
+        // Navbar scroll effect - Enhanced transparency with hide/show
+        let lastScrollTop = 0;
+        const nav = document.querySelector('nav');
+        
         window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            const currentScroll = window.pageYOffset;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             
-            if (currentScroll > 50) {
+            // Add scrolled class for background effect
+            if (scrollTop > 50) {
                 nav.classList.add('scrolled');
             } else {
                 nav.classList.remove('scrolled');
             }
-        });
+            
+            // Hide navigation when scrolling down, show when scrolling up
+            if (scrollTop > lastScrollTop && scrollTop > 200) {
+                // Scrolling down - hide menu
+                nav.classList.add('hidden');
+            } else {
+                // Scrolling up - show menu
+                nav.classList.remove('hidden');
+            }
+            
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, { passive: true });
 
         // Liquid Image Effect - Track mouse position
         document.addEventListener('DOMContentLoaded', () => {
@@ -3470,10 +3479,20 @@ app.get('/', (c) => {
                 element.addEventListener('click', createRipple);
             });
 
-            // 3D Logo Click - Scroll to Top
-            const logo3d = document.getElementById('logo3d');
-            if (logo3d) {
-                logo3d.addEventListener('click', () => {
+            // Initialize Advanced 3D Viewer
+            if (typeof Advanced3DViewer !== 'undefined') {
+                const viewer = new Advanced3DViewer('advanced-3d-viewer', '/static/models/auberge-3d.glb', {
+                    autoRotate: true,
+                    autoRotateSpeed: 1.5,
+                    cameraControls: true,
+                    glow: true,
+                    glowIntensity: 0.2,
+                    glowColor: 0xC9A472, // Copper
+                    backgroundColor: 0xF5EAD0 // Phone diagram section background
+                });
+
+                // Click to scroll to top
+                document.getElementById('advanced-3d-viewer').addEventListener('click', () => {
                     window.scrollTo({
                         top: 0,
                         behavior: 'smooth'
