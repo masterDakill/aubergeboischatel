@@ -705,6 +705,144 @@ app.get('/', (c) => {
             transform: translateY(0);
         }
 
+        /* Services Info Section - Soft Interactive Background */
+        .services-info-section {
+            position: relative;
+            padding: 6rem 2rem;
+            overflow: hidden;
+            background: linear-gradient(135deg, #F5F4F2 0%, #E8F2F0 50%, #F5F4F2 100%);
+        }
+
+        /* Animated soft background */
+        .services-info-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(169, 199, 181, 0.1) 0%, transparent 70%);
+            animation: softPulse 15s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes softPulse {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            50% { transform: translate(10%, 10%) scale(1.1); opacity: 0.7; }
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 40px rgba(90, 125, 140, 0.1);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid rgba(169, 199, 181, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--blue-grey), var(--sage-green), var(--copper));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .service-container:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(90, 125, 140, 0.15);
+        }
+
+        .service-container:hover::after {
+            transform: scaleX(1);
+        }
+
+        .service-icon-large {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--blue-grey), var(--sage-green));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            margin: 0 auto 2rem;
+            box-shadow: 0 8px 25px rgba(90, 125, 140, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .service-container:hover .service-icon-large {
+            transform: rotate(5deg) scale(1.1);
+        }
+
+        .service-container h3 {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            color: var(--anthracite);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .service-features li {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(169, 199, 181, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-muted);
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .service-features li:last-child {
+            border-bottom: none;
+        }
+
+        .service-features li:hover {
+            transform: translateX(5px);
+        }
+
+        .service-features li i {
+            color: var(--sage-green);
+            font-size: 1.2rem;
+            min-width: 24px;
+        }
+
+        .service-badge {
+            display: inline-block;
+            background: var(--copper);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
         /* Section Styling */
         section {
             padding: 5rem 2rem;
@@ -1658,8 +1796,23 @@ app.get('/', (c) => {
             .values-grid,
             .activities-grid,
             .rooms-grid,
-            .phone-cards-grid {
+            .phone-cards-grid,
+            .services-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .services-info-section {
+                padding: 3rem 1rem;
+            }
+            
+            .service-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            .service-icon-large {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
             }
             
             .phone-diagram-section {
@@ -1703,7 +1856,7 @@ app.get('/', (c) => {
                 <li><a href="#repas">Repas</a></li>
                 <li><a href="#visite3d">Visite 3D</a></li>
                 <li><a href="#galerie">Galerie</a></li>
-                <li><a href="#temoignages">Témoignages</a></li>
+                <li><a href="#services">Services</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -2162,134 +2315,112 @@ app.get('/', (c) => {
     </section>
 
     <!-- Testimonials Section with Horizontal Scroller -->
-    <section id="temoignages" style="background: linear-gradient(135deg, var(--cream) 0%, white 100%);">
+    <!-- Services Info Section with Soft Interactive Background -->
+    <section class="services-info-section" id="services">
         <div class="section-header">
-            <span class="section-badge">Témoignages</span>
-            <h2 class="section-title">Ce que disent nos résidents et leurs familles</h2>
-            <p class="section-subtitle">La satisfaction de nos résidents et de leurs proches est notre plus grande fierté</p>
+            <span class="section-badge">Nos Services</span>
+            <h2 class="section-title">Un accompagnement complet au quotidien</h2>
+            <p class="section-subtitle">Des services professionnels pour assurer confort, sécurité et bien-être</p>
         </div>
 
-        <div class="horizontal-scroller">
-            <div class="scroller-container" id="testimonialsScroller">
-                <!-- Testimonial 1 -->
-                <div class="scroller-item">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar">MG</div>
-                        <div class="testimonial-info">
-                            <h4>Marie Gagnon</h4>
-                            <p>Résidente depuis 2 ans</p>
-                        </div>
-                    </div>
-                    <div class="rating-container">
-                        <div class="stars">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                        <span class="rating-text">5/5</span>
-                    </div>
-                    <p class="testimonial-content">"Un cadre de vie exceptionnel ! L'équipe est chaleureuse, attentive et toujours disponible. Je me sens vraiment chez moi dans cette magnifique résidence victorienne."</p>
+        <div class="services-grid">
+            <!-- Service 1: Équipe de Soins -->
+            <div class="service-container scroll-fade-in">
+                <div class="service-icon-large">
+                    <i class="fas fa-user-nurse"></i>
                 </div>
-
-                <!-- Testimonial 2 -->
-                <div class="scroller-item">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar">JT</div>
-                        <div class="testimonial-info">
-                            <h4>Jean Tremblay</h4>
-                            <p>Famille de résident</p>
-                        </div>
-                    </div>
-                    <div class="rating-container">
-                        <div class="stars">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                        <span class="rating-text">5/5</span>
-                    </div>
-                    <p class="testimonial-content">"Ma mère est si heureuse depuis qu'elle a emménagé à L'Auberge. Les propriétaires sont jeunes, dynamiques et apportent une vision moderne tout en gardant une approche humaine."</p>
-                </div>
-
-                <!-- Testimonial 3 -->
-                <div class="scroller-item">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar">SL</div>
-                        <div class="testimonial-info">
-                            <h4>Sylvie Lavoie</h4>
-                            <p>Résidente depuis 1 an</p>
-                        </div>
-                    </div>
-                    <div class="rating-container">
-                        <div class="stars">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star empty">★</span>
-                        </div>
-                        <span class="rating-text">4.5/5</span>
-                    </div>
-                    <p class="testimonial-content">"La sécurité est exemplaire et les repas sont délicieux. J'apprécie particulièrement les activités organisées et l'ambiance conviviale entre résidents."</p>
-                </div>
-
-                <!-- Testimonial 4 -->
-                <div class="scroller-item">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar">PC</div>
-                        <div class="testimonial-info">
-                            <h4>Pierre Côté</h4>
-                            <p>Famille de résident</p>
-                        </div>
-                    </div>
-                    <div class="rating-container">
-                        <div class="stars">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                        <span class="rating-text">5/5</span>
-                    </div>
-                    <p class="testimonial-content">"L'emplacement est idéal à Boischatel, et l'architecture de la maison est magnifique. Mon père a enfin trouvé un endroit où il se sent respecté et valorisé."</p>
-                </div>
-
-                <!-- Testimonial 5 -->
-                <div class="scroller-item">
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar">LB</div>
-                        <div class="testimonial-info">
-                            <h4>Louise Bérubé</h4>
-                            <p>Résidente depuis 3 ans</p>
-                        </div>
-                    </div>
-                    <div class="rating-container">
-                        <div class="stars">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                        <span class="rating-text">5/5</span>
-                    </div>
-                    <p class="testimonial-content">"Une résidence à taille humaine où tout le monde se connaît. L'équipe jeune apporte une énergie positive et des idées innovantes pour améliorer notre quotidien."</p>
+                <h3>Équipe de soins</h3>
+                <ul class="service-features">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Infirmière auxiliaire sur place</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Personnel qualifié et attentionné</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Soins personnalisés selon les besoins</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Suivi médical régulier</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Gestion des médicaments</span>
+                    </li>
+                </ul>
+                <div class="service-badge">
+                    Soins professionnels
                 </div>
             </div>
 
-            <!-- Navigation Buttons -->
-            <div class="scroller-nav">
-                <button class="scroller-btn" id="scrollLeft">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button class="scroller-btn" id="scrollRight">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
+            <!-- Service 2: Assistance 24/7 -->
+            <div class="service-container scroll-fade-in">
+                <div class="service-icon-large">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Assistance 24h/24</h3>
+                <ul class="service-features">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Surveillance continue jour et nuit</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Système d'alarme dans chaque chambre</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Intervention rapide en cas de besoin</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Personnel présent en tout temps</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Tranquillité d'esprit garantie</span>
+                    </li>
+                </ul>
+                <div class="service-badge">
+                    Sécurité maximale
+                </div>
+            </div>
+
+            <!-- Service 3: Repas Fournis -->
+            <div class="service-container scroll-fade-in">
+                <div class="service-icon-large">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h3>Repas fournis</h3>
+                <ul class="service-features">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>3 repas équilibrés par jour</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Service 7 jours sur 7</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Cuisine maison et savoureuse</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Menus adaptés aux besoins</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Collations disponibles</span>
+                    </li>
+                </ul>
+                <div class="service-badge">
+                    Nutrition complète
+                </div>
             </div>
         </div>
     </section>
@@ -2477,7 +2608,7 @@ app.get('/', (c) => {
                     <li><a href="#repas">Repas & Menus</a></li>
                     <li><a href="#visite3d">Visite 3D</a></li>
                     <li><a href="#galerie">Galerie</a></li>
-                    <li><a href="#temoignages">Témoignages</a></li>
+                    <li><a href="#services">Services</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
@@ -2677,64 +2808,6 @@ app.get('/', (c) => {
                     image.style.setProperty('--mouse-y', '50%');
                 });
             });
-        });
-
-        // Horizontal Scroller Navigation
-        document.addEventListener('DOMContentLoaded', () => {
-            const scroller = document.getElementById('testimonialsScroller');
-            const scrollLeftBtn = document.getElementById('scrollLeft');
-            const scrollRightBtn = document.getElementById('scrollRight');
-
-            if (scroller && scrollLeftBtn && scrollRightBtn) {
-                const scrollAmount = 420; // Width of item (400px) + gap (20px)
-
-                scrollLeftBtn.addEventListener('click', () => {
-                    scroller.scrollBy({
-                        left: -scrollAmount,
-                        behavior: 'smooth'
-                    });
-                });
-
-                scrollRightBtn.addEventListener('click', () => {
-                    scroller.scrollBy({
-                        left: scrollAmount,
-                        behavior: 'smooth'
-                    });
-                });
-
-                // Enable mouse drag scrolling
-                let isDown = false;
-                let startX;
-                let scrollLeft;
-
-                scroller.addEventListener('mousedown', (e) => {
-                    isDown = true;
-                    scroller.style.cursor = 'grabbing';
-                    startX = e.pageX - scroller.offsetLeft;
-                    scrollLeft = scroller.scrollLeft;
-                });
-
-                scroller.addEventListener('mouseleave', () => {
-                    isDown = false;
-                    scroller.style.cursor = 'grab';
-                });
-
-                scroller.addEventListener('mouseup', () => {
-                    isDown = false;
-                    scroller.style.cursor = 'grab';
-                });
-
-                scroller.addEventListener('mousemove', (e) => {
-                    if (!isDown) return;
-                    e.preventDefault();
-                    const x = e.pageX - scroller.offsetLeft;
-                    const walk = (x - startX) * 2;
-                    scroller.scrollLeft = scrollLeft - walk;
-                });
-
-                // Set initial cursor
-                scroller.style.cursor = 'grab';
-            }
         });
 
         // Ripple Transition Effect
