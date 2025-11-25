@@ -4,17 +4,18 @@
 
 Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aînés certifiée RPA située à Boischatel, Québec. Le site incarne notre mission : **Innovation bienveillante au service de la vie quotidienne**.
 
-- **Version actuelle** : V5.3 - Hero 4K Spectaculaire
-- **Technologies** : Hono + Cloudflare Pages + TypeScript + Vite + Polycam 3D
-- **Statut** : ✅ Fonctionnel en développement
-- **Dernière mise à jour** : 25 novembre 2025
+- **Version actuelle** : V6.0 - Dashboards Complets + API CRUD
+- **Technologies** : Hono + Firebase Auth + Supabase PostgreSQL + TypeScript + Vite
+- **Statut** : ✅ Fonctionnel - Dashboards intégrés
+- **Dernière mise à jour** : 20 janvier 2025
 
-### 🎆 Améliorations Version 5.3
-- **Photo Hero 4K** : Upscale de 1024x684 → 5056x3392px (5x résolution)
-- **Hero Full-Width** : Photo golden hour en pleine largeur spectaculaire
-- **Optimisations visuelles** : Overlay subtil, effet vignette, animations douces
-- **Logo ajusté** : Agrandi 125px, animation 3D adoucie
-- **Particles optimisés** : 45 particules, couleurs chaudes, mouvement fluide
+### 🎆 Améliorations Version 6.0 (Dashboards Complets)
+- **3 Dashboards dynamiques** : Client, Staff, Admin avec interfaces interactives
+- **4 Modules API CRUD** : Residents, Documents, Logs, Users (24 endpoints)
+- **Authentification complète** : Firebase Auth + Supabase PostgreSQL sync
+- **Autorisations par rôle** : CLIENT, EMPLOYEE, ADMIN avec permissions granulaires
+- **4 Nouvelles tables SQL** : documents, activity_logs, resident_observations, notifications
+- **Documentation exhaustive** : README-API-DASHBOARDS.md (17,700 caractères)
 
 ## 🎨 Identité Visuelle
 
@@ -134,8 +135,19 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 - Domaine personnalisé : `aubergeboischatel.com` (optionnel)
 
 ### API
+
+#### **API Publiques**
 - `GET /api/contact` - Récupérer les coordonnées
 - `POST /api/contact` - Soumettre formulaire
+- `GET /api/dbTest` - Test connexion base de données
+
+#### **API Authentifiées (JWT Bearer Token)**
+- **Residents** : `/api/residents` (GET, POST, PUT, DELETE, observations)
+- **Documents** : `/api/documents` (GET, POST, PUT, DELETE, filtres)
+- **Logs** : `/api/logs` (GET, POST, par résident)
+- **Users** : `/api/users` (GET, PUT, liens, stats)
+
+Voir `README-API-DASHBOARDS.md` pour documentation complète.
 
 ## 📊 Architecture Technique
 
@@ -143,25 +155,35 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 ```
 webapp/
 ├── src/
-│   └── index.tsx           # Application Hono principale (55 KB)
+│   ├── index.tsx                   # Application Hono principale
+│   ├── lib/
+│   │   ├── db.ts                  # PostgreSQL connection pool
+│   │   ├── firebaseAdmin.ts       # Firebase Admin SDK
+│   │   └── firebase.config.ts     # Firebase client config
+│   └── routes/
+│       ├── auth.ts                # Authentification
+│       ├── residents.ts           # CRUD résidents (10,958 bytes)
+│       ├── documents.ts           # Gestion documents (9,029 bytes)
+│       ├── logs.ts                # Journaux activités (3,840 bytes)
+│       ├── users.ts               # Admin utilisateurs (8,811 bytes)
+│       └── dbTest.ts              # Test connexion DB
 ├── public/
 │   └── static/
-│       ├── images/         # 8 images (8.9 MB total)
-│       │   ├── logo.png (405 KB - transparent)
-│       │   ├── hero-mockup.png (68 KB)
-│       │   ├── facade.jpg (1.1 MB)
-│       │   ├── salle-manger.png (2.1 MB)
-│       │   ├── chambre.png (2.3 MB)
-│       │   ├── jardin.jpg (1.4 MB)
-│       │   ├── galerie.jpg (1.3 MB)
-│       │   └── vue-nocturne.jpg (305 KB)
-│       └── enhanced-styles.css (8 KB)
-├── dist/                   # Build output (82.67 KB)
-├── ecosystem.config.cjs    # PM2 configuration
-├── vite.config.ts          # Vite build config
-├── wrangler.jsonc          # Cloudflare config
-├── package.json            # Dependencies
-└── README.md               # Ce fichier
+│       ├── images/                # 8 images (8.9 MB total)
+│       ├── client-dashboard.js    # Dashboard CLIENT (10,075 bytes)
+│       ├── staff-dashboard.js     # Dashboard STAFF (13,150 bytes)
+│       ├── auth.js                # Gestionnaire auth client (12,603 bytes)
+│       └── enhanced-styles.css    # Styles (8 KB)
+├── dist/                          # Build output (1,108.80 KB)
+├── schema-dashboard-extensions.sql # 4 nouvelles tables (6,739 bytes)
+├── README-AUTH.md                 # Guide config Firebase+Supabase (11,937 bytes)
+├── README-API-DASHBOARDS.md       # Guide API complet (17,700 bytes)
+├── IMPLEMENTATION-COMPLETE.md     # Rapport final (9,703 bytes)
+├── ecosystem.config.cjs           # PM2 configuration
+├── vite.config.ts                 # Vite build config
+├── wrangler.jsonc                 # Cloudflare config
+├── package.json                   # Dependencies
+└── README.md                      # Ce fichier
 ```
 
 ### Technologies
@@ -173,9 +195,12 @@ webapp/
 - **Dev Server** : PM2 (sandbox), Wrangler Pages Dev (local)
 
 ### Bundle Size
-- **Worker bundle** : 82.67 KB (excellent pour Cloudflare)
+- **Worker bundle** : 1,108.80 KB (637 modules transformés)
 - **Images totales** : 8.9 MB (servies via CDN)
 - **CSS externe** : 8 KB
+- **Routes API** : ~32,000 caractères (4 fichiers)
+- **Dashboards JS** : ~23,000 caractères (2 fichiers)
+- **Documentation** : ~57,000 caractères (3 fichiers)
 
 ## 🚀 Commandes Utiles
 
@@ -339,7 +364,8 @@ Le site met en avant :
 ## 📦 Backups Disponibles
 
 - **V3 Transparent Logo** : https://www.genspark.ai/api/files/s/6UAb4erJ
-- **V4 Innovation Bienveillante** : *Généré automatiquement*
+- **V5 Pre-Dashboards** : https://www.genspark.ai/api/files/s/PSnSckaR (Firebase Auth + Supabase intégré)
+- **V6 Dashboards Complets** : https://www.genspark.ai/api/files/s/RisyUtoi (API CRUD + 3 dashboards + build réussi)
 
 ## 👥 Équipe & Contribution
 
@@ -349,14 +375,32 @@ Le site met en avant :
 
 ## 📈 Prochaines Étapes Recommandées
 
-1. **Déploiement production** - Mettre en ligne sur Cloudflare Pages
-2. **Domaine personnalisé** - Configurer `aubergeboischatel.com`
-3. **Email service** - Intégrer SendGrid/Mailgun pour formulaire
-4. ~~**Téléphone réel**~~ - ✅ Complété (418-822-0347)
-5. **Analytics** - Ajouter Google Analytics / Cloudflare Analytics
-6. **Témoignages** - Collecter et ajouter témoignages de familles
-7. **Photos professionnelles** - Session photo supplémentaire si besoin
-8. **SEO** - Optimiser pour recherche locale Boischatel/Québec
+### **Priorité Immédiate (Configuration)**
+1. **Exécuter schéma SQL** - Copier `schema-dashboard-extensions.sql` dans Supabase SQL Editor
+2. **Tester API** - Suivre guide `README-API-DASHBOARDS.md` (scénarios 1-6)
+3. **Créer utilisateurs test** - CLIENT, EMPLOYEE, ADMIN
+4. **Lier users à résidents** - Utiliser endpoint `/api/users/:id/link-resident`
+5. **Tester dashboards** - Vérifier `/client/dashboard`, `/staff/dashboard`, `/admin/dashboard`
+
+### **Priorité Haute (Développement)**
+1. **Upload fichiers réel** - Implémenter R2 Storage pour documents
+2. **Page /staff/residents** - Interface CRUD complète résidents
+3. **Notifications temps réel** - WebSockets ou polling pour familles
+4. **Calendrier activités** - Événements, rendez-vous médicaux
+5. **Rapports automatiques** - Génération PDF mensuels
+
+### **Priorité Moyenne (Production)**
+1. **Déploiement production** - Cloudflare Pages avec variables env
+2. **Domaine personnalisé** - `aubergeboischatel.com`
+3. **Email service** - SendGrid/Mailgun pour formulaire
+4. **Analytics** - Google Analytics / Cloudflare Analytics
+5. **SEO** - Optimiser recherche locale
+
+### **Priorité Basse (Améliorations)**
+1. **Dashboard analytique ADMIN** - Graphiques, tendances
+2. **Témoignages familles** - Section dédiée
+3. **Multi-langue** - Support EN/FR
+4. **Export données** - CSV, Excel
 
 ## 📄 Licence
 
