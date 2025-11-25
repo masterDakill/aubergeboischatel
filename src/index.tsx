@@ -207,6 +207,114 @@ app.get('/', (c) => {
             width: 100%;
         }
 
+        /* Login Button & User Menu */
+        .login-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background: linear-gradient(135deg, var(--blue-grey), var(--sage-green));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            border: none;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(90, 125, 140, 0.3);
+            background: linear-gradient(135deg, #4A6D7C, #99B7A5);
+        }
+
+        .login-button i {
+            font-size: 1rem;
+        }
+
+        /* User Dropdown Menu (Future Auth) */
+        .user-menu {
+            position: relative;
+            display: none; /* Hidden until auth is implemented */
+        }
+
+        .user-menu-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            background: rgba(90, 125, 140, 0.1);
+            border: 2px solid var(--blue-grey);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-menu-button:hover {
+            background: rgba(90, 125, 140, 0.15);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--copper);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(90, 125, 140, 0.2);
+            border: 1px solid rgba(169, 199, 181, 0.3);
+            min-width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 1001;
+        }
+
+        .user-menu:hover .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.25rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(169, 199, 181, 0.15);
+        }
+
+        .user-dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-dropdown-item:hover {
+            background: rgba(90, 125, 140, 0.05);
+        }
+
+        .user-dropdown-item i {
+            width: 20px;
+            color: var(--blue-grey);
+        }
+
         /* Hero Section - Full-Width Spectacular Golden Hour 4K */
         .hero {
             margin-top: 65px;
@@ -1815,6 +1923,20 @@ app.get('/', (c) => {
                 display: none;
             }
 
+            .login-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+                margin-left: auto;
+            }
+
+            .login-button span {
+                display: none; /* Hide "Connexion" text on mobile */
+            }
+
+            .login-button i {
+                margin: 0;
+            }
+
             .logo {
                 margin-left: 0; /* Reset margin on mobile */
             }
@@ -1922,6 +2044,39 @@ app.get('/', (c) => {
                 <li><a href="#activites">Vie & Activités</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
+            
+            <!-- Login Button (Placeholder for Firebase Auth) -->
+            <button class="login-button" onclick="alert('Authentification Firebase à venir !')">
+                <i class="fas fa-user"></i>
+                <span>Connexion</span>
+            </button>
+            
+            <!-- User Menu (Hidden - Will be shown when authenticated) -->
+            <div class="user-menu" style="display: none;">
+                <button class="user-menu-button">
+                    <div class="user-avatar">M</div>
+                    <span>Mathieu</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="user-dropdown">
+                    <a href="/client" class="user-dropdown-item">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Espace Client</span>
+                    </a>
+                    <a href="/staff" class="user-dropdown-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Espace Employé</span>
+                    </a>
+                    <a href="#" class="user-dropdown-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Paramètres</span>
+                    </a>
+                    <a href="#" class="user-dropdown-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Déconnexion</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </nav>
 
