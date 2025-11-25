@@ -2606,12 +2606,15 @@ app.get('/', (c) => {
 
             <div class="polycam-wrapper">
                 <iframe 
-                    src="https://poly.cam/capture/0173C8E7-21E2-4AB2-A66E-5757D3EDCFBC" 
+                    src="https://poly.cam/capture/0173C8E7-21E2-4AB2-A66E-5757D3EDCFBC?mode=embed&background=%23ffffff" 
                     title="Visite virtuelle 3D de L'Auberge Boischatel"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking; fullscreen"
                     allowfullscreen
+                    webkitallowfullscreen
+                    mozallowfullscreen
                     frameborder="0"
-                    loading="lazy">
+                    loading="eager"
+                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms">
                 </iframe>
             </div>
 
@@ -2688,6 +2691,41 @@ app.get('/', (c) => {
                 <div class="gallery-overlay">
                     <h4>Ambiance Chaleureuse</h4>
                     <p>Accueillante jour et nuit</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brochure Marketing Section -->
+    <section id="brochure" style="background: white; padding: 5rem 2rem;">
+        <div class="section-header">
+            <span class="section-badge">Brochure</span>
+            <h2 class="section-title">Découvrez notre hospitalité québécoise</h2>
+            <p class="section-subtitle">L'Auberge Boischatel incarne l'excellence de l'hébergement pour aînés au Québec</p>
+        </div>
+
+        <div class="gallery-grid" style="max-width: 1200px; margin: 0 auto;">
+            <div class="gallery-item liquid-image">
+                <img src="/static/images/brochure-presentation.jpg" alt="Présentation L'Auberge Boischatel" style="object-fit: cover;">
+                <div class="gallery-overlay">
+                    <h4>Découvrez notre hospitalité</h4>
+                    <p>Un accueil chaleureux et professionnel</p>
+                </div>
+            </div>
+
+            <div class="gallery-item liquid-image">
+                <img src="/static/images/brochure-logo.jpg" alt="Logo L'Auberge Boischatel" style="object-fit: cover;">
+                <div class="gallery-overlay">
+                    <h4>L'Auberge Boischatel</h4>
+                    <p>Une signature d'excellence depuis toujours</p>
+                </div>
+            </div>
+
+            <div class="gallery-item liquid-image">
+                <img src="/static/images/brochure-carte.jpg" alt="Carte L'Auberge Boischatel" style="object-fit: cover;">
+                <div class="gallery-overlay">
+                    <h4>Identité visuelle</h4>
+                    <p>Un design qui reflète nos valeurs</p>
                 </div>
             </div>
         </div>
@@ -2895,14 +2933,16 @@ app.get('/', (c) => {
         <!-- Phone Extension Diagram Section -->
         <div class="phone-diagram-section" id="phone-diagram">
             <div class="phone-diagram-header">
-                <!-- Logo 3D GLB -->
+                <!-- Logo 3D GLB - Bâtiment Auberge 3D -->
                 <div class="logo-3d-container">
                     <model-viewer
-                        src="/static/models/logo-3d.glb"
-                        alt="Logo 3D L'Auberge Boischatel"
+                        src="/static/models/auberge-3d.glb"
+                        alt="Modèle 3D L'Auberge Boischatel"
                         auto-rotate
                         camera-controls
                         shadow-intensity="1"
+                        environment-image="neutral"
+                        exposure="1"
                         style="width: 100%; height: 100%;">
                     </model-viewer>
                 </div>
