@@ -4,8 +4,8 @@
 
 Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aînés certifiée RPA située à Boischatel, Québec. Le site incarne notre mission : **Innovation bienveillante au service de la vie quotidienne**.
 
-- **Version actuelle** : V4 - Innovation Bienveillante
-- **Technologies** : Hono + Cloudflare Pages + TypeScript + Vite
+- **Version actuelle** : V4.1 - Innovation Bienveillante + Visite 3D
+- **Technologies** : Hono + Cloudflare Pages + TypeScript + Vite + Polycam 3D
 - **Statut** : ✅ Fonctionnel en développement
 - **Dernière mise à jour** : 25 novembre 2025
 
@@ -43,7 +43,7 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 - Sécurité incendie exemplaire
 - Conformité RPA Québec 100%
 
-## 📄 Structure du Site (9 Sections)
+## 📄 Structure du Site (10 Sections)
 
 ### 1. **Accueil** (`#accueil`)
 - Hero split-screen moderne
@@ -89,7 +89,17 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 - Adaptation aux besoins spéciaux
 - 4 caractéristiques mises en avant
 
-### 8. **Galerie** (`#galerie`)
+### 8. **Visite Virtuelle 3D** (`#visite3d`) 🆕
+- Intégration Polycam 3D interactive
+- Navigation 360° immersive
+- 3 caractéristiques mises en avant :
+  - Navigation 360° libre
+  - Mesures réelles et dimensions exactes
+  - Compatible multi-dispositifs
+- Iframe responsive avec aspect-ratio 16:9
+- Permet aux familles d'explorer à distance
+
+### 9. **Galerie** (`#galerie`)
 - 6 images professionnelles :
   - Façade victorienne
   - Salle à manger lumineuse
@@ -98,7 +108,7 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
   - Terrasse couverte
   - Vue nocturne chaleureuse
 
-### 9. **Contact** (`#contact`)
+### 10. **Contact** (`#contact`)
 - Formulaire de contact fonctionnel
 - Coordonnées complètes
 - Carte Google Maps interactive
