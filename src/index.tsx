@@ -111,22 +111,24 @@ app.get('/', (c) => {
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            position: relative;
         }
 
         .logo {
             display: flex;
             align-items: center;
+            justify-content: center;
             text-decoration: none;
             color: var(--anthracite);
         }
 
         .logo-icon {
-            width: 80px;
-            height: 80px;
+            width: 120px;
+            height: 120px;
             background: url('/static/images/logo.png') no-repeat center;
             background-size: contain;
             transition: transform 0.3s ease;
@@ -142,8 +144,11 @@ app.get('/', (c) => {
 
         .nav-links {
             display: flex;
-            gap: 2.5rem;
+            gap: 1.8rem;
             list-style: none;
+            position: absolute;
+            right: 2rem;
+            font-size: 0.9rem;
         }
 
         .nav-links a {
@@ -1180,6 +1185,15 @@ app.get('/', (c) => {
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
+            }
+
+            .logo-icon {
+                width: 100px;
+                height: 100px;
+            }
+
+            .nav-container {
+                padding: 1rem;
             }
 
             .hero-title {
