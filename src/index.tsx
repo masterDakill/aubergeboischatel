@@ -1724,7 +1724,7 @@ app.get('/', (c) => {
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Interactive Background - Softer & Warmer */
+        /* Interactive Background - Softer & Warmer with Enhanced Effects */
         #particles-js {
             position: fixed;
             width: 100%;
@@ -1737,6 +1737,40 @@ app.get('/', (c) => {
                 rgba(245, 244, 242, 0.95) 50%,
                 rgba(169, 199, 181, 0.08) 100%
             );
+            transform: translateZ(0);
+            will-change: transform;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Parallax Scroll Effect - Particles move slightly on scroll */
+        nav.scrolled ~ #particles-js {
+            transform: translateY(-15px) scale(1.03);
+        }
+
+        /* Animated Gradient Overlay - Subtle brand color pulse */
+        #particles-js::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                rgba(90, 125, 140, 0.03) 0%,
+                rgba(169, 199, 181, 0.05) 50%,
+                rgba(201, 164, 114, 0.03) 100%
+            );
+            animation: gradientPulse 25s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes gradientPulse {
+            0%, 100% { 
+                opacity: 0.4;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.7;
+                transform: scale(1.05);
+            }
         }
 
         /* Scroll Animations */
@@ -2861,43 +2895,77 @@ app.get('/', (c) => {
             scrollProgress.style.width = scrolled + '%';
         });
 
-        // Particles.js Background - Softer & Warmer
+        // Particles.js Background - Enhanced with Multicolor Brand Palette
         particlesJS('particles-js', {
             particles: {
-                number: { value: 45, density: { enable: true, value_area: 1000 } }, // Reduced from 80 to 45
-                color: { value: '#C9A472' }, // Warm copper tone instead of sage green
+                number: { value: 50, density: { enable: true, value_area: 1000 } }, // Slightly increased for richer effect
+                color: {
+                    value: ['#5A7D8C', '#A9C7B5', '#C9A472'] // Multicolor: Bleu-gris, Vert sauge, Copper
+                },
                 shape: { type: 'circle' },
-                opacity: { value: 0.25, random: true }, // More subtle - reduced from 0.5
-                size: { value: 2.5, random: true }, // Slightly smaller
+                opacity: { 
+                    value: 0.35, 
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 0.5,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: { 
+                    value: 3, 
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 1,
+                        size_min: 0.5,
+                        sync: false
+                    }
+                },
                 line_linked: {
                     enable: true,
-                    distance: 120, // Shorter connections
-                    color: '#A9C7B5', // Soft sage green for connections
-                    opacity: 0.2, // Very subtle - reduced from 0.4
-                    width: 0.8 // Thinner lines
+                    distance: 130,
+                    color: '#A9C7B5', // Sage green connections
+                    opacity: 0.25,
+                    width: 1
                 },
                 move: {
                     enable: true,
-                    speed: 1.2, // Slower, gentler movement
+                    speed: 1.5,
                     direction: 'none',
-                    random: true, // More organic movement
+                    random: true,
                     straight: false,
                     out_mode: 'out',
-                    bounce: false
+                    bounce: false,
+                    attract: {
+                        enable: true,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
                 }
             },
             interactivity: {
                 detect_on: 'canvas',
                 events: {
-                    onhover: { enable: true, mode: 'grab' }, // Changed from 'repulse' to 'grab' for softer interaction
-                    onclick: { enable: true, mode: 'bubble' }, // Changed from 'push' to 'bubble'
+                    onhover: { enable: true, mode: 'grab' },
+                    onclick: { enable: true, mode: 'bubble' },
                     resize: true
                 },
                 modes: {
-                    grab: { distance: 140, line_linked: { opacity: 0.3 } },
-                    bubble: { distance: 250, size: 4, duration: 2, opacity: 0.5, speed: 3 },
+                    grab: { 
+                        distance: 150, 
+                        line_linked: { opacity: 0.4 } 
+                    },
+                    bubble: { 
+                        distance: 250, 
+                        size: 5, 
+                        duration: 2, 
+                        opacity: 0.6, 
+                        speed: 3 
+                    },
                     repulse: { distance: 100, duration: 0.4 },
-                    push: { particles_nb: 2 },
+                    push: { particles_nb: 3 },
                     remove: { particles_nb: 2 }
                 }
             },
