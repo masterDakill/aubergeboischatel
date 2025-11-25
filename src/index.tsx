@@ -1869,6 +1869,62 @@ app.get('/', (c) => {
             }
         }
 
+        /* Moon Sleep Icon Styles */
+        .moon-sleep-icon {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .moon-sleep-icon svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        /* Moon Sleep Animation - Gentle Float */
+        @keyframes moonFloat {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-8px) rotate(-3deg);
+            }
+            50% {
+                transform: translateY(0) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-5px) rotate(3deg);
+            }
+        }
+        
+        .activity-icon .moon-sleep-icon,
+        .room-features .moon-sleep-icon,
+        .security-list .moon-sleep-icon,
+        .contact-icon .moon-sleep-icon {
+            animation: moonFloat 6s ease-in-out infinite;
+        }
+        
+        .activity-card:hover .moon-sleep-icon,
+        .room-card:hover .moon-sleep-icon,
+        .security-card:hover .moon-sleep-icon,
+        .contact-item:hover .moon-sleep-icon {
+            animation: moonFloat 3s ease-in-out infinite;
+        }
+        
+        /* Moon Sleep Glow Effect */
+        .moon-sleep-icon svg {
+            filter: drop-shadow(0 0 8px rgba(201, 164, 114, 0.3));
+            transition: filter 0.3s ease;
+        }
+        
+        .activity-card:hover .moon-sleep-icon svg,
+        .room-card:hover .moon-sleep-icon svg,
+        .security-card:hover .moon-sleep-icon svg,
+        .contact-item:hover .moon-sleep-icon svg {
+            filter: drop-shadow(0 0 16px rgba(201, 164, 114, 0.6));
+        }
+
         /* Gradient Animation Background */
         body {
             position: relative;
@@ -2315,6 +2371,17 @@ app.get('/', (c) => {
                 </h4>
                 <ul class="security-list">
                     <li><i class="fas fa-check-circle"></i>Surveillance 24/7 par personnel qualifié</li>
+                    <li>
+                        <div class="moon-sleep-icon" style="width: 18px; height: 18px; color: var(--sage-green); flex-shrink: 0;">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M 5.25 1.5 C 4.836 1.5 4.5 1.164 4.5 0.75 C 4.5 0.336 4.836 0 5.25 0 L 9.25 0 C 9.553 0 9.827 0.183 9.943 0.463 C 10.059 0.743 9.995 1.066 9.78 1.28 L 7.061 4 L 9.25 4 C 9.664 4 10 4.336 10 4.75 C 10 5.164 9.664 5.5 9.25 5.5 L 5.25 5.5 C 4.947 5.5 4.673 5.317 4.557 5.037 C 4.441 4.757 4.505 4.434 4.72 4.22 L 7.439 1.5 Z M 0.75 7.5 C 0.336 7.5 0 7.164 0 6.75 C 0 6.336 0.336 6 0.75 6 L 3.75 6 C 4.053 6 4.327 6.183 4.443 6.463 C 4.559 6.743 4.495 7.066 4.28 7.28 L 2.561 9 L 3.75 9 C 4.164 9 4.5 9.336 4.5 9.75 C 4.5 10.164 4.164 10.5 3.75 10.5 L 0.75 10.5 C 0.447 10.5 0.173 10.317 0.057 10.037 C -0.059 9.757 0.005 9.434 0.22 9.22 L 1.939 7.5 Z" fill="currentColor" transform="translate(12.75 1.25)"/>
+                                <g opacity="0.5">
+                                    <path d="M 10 20 C 15.523 20 20 15.523 20 10 C 20 9.537 19.306 9.461 19.067 9.857 C 17.929 11.741 15.861 13 13.5 13 C 9.91 13 7 10.09 7 6.5 C 7 4.138 8.259 2.071 10.143 0.933 C 10.539 0.693 10.463 0 10 0 C 4.477 0 0 4.477 0 10 C 0 15.523 4.477 20 10 20 Z" fill="currentColor" transform="translate(2 2)"/>
+                                </g>
+                            </svg>
+                        </div>
+                        Présence nocturne rassurante 24/7
+                    </li>
                     <li><i class="fas fa-check-circle"></i>Système d'appel d'urgence dans chaque chambre</li>
                     <li><i class="fas fa-check-circle"></i>Accès contrôlé aux entrées principales</li>
                     <li><i class="fas fa-check-circle"></i>Éclairage extérieur automatique et sécurisé</li>
@@ -2358,6 +2425,17 @@ app.get('/', (c) => {
                         <li><i class="fas fa-couch"></i>Coin salon avec fauteuil</li>
                         <li><i class="fas fa-bathroom"></i>Salle de bain privée adaptée</li>
                         <li><i class="fas fa-phone-alt"></i>Système d'appel d'urgence</li>
+                        <li>
+                            <div class="moon-sleep-icon" style="width: 20px; height: 20px; color: var(--sage-green);">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M 5.25 1.5 C 4.836 1.5 4.5 1.164 4.5 0.75 C 4.5 0.336 4.836 0 5.25 0 L 9.25 0 C 9.553 0 9.827 0.183 9.943 0.463 C 10.059 0.743 9.995 1.066 9.78 1.28 L 7.061 4 L 9.25 4 C 9.664 4 10 4.336 10 4.75 C 10 5.164 9.664 5.5 9.25 5.5 L 5.25 5.5 C 4.947 5.5 4.673 5.317 4.557 5.037 C 4.441 4.757 4.505 4.434 4.72 4.22 L 7.439 1.5 Z M 0.75 7.5 C 0.336 7.5 0 7.164 0 6.75 C 0 6.336 0.336 6 0.75 6 L 3.75 6 C 4.053 6 4.327 6.183 4.443 6.463 C 4.559 6.743 4.495 7.066 4.28 7.28 L 2.561 9 L 3.75 9 C 4.164 9 4.5 9.336 4.5 9.75 C 4.5 10.164 4.164 10.5 3.75 10.5 L 0.75 10.5 C 0.447 10.5 0.173 10.317 0.057 10.037 C -0.059 9.757 0.005 9.434 0.22 9.22 L 1.939 7.5 Z" fill="currentColor" transform="translate(12.75 1.25)"/>
+                                    <g opacity="0.5">
+                                        <path d="M 10 20 C 15.523 20 20 15.523 20 10 C 20 9.537 19.306 9.461 19.067 9.857 C 17.929 11.741 15.861 13 13.5 13 C 9.91 13 7 10.09 7 6.5 C 7 4.138 8.259 2.071 10.143 0.933 C 10.539 0.693 10.463 0 10 0 C 4.477 0 0 4.477 0 10 C 0 15.523 4.477 20 10 20 Z" fill="currentColor" transform="translate(2 2)"/>
+                                    </g>
+                                </svg>
+                            </div>
+                            Environnement optimisé pour le sommeil
+                        </li>
                         <li><i class="fas fa-wifi"></i>Internet haute vitesse</li>
                         <li><i class="fas fa-tv"></i>Câblodistribution incluse</li>
                     </ul>
@@ -2443,6 +2521,21 @@ app.get('/', (c) => {
                 <div class="activity-icon"><i class="fas fa-leaf"></i></div>
                 <h4>Nature & Jardinage</h4>
                 <p>Jardins thérapeutiques, terrasses fleuries, activités de jardinage pour se ressourcer au contact de la nature.</p>
+            </div>
+
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <div class="moon-sleep-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M 5.25 1.5 C 4.836 1.5 4.5 1.164 4.5 0.75 C 4.5 0.336 4.836 0 5.25 0 L 9.25 0 C 9.553 0 9.827 0.183 9.943 0.463 C 10.059 0.743 9.995 1.066 9.78 1.28 L 7.061 4 L 9.25 4 C 9.664 4 10 4.336 10 4.75 C 10 5.164 9.664 5.5 9.25 5.5 L 5.25 5.5 C 4.947 5.5 4.673 5.317 4.557 5.037 C 4.441 4.757 4.505 4.434 4.72 4.22 L 7.439 1.5 Z M 0.75 7.5 C 0.336 7.5 0 7.164 0 6.75 C 0 6.336 0.336 6 0.75 6 L 3.75 6 C 4.053 6 4.327 6.183 4.443 6.463 C 4.559 6.743 4.495 7.066 4.28 7.28 L 2.561 9 L 3.75 9 C 4.164 9 4.5 9.336 4.5 9.75 C 4.5 10.164 4.164 10.5 3.75 10.5 L 0.75 10.5 C 0.447 10.5 0.173 10.317 0.057 10.037 C -0.059 9.757 0.005 9.434 0.22 9.22 L 1.939 7.5 Z" fill="currentColor" transform="translate(12.75 1.25)"/>
+                            <g opacity="0.5">
+                                <path d="M 10 20 C 15.523 20 20 15.523 20 10 C 20 9.537 19.306 9.461 19.067 9.857 C 17.929 11.741 15.861 13 13.5 13 C 9.91 13 7 10.09 7 6.5 C 7 4.138 8.259 2.071 10.143 0.933 C 10.539 0.693 10.463 0 10 0 C 4.477 0 0 4.477 0 10 C 0 15.523 4.477 20 10 20 Z" fill="currentColor" transform="translate(2 2)"/>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+                <h4>Repos & Bien-être</h4>
+                <p>Environnement calme et apaisant favorisant un sommeil réparateur et un repos de qualité pour votre bien-être quotidien.</p>
             </div>
         </div>
     </section>
@@ -2911,6 +3004,17 @@ app.get('/', (c) => {
                     <li>Boischatel, QC G0A 1H0</li>
                     <li>418-822-0347</li>
                     <li>admin@aubergeboischatel.com</li>
+                    <li style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; color: var(--copper);">
+                        <div class="moon-sleep-icon" style="width: 20px; height: 20px;">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M 5.25 1.5 C 4.836 1.5 4.5 1.164 4.5 0.75 C 4.5 0.336 4.836 0 5.25 0 L 9.25 0 C 9.553 0 9.827 0.183 9.943 0.463 C 10.059 0.743 9.995 1.066 9.78 1.28 L 7.061 4 L 9.25 4 C 9.664 4 10 4.336 10 4.75 C 10 5.164 9.664 5.5 9.25 5.5 L 5.25 5.5 C 4.947 5.5 4.673 5.317 4.557 5.037 C 4.441 4.757 4.505 4.434 4.72 4.22 L 7.439 1.5 Z M 0.75 7.5 C 0.336 7.5 0 7.164 0 6.75 C 0 6.336 0.336 6 0.75 6 L 3.75 6 C 4.053 6 4.327 6.183 4.443 6.463 C 4.559 6.743 4.495 7.066 4.28 7.28 L 2.561 9 L 3.75 9 C 4.164 9 4.5 9.336 4.5 9.75 C 4.5 10.164 4.164 10.5 3.75 10.5 L 0.75 10.5 C 0.447 10.5 0.173 10.317 0.057 10.037 C -0.059 9.757 0.005 9.434 0.22 9.22 L 1.939 7.5 Z" fill="currentColor" transform="translate(12.75 1.25)"/>
+                                <g opacity="0.5">
+                                    <path d="M 10 20 C 15.523 20 20 15.523 20 10 C 20 9.537 19.306 9.461 19.067 9.857 C 17.929 11.741 15.861 13 13.5 13 C 9.91 13 7 10.09 7 6.5 C 7 4.138 8.259 2.071 10.143 0.933 C 10.539 0.693 10.463 0 10 0 C 4.477 0 0 4.477 0 10 C 0 15.523 4.477 20 10 20 Z" fill="currentColor" transform="translate(2 2)"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <span style="font-weight: 500;">Assistance 24/7</span>
+                    </li>
                 </ul>
             </div>
         </div>
