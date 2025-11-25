@@ -224,7 +224,7 @@ npm run git:log
 ## 📞 Informations de Contact
 
 - **Adresse** : 5424 Avenue Royale, Boischatel, QC G0A 1H0
-- **Téléphone** : 418-XXX-XXXX (à mettre à jour avec le vrai numéro)
+- **Téléphone** : 418-822-0347
 - **Email** : admin@aubergeboischatel.com
 - **Heures** : Lun-Ven 9h-17h, Weekend sur rendez-vous
 
@@ -343,7 +343,7 @@ Le site met en avant :
 1. **Déploiement production** - Mettre en ligne sur Cloudflare Pages
 2. **Domaine personnalisé** - Configurer `aubergeboischatel.com`
 3. **Email service** - Intégrer SendGrid/Mailgun pour formulaire
-4. **Téléphone réel** - Remplacer 418-XXX-XXXX
+4. ~~**Téléphone réel**~~ - ✅ Complété (418-822-0347)
 5. **Analytics** - Ajouter Google Analytics / Cloudflare Analytics
 6. **Témoignages** - Collecter et ajouter témoignages de familles
 7. **Photos professionnelles** - Session photo supplémentaire si besoin

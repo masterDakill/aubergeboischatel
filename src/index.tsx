@@ -14,7 +14,7 @@ app.use('/static/*', serveStatic({ root: './public' }))
 app.get('/api/contact', (c) => {
   return c.json({ 
     email: 'admin@aubergeboischatel.com',
-    phone: '418-XXX-XXXX',
+    phone: '418-822-0347',
     address: '5424 Avenue Royale, Boischatel, QC G0A 1H0'
   })
 })
@@ -1552,7 +1552,7 @@ app.get('/', (c) => {
                     </div>
                     <div class="contact-item-content">
                         <h4>Téléphone</h4>
-                        <p>418-XXX-XXXX<br>Disponible 7 jours / 7</p>
+                        <p>418-822-0347<br>Disponible 7 jours / 7</p>
                     </div>
                 </div>
 
@@ -1649,7 +1649,7 @@ app.get('/', (c) => {
                 <ul class="footer-links">
                     <li>5424 Avenue Royale</li>
                     <li>Boischatel, QC G0A 1H0</li>
-                    <li>418-XXX-XXXX</li>
+                    <li>418-822-0347</li>
                     <li>admin@aubergeboischatel.com</li>
                 </ul>
             </div>
