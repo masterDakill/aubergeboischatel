@@ -113,29 +113,47 @@ app.get('/', (c) => {
             margin: 0 auto;
             padding: 1.5rem 2rem;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
-            position: relative;
+            gap: 3rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
             text-decoration: none;
             color: var(--anthracite);
+            perspective: 1000px;
         }
 
         .logo-icon {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             background: url('/static/images/logo.png') no-repeat center;
             background-size: contain;
-            transition: transform 0.3s ease;
+            transition: all 0.6s ease;
+            transform-style: preserve-3d;
+            animation: float3d 6s ease-in-out infinite;
+        }
+
+        @keyframes float3d {
+            0%, 100% {
+                transform: translateY(0) rotateY(0deg);
+            }
+            25% {
+                transform: translateY(-5px) rotateY(5deg);
+            }
+            50% {
+                transform: translateY(0) rotateY(0deg);
+            }
+            75% {
+                transform: translateY(-5px) rotateY(-5deg);
+            }
         }
 
         .logo-icon:hover {
-            transform: scale(1.05);
+            animation: none;
+            transform: rotateY(360deg) scale(1.15);
         }
 
         .logo-text {
@@ -144,11 +162,9 @@ app.get('/', (c) => {
 
         .nav-links {
             display: flex;
-            gap: 1.8rem;
+            gap: 2rem;
             list-style: none;
-            position: absolute;
-            right: 2rem;
-            font-size: 0.9rem;
+            margin-left: auto;
         }
 
         .nav-links a {
