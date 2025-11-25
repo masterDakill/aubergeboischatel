@@ -1,0 +1,442 @@
+/* ============================================
+   ENHANCED STYLES - L'AUBERGE BOISCHATEL
+   Sections: Services, Tarification, Témoignages, FAQ
+   ============================================ */
+
+/* Section Services */
+.services-section {
+    background: var(--white, #FFFFFF);
+    padding: 6rem 5%;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.service-card {
+    background: linear-gradient(135deg, #F5F1E8 0%, #EAE4D9 100%);
+    border-radius: 15px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: all 0.4s ease;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border: 1px solid rgba(43, 74, 107, 0.1);
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(43, 74, 107, 0.15);
+    background: linear-gradient(135deg, #FFFFFF 0%, #F5F1E8 100%);
+}
+
+.service-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, #2B4A6B, #1C3654);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    box-shadow: 0 5px 20px rgba(43, 74, 107, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.service-card h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.4rem;
+    color: #2B4A6B;
+    margin-bottom: 1rem;
+}
+
+.service-card p {
+    color: #6B7280;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+/* Section Tarification */
+.pricing-section {
+    background: linear-gradient(135deg, #F5F1E8 0%, #EAE4D9 100%);
+    padding: 6rem 5%;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    max-width: 1400px;
+    margin: 0 auto 3rem;
+}
+
+.pricing-card {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    border: 2px solid transparent;
+}
+
+.pricing-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(43, 74, 107, 0.2);
+    border-color: #C9A472;
+}
+
+.pricing-card.featured {
+    background: linear-gradient(135deg, #2B4A6B 0%, #1C3654 100%);
+    color: white;
+    transform: scale(1.05);
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.08) translateY(-10px);
+}
+
+.pricing-badge {
+    position: absolute;
+    top: -15px;
+    right: 20px;
+    background: linear-gradient(135deg, #C9A472, #B89562);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(201, 164, 114, 0.4);
+}
+
+.pricing-badge.premium {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+}
+
+.pricing-card h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.8rem;
+    color: #2B4A6B;
+    margin-bottom: 1.5rem;
+}
+
+.pricing-card.featured h3 {
+    color: white;
+}
+
+.pricing-amount {
+    margin-bottom: 2rem;
+}
+
+.pricing-amount .price {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2B4A6B;
+    margin-bottom: 0.5rem;
+}
+
+.pricing-card.featured .price {
+    color: #C9A472;
+}
+
+.pricing-amount .period {
+    font-size: 1rem;
+    color: #6B7280;
+}
+
+.pricing-card.featured .period {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.pricing-features li {
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #E5E7EB;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.pricing-card.featured .pricing-features li {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.pricing-features i {
+    color: #C9A472;
+    font-size: 1rem;
+}
+
+.pricing-cta {
+    display: inline-block;
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #2B4A6B, #1C3654);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(43, 74, 107, 0.3);
+}
+
+.pricing-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(43, 74, 107, 0.4);
+}
+
+.pricing-card.featured .pricing-cta {
+    background: linear-gradient(135deg, #C9A472, #B89562);
+    color: #2C3E50;
+}
+
+.pricing-note {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.pricing-note p {
+    color: #6B7280;
+    line-height: 1.8;
+}
+
+.pricing-note strong {
+    color: #2B4A6B;
+}
+
+/* Section Témoignages */
+.testimonials-section {
+    background: white;
+    padding: 6rem 5%;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.testimonial-card {
+    background: linear-gradient(135deg, #F5F1E8 0%, #EAE4D9 100%);
+    border-radius: 15px;
+    padding: 2.5rem;
+    position: relative;
+    transition: all 0.4s ease;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.testimonial-card::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    font-size: 6rem;
+    font-family: 'Playfair Display', Georgia, serif;
+    color: #C9A472;
+    opacity: 0.3;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(43, 74, 107, 0.15);
+}
+
+.testimonial-stars {
+    color: #FFD700;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.testimonial-text {
+    color: #2C3E50;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.testimonial-author {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding-top: 1rem;
+    border-top: 2px solid #C9A472;
+}
+
+.testimonial-author strong {
+    color: #2B4A6B;
+    font-size: 1.1rem;
+}
+
+.testimonial-author span {
+    color: #6B7280;
+    font-size: 0.9rem;
+}
+
+/* Section FAQ */
+.faq-section {
+    background: linear-gradient(135deg, #F5F1E8 0%, #EAE4D9 100%);
+    padding: 6rem 5%;
+}
+
+.faq-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    box-shadow: 0 8px 30px rgba(43, 74, 107, 0.12);
+}
+
+.faq-question {
+    padding: 1.8rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease;
+}
+
+.faq-question:hover {
+    background: #F5F1E8;
+}
+
+.faq-question h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.2rem;
+    color: #2B4A6B;
+    margin: 0;
+    flex: 1;
+}
+
+.faq-question i {
+    color: #C9A472;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-question i {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 500px;
+    padding: 0 2rem 2rem;
+}
+
+.faq-answer p {
+    color: #6B7280;
+    line-height: 1.8;
+    font-size: 1rem;
+}
+
+/* Google Maps Integration */
+.map-container {
+    width: 100%;
+    height: 400px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    margin-top: 2rem;
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Navigation Update - Add New Links */
+.nav-links a[href="#services"],
+.nav-links a[href="#tarification"],
+.nav-links a[href="#temoignages"],
+.nav-links a[href="#faq"] {
+    color: #2C3E50;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-card.featured {
+        transform: scale(1);
+    }
+    
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .faq-question {
+        padding: 1.2rem 1.5rem;
+    }
+    
+    .faq-question h3 {
+        font-size: 1.05rem;
+    }
+    
+    .map-container {
+        height: 300px;
+    }
+}
+
+/* Animation pour les cartes au scroll */
+.service-card,
+.pricing-card,
+.testimonial-card,
+.faq-item {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.service-card.visible,
+.pricing-card.visible,
+.testimonial-card.visible,
+.faq-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
