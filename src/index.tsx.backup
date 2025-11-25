@@ -66,7 +66,6 @@ app.get('/', (c) => {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="/static/enhanced-styles.css" rel="stylesheet">
     
     <style>
         * {
@@ -679,8 +678,7 @@ app.get('/', (c) => {
         <ul class="nav-links">
             <li><a href="#accueil">Accueil</a></li>
             <li><a href="#apropos">À Propos</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#tarification">Tarifs</a></li>
+            <li><a href="#valeurs">Nos Valeurs</a></li>
             <li><a href="#galerie">Galerie</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -765,242 +763,6 @@ app.get('/', (c) => {
                 <div class="value-icon">🚀</div>
                 <h3>Vision d'Avenir</h3>
                 <p>Amélioration continue et anticipation des besoins.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section Services -->
-    <section class="services-section" id="services">
-        <h2 class="section-title">Nos Services</h2>
-        <p class="section-subtitle">Un accompagnement complet pour votre bien-être</p>
-        
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-user-nurse"></i></div>
-                <h3>Soins Infirmiers 24/7</h3>
-                <p>Personnel qualifié disponible en tout temps pour assurer votre sécurité et votre confort.</p>
-            </div>
-            
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-hands-helping"></i></div>
-                <h3>Aide Quotidienne</h3>
-                <p>Assistance personnalisée pour les activités de la vie quotidienne dans le respect de votre autonomie.</p>
-            </div>
-            
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-pills"></i></div>
-                <h3>Gestion Médicaments</h3>
-                <p>Suivi rigoureux de votre médication pour garantir votre santé et votre sécurité.</p>
-            </div>
-            
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-utensils"></i></div>
-                <h3>Repas Nutritifs</h3>
-                <p>Trois repas équilibrés par jour préparés sur place avec des ingrédients frais et de qualité.</p>
-            </div>
-            
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-puzzle-piece"></i></div>
-                <h3>Activités & Loisirs</h3>
-                <p>Programme d'activités variées adaptées à vos intérêts et capacités.</p>
-            </div>
-            
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-tshirt"></i></div>
-                <h3>Buanderie</h3>
-                <p>Service de buanderie complet pour votre confort et commodité.</p>
-            </div>
-            
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-ambulance"></i></div>
-                <h3>Transport Médical</h3>
-                <p>Accompagnement pour vos rendez-vous médicaux et déplacements essentiels.</p>
-            </div>
-            
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-wifi"></i></div>
-                <h3>Technologie Moderne</h3>
-                <p>Domotique avancée et systèmes de sécurité pour votre tranquillité d'esprit.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section Tarification -->
-    <section class="pricing-section" id="tarification">
-        <h2 class="section-title">Tarification</h2>
-        <p class="section-subtitle">Des options adaptées à vos besoins et votre budget</p>
-        
-        <div class="pricing-grid">
-            <div class="pricing-card">
-                <div class="pricing-badge">Populaire</div>
-                <h3>Chambre Privée</h3>
-                <div class="pricing-amount">
-                    <span class="price">Sur demande</span>
-                    <span class="period">par mois</span>
-                </div>
-                <ul class="pricing-features">
-                    <li><i class="fas fa-check"></i> Chambre individuelle</li>
-                    <li><i class="fas fa-check"></i> Salle de bain privée</li>
-                    <li><i class="fas fa-check"></i> 3 repas par jour inclus</li>
-                    <li><i class="fas fa-check"></i> Soins infirmiers 24/7</li>
-                    <li><i class="fas fa-check"></i> Activités sociales</li>
-                    <li><i class="fas fa-check"></i> Buanderie incluse</li>
-                </ul>
-                <a href="#contact" class="pricing-cta">Demander une soumission</a>
-            </div>
-            
-            <div class="pricing-card featured">
-                <div class="pricing-badge premium">Premium</div>
-                <h3>Chambre Confort Plus</h3>
-                <div class="pricing-amount">
-                    <span class="price">Sur demande</span>
-                    <span class="period">par mois</span>
-                </div>
-                <ul class="pricing-features">
-                    <li><i class="fas fa-check"></i> Chambre spacieuse</li>
-                    <li><i class="fas fa-check"></i> Salle de bain adaptée</li>
-                    <li><i class="fas fa-check"></i> 3 repas gastronomiques</li>
-                    <li><i class="fas fa-check"></i> Soins personnalisés</li>
-                    <li><i class="fas fa-check"></i> Activités privilégiées</li>
-                    <li><i class="fas fa-check"></i> Services à la carte</li>
-                </ul>
-                <a href="#contact" class="pricing-cta">Demander une soumission</a>
-            </div>
-            
-            <div class="pricing-card">
-                <h3>Chambre Semi-Privée</h3>
-                <div class="pricing-amount">
-                    <span class="price">Sur demande</span>
-                    <span class="period">par mois</span>
-                </div>
-                <ul class="pricing-features">
-                    <li><i class="fas fa-check"></i> Chambre partagée (2 pers.)</li>
-                    <li><i class="fas fa-check"></i> Salle de bain commune</li>
-                    <li><i class="fas fa-check"></i> 3 repas par jour inclus</li>
-                    <li><i class="fas fa-check"></i> Soins infirmiers 24/7</li>
-                    <li><i class="fas fa-check"></i> Activités sociales</li>
-                    <li><i class="fas fa-check"></i> Buanderie incluse</li>
-                </ul>
-                <a href="#contact" class="pricing-cta">Demander une soumission</a>
-            </div>
-        </div>
-        
-        <div class="pricing-note">
-            <p><strong>Note :</strong> Les tarifs varient selon les services requis et le niveau de soins. Contactez-nous pour une évaluation personnalisée gratuite. Crédit d'impôt et subventions disponibles.</p>
-        </div>
-    </section>
-
-    <!-- Section Témoignages -->
-    <section class="testimonials-section" id="temoignages">
-        <h2 class="section-title">Ce Qu'On Dit de Nous</h2>
-        <p class="section-subtitle">L'expérience de nos résidents et leurs familles</p>
-        
-        <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <div class="testimonial-stars">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">
-                    "Ma mère est très heureuse ici. Le personnel est attentionné, professionnel et toujours à l'écoute. Les installations sont impeccables et l'ambiance chaleureuse. Je recommande sans hésitation."
-                </p>
-                <div class="testimonial-author">
-                    <strong>Famille Tremblay</strong>
-                    <span>Résidente depuis 2023</span>
-                </div>
-            </div>
-            
-            <div class="testimonial-card">
-                <div class="testimonial-stars">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">
-                    "L'Auberge Boischatel offre un environnement sécuritaire et stimulant. Mon père participe à toutes les activités et s'est fait de nouveaux amis. C'est rassurant de le savoir si bien entouré."
-                </p>
-                <div class="testimonial-author">
-                    <strong>Jean-Pierre Bouchard</strong>
-                    <span>Famille de résident</span>
-                </div>
-            </div>
-            
-            <div class="testimonial-card">
-                <div class="testimonial-stars">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-                <p class="testimonial-text">
-                    "Le charme victorien de la résidence combiné aux équipements modernes crée une atmosphère unique. Les repas sont excellents et l'équipe de Noémie est formidable. Un vrai chez-soi !"
-                </p>
-                <div class="testimonial-author">
-                    <strong>Marie Gagnon</strong>
-                    <span>Résidente depuis 2022</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section FAQ -->
-    <section class="faq-section" id="faq">
-        <h2 class="section-title">Questions Fréquentes</h2>
-        <p class="section-subtitle">Tout ce que vous devez savoir</p>
-        
-        <div class="faq-container">
-            <div class="faq-item">
-                <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
-                    <h3>Quel est le processus d'admission ?</h3>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Contactez-nous pour planifier une visite et une évaluation gratuite. Nous discuterons de vos besoins, visiterons la résidence et préparerons un plan personnalisé. L'admission se fait généralement dans un délai de 2 à 4 semaines selon la disponibilité.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
-                    <h3>Acceptez-vous les animaux de compagnie ?</h3>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Oui, nous acceptons les petits animaux de compagnie (chats et petits chiens) sous certaines conditions. Ils doivent être propres, vaccinés et ne pas causer de désagréments aux autres résidents. Des frais mensuels s'appliquent.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
-                    <h3>Quels sont les horaires de visite ?</h3>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Les visites sont permises tous les jours de 9h à 20h. Nous encourageons les familles à passer du temps avec leurs proches dans notre salle familiale ou dans les chambres privées. Des accommodements spéciaux peuvent être faits sur demande.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
-                    <h3>Offrez-vous des soins médicaux spécialisés ?</h3>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Nous avons une infirmière sur place 24/7 et travaillons en collaboration avec des médecins et spécialistes locaux. Nous pouvons accommoder les résidents avec des besoins médicaux variés, incluant la gestion de médication et les soins chroniques.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
-                    <h3>Y a-t-il des activités organisées ?</h3>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Absolument ! Nous organisons des activités quotidiennes : exercices physiques adaptés, jeux de société, bingo, musique, sorties culturelles, jardinage, ateliers créatifs et bien plus. Un calendrier mensuel est distribué à tous les résidents.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">
-                    <h3>Les repas spéciaux sont-ils accommodés ?</h3>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Oui, notre cuisine peut accommoder les régimes spéciaux (diabétique, sans gluten, végétarien, allergies, etc.). Nous travaillons avec une nutritionniste pour assurer des repas équilibrés et adaptés à chaque résident.</p>
-                </div>
             </div>
         </div>
     </section>
@@ -1132,17 +894,6 @@ app.get('/', (c) => {
         </div>
     </section>
 
-        
-        <!-- Google Maps Integration -->
-        <div class="map-container">
-            <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2728.757688895844!2d-71.16658768436742!3d46.90471637914432!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8a0e5f5a5f5f5%3A0x5f5f5f5f5f5f5f5f!2s5424%20Avenue%20Royale%2C%20Boischatel%2C%20QC%20G0A%201H0!5e0!3m2!1sfr!2sca!4v1234567890123!5m2!1sfr!2sca"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-        </div>
-    </div>
     <footer>
         <div class="footer-content">
             <img src="https://www.genspark.ai/api/files/s/ti1oxt8g" alt="Logo" class="footer-logo">
