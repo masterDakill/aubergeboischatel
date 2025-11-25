@@ -1,56 +1,57 @@
-# 🔐 Guide d'Installation - Authentification Firebase + PostgreSQL
+# 🔐 Guide d'Authentification - L'Auberge Boischatel
 
-**L'Auberge Boischatel - Plateforme Client/Employé**
-
-Ce guide vous explique comment configurer l'authentification complète avec Firebase Auth + PostgreSQL pour gérer 100 clients et 30 employés.
+Ce guide explique comment configurer et tester l'authentification Firebase + Supabase PostgreSQL intégrée dans le projet.
 
 ---
 
-## 📋 Table des Matières
+## 📁 Fichiers créés/modifiés
 
-1. [Prérequis](#prérequis)
-2. [Installation Firebase](#installation-firebase)
-3. [Configuration PostgreSQL](#configuration-postgresql)
-4. [Variables d'Environnement](#variables-denvironnement)
-5. [Déploiement Vercel](#déploiement-vercel)
-6. [Configuration DNS GoDaddy](#configuration-dns-godaddy)
-7. [Tests & Validation](#tests--validation)
+### **Fichiers créés :**
+
+1. **`src/lib/db.ts`** - PostgreSQL connection pool (Supabase)
+2. **`src/lib/firebaseAdmin.ts`** - Firebase Admin SDK pour vérification tokens côté serveur
+3. **`src/lib/firebase.config.ts`** - Configuration Firebase client + helper pour injection env vars
+4. **`src/routes/auth.ts`** - Routes API `/api/auth/syncUser` et `/api/auth/me`
+5. **`src/routes/dbTest.ts`** - Route API `/api/dbTest` pour tester connexion DB
+6. **`public/static/auth.js`** - Gestionnaire d'authentification client (Firebase Auth)
+
+### **Fichiers modifiés :**
+
+1. **`src/index.tsx`** :
+   - Import des routes auth et dbTest
+   - Ajout LoginModal HTML avec onglets (Connexion / Créer un compte)
+   - Injection scripts Firebase SDK (app-compat + auth-compat)
+   - Injection script d'environnement `window.ENV`
+   - Ajout routes `/client/dashboard` et `/staff/dashboard`
+
+2. **`.env.local`** - Déjà configuré avec template complet
 
 ---
 
-## 🔧 Prérequis
+## ⚙️ Configuration initiale
 
-- Node.js 18+ installé
-- Compte Firebase (gratuit)
-- Compte Supabase/Neon/Railway (PostgreSQL)
-- Compte Vercel (gratuit)
-- Domaine GoDaddy : `aubergeboischatel.com`
+### **Étape 1 : Firebase Project**
 
----
-
-## 🔥 Installation Firebase
-
-### Étape 1 : Créer un Projet Firebase
-
-1. Aller sur : https://console.firebase.google.com
-2. Cliquer sur **"Ajouter un projet"**
+1. Aller sur https://console.firebase.google.com/
+2. Cliquer **"Ajouter un projet"**
 3. Nom du projet : `auberge-boischatel`
 4. Désactiver Google Analytics (optionnel)
-5. Cliquer sur **"Créer le projet"**
+5. Créer le projet
 
-### Étape 2 : Activer Authentication
+#### **A. Activer Authentication Email/Password**
 
-1. Dans le menu de gauche → **Authentication**
-2. Cliquer sur **"Commencer"**
-3. Activer **"Email/Password"**
-4. **Important** : Activer aussi **"Lien de connexion email"** pour reset mot de passe
+1. Menu latéral → **Authentication**
+2. Cliquer **"Commencer"**
+3. Onglet **"Sign-in method"**
+4. Activer **"Email/Mot de passe"**
+5. Sauvegarder
 
-### Étape 3 : Obtenir les Clés Client
+#### **B. Obtenir les clés client (Frontend)**
 
-1. Project Settings (⚙️ en haut à gauche) → **"Général"**
-2. Scroll vers le bas → **"Vos applications"**
-3. Cliquer sur l'icône **Web** (`</>`)
-4. Surnom de l'application : `Auberge Boischatel Web`
+1. Icône engrenage ⚙️ → **Paramètres du projet**
+2. Section **"Vos applications"** → Cliquer icône **Web** `</>`
+3. Nom de l'app : `auberge-boischatel-web`
+4. Cliquer **"Enregistrer l'app"**
 5. Copier les valeurs dans `.env.local` :
 
 ```bash
@@ -59,352 +60,380 @@ NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=auberge-boischatel.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=auberge-boischatel
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=auberge-boischatel.appspot.com
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789012
-NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789012:web:abc...
+NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789012:web:abc123
 ```
 
-### Étape 4 : Générer la Clé Admin (Server-Side)
+#### **C. Obtenir les clés Service Account (Backend)**
 
-1. Project Settings → **"Comptes de service"**
-2. Cliquer sur **"Générer une nouvelle clé privée"**
-3. Un fichier JSON sera téléchargé
-4. Ouvrir le JSON et copier :
-   - `project_id` → `FIREBASE_ADMIN_PROJECT_ID`
-   - `client_email` → `FIREBASE_ADMIN_CLIENT_EMAIL`
-   - `private_key` → `FIREBASE_ADMIN_PRIVATE_KEY`
-
-**⚠️ IMPORTANT** : Pour `FIREBASE_ADMIN_PRIVATE_KEY`, gardez les `\n` dans la chaîne :
+1. Paramètres du projet → Onglet **"Comptes de service"**
+2. Cliquer **"Générer une nouvelle clé privée"**
+3. Télécharger le fichier JSON
+4. Extraire et copier dans `.env.local` :
 
 ```bash
+FIREBASE_ADMIN_PROJECT_ID=auberge-boischatel
+FIREBASE_ADMIN_CLIENT_EMAIL=firebase-adminsdk-xxxxx@auberge-boischatel.iam.gserviceaccount.com
 FIREBASE_ADMIN_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvQIBAD...\n-----END PRIVATE KEY-----\n"
 ```
 
----
-
-## 🗄️ Configuration PostgreSQL
-
-### Option A : Supabase (Recommandé)
-
-1. Aller sur : https://supabase.com/dashboard
-2. Cliquer sur **"New Project"**
-3. Organization : Créer ou sélectionner
-4. Project name : `auberge-boischatel`
-5. Database Password : **Choisir un mot de passe fort** (noter quelque part !)
-6. Region : `East US (North Virginia)`
-7. Cliquer sur **"Create new project"** (attendre 2-3 minutes)
-
-### Récupérer la Connection String
-
-1. Settings (⚙️ en bas à gauche) → **Database**
-2. Scroll vers **"Connection string"**
-3. Sélectionner **"URI"** (pas "Session mode")
-4. Copier l'URL et remplacer `[YOUR-PASSWORD]` par votre mot de passe :
-
-```bash
-DATABASE_URL=postgresql://postgres:YOUR-PASSWORD@db.xxxxxxxxxxxxx.supabase.co:5432/postgres
-```
-
-### Exécuter le Schema SQL
-
-1. Dans Supabase → SQL Editor
-2. Créer une nouvelle query
-3. Copier tout le contenu de `database/schema.sql`
-4. Cliquer sur **"Run"** (▶️)
-5. Vérifier qu'il n'y a pas d'erreurs
-
-**OU via CLI** :
-
-```bash
-psql postgresql://postgres:PASSWORD@db.xxxxx.supabase.co:5432/postgres < database/schema.sql
-```
+**⚠️ IMPORTANT** : Le `private_key` doit conserver les `\n` (retours à la ligne).
 
 ---
 
-### Option B : Neon (Alternative)
+### **Étape 2 : Supabase PostgreSQL**
 
-1. Aller sur : https://neon.tech
-2. Sign up with GitHub
-3. Create Project : `auberge-boischatel`
-4. Copier la **Connection String** :
+1. Aller sur https://supabase.com/
+2. Créer un compte (GitHub recommandé)
+3. Cliquer **"New project"**
+4. Organization : Créer `auberge-boischatel`
+5. Nom du projet : `auberge-boischatel-production`
+6. Database Password : **Générer automatiquement** (copier le mot de passe !)
+7. Region : **Canada (Central)** (plus proche de Québec)
+8. Pricing Plan : **Free**
+9. Créer le projet (attendre 1-2 minutes)
+
+#### **A. Obtenir DATABASE_URL**
+
+1. Menu latéral → **Settings** → **Database**
+2. Section **"Connection string"**
+3. Mode : **URI**
+4. Copier l'URL :
 
 ```bash
-DATABASE_URL=postgresql://user:password@ep-xxx-xxx.us-east-2.aws.neon.tech/neondb
+DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.xxx.supabase.co:5432/postgres
 ```
 
-5. Installer Neon CLI (optionnel) :
+5. **Remplacer `[YOUR-PASSWORD]`** par le mot de passe copié à l'étape de création
+6. Coller dans `.env.local`
+
+#### **B. Exécuter le schéma SQL**
+
+1. Menu latéral → **SQL Editor**
+2. Cliquer **"+ New query"**
+3. Copier-coller le schéma SQL suivant :
+
+```sql
+create extension if not exists "pgcrypto";
+
+create table if not exists users (
+  id uuid primary key default gen_random_uuid(),
+  firebase_uid text unique not null,
+  email text unique not null,
+  first_name text,
+  last_name text,
+  phone text,
+  role text not null check (role in ('CLIENT', 'EMPLOYEE', 'ADMIN')),
+  active boolean default true,
+  created_at timestamp with time zone default now(),
+  last_login timestamp with time zone
+);
+
+create table if not exists residents (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  room_number text,
+  admission_date date default current_date,
+  date_of_birth date,
+  medical_notes text,
+  emergency_contact_name text,
+  emergency_contact_phone text,
+  active boolean default true,
+  created_at timestamp with time zone default now()
+);
+
+create table if not exists user_resident_links (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id) on delete cascade,
+  resident_id uuid references residents(id) on delete cascade,
+  relation text not null,
+  is_primary_contact boolean default false,
+  created_at timestamp with time zone default now(),
+  constraint unique_user_resident unique (user_id, resident_id)
+);
+
+-- Create indexes for performance
+create index if not exists idx_users_firebase_uid on users(firebase_uid);
+create index if not exists idx_users_email on users(email);
+create index if not exists idx_user_resident_links_user_id on user_resident_links(user_id);
+create index if not exists idx_user_resident_links_resident_id on user_resident_links(resident_id);
+```
+
+4. Cliquer **"Run"** (en bas à droite)
+5. Vérifier : **"Success. No rows returned"**
+
+#### **C. Vérifier les tables créées**
+
+1. Menu latéral → **Table Editor**
+2. Vérifier présence de 3 tables :
+   - ✅ `users`
+   - ✅ `residents`
+   - ✅ `user_resident_links`
+
+---
+
+## 🧪 Tests
+
+### **Test 1 : Connexion Database**
 
 ```bash
-npm i -g neonctl
-neonctl sql-editor
-# Coller le contenu de schema.sql
+# Terminal
+cd /home/user/webapp
+npm run build
+pm2 start ecosystem.config.cjs
+
+# Test API
+curl http://localhost:3000/api/dbTest
+```
+
+**Résultat attendu :**
+```json
+{
+  "success": true,
+  "timestamp": "2025-01-15T14:23:45.123Z",
+  "message": "Database connection successful",
+  "database": "Connected"
+}
+```
+
+**Si erreur** : Vérifier `DATABASE_URL` dans `.env.local`
+
+---
+
+### **Test 2 : Créer un compte utilisateur**
+
+1. Ouvrir http://localhost:3000
+2. Cliquer bouton **"Connexion"** dans le header
+3. Cliquer onglet **"Créer un compte"**
+4. Entrer :
+   - Email : `test@aubergeboischatel.com`
+   - Mot de passe : `Test123!`
+   - Confirmer : `Test123!`
+5. Cliquer **"Créer un compte"**
+
+**Résultat attendu :**
+- Modal se ferme
+- Redirection vers `/client/dashboard`
+- Message : "Espace Client - L'Auberge Boischatel"
+
+---
+
+### **Test 3 : Vérifier user dans PostgreSQL**
+
+#### **Via Supabase Dashboard :**
+
+1. Menu latéral → **Table Editor**
+2. Sélectionner table **`users`**
+3. Vérifier présence d'une ligne avec :
+   - `email` = test@aubergeboischatel.com
+   - `role` = CLIENT
+   - `active` = true
+   - `firebase_uid` = (valeur Firebase)
+
+#### **Via SQL Editor :**
+
+```sql
+SELECT * FROM users WHERE email = 'test@aubergeboischatel.com';
 ```
 
 ---
 
-## 🌍 Variables d'Environnement
+### **Test 4 : Connexion avec compte existant**
 
-### 1. Fichier Local (.env.local)
+1. Se déconnecter (menu utilisateur → Déconnexion)
+2. Cliquer **"Connexion"**
+3. Onglet **"Connexion"**
+4. Entrer credentials du compte créé
+5. Cliquer **"Se connecter"**
 
-Copier `.env.example` vers `.env.local` :
+**Résultat attendu :**
+- Redirection vers `/client/dashboard`
+- Menu utilisateur affiche initiale + nom
+
+---
+
+### **Test 5 : API /api/auth/me**
 
 ```bash
-cp .env.example .env.local
+# 1. Login via browser (étape précédente)
+
+# 2. Obtenir ID token (console browser) :
+firebase.auth().currentUser.getIdToken().then(console.log)
+
+# 3. Copier le token et tester :
+curl -X GET http://localhost:3000/api/auth/me \
+  -H "Authorization: Bearer <TOKEN>"
 ```
 
-Remplir **TOUTES** les valeurs (voir sections Firebase + PostgreSQL ci-dessus).
-
-### 2. Vérifier les Variables
-
-```bash
-# Vérifier que toutes les variables sont définies
-grep -v '^#' .env.local | grep -v '^$' | wc -l
-# Devrait afficher au moins 15-20 lignes
+**Résultat attendu :**
+```json
+{
+  "id": "uuid...",
+  "email": "test@aubergeboischatel.com",
+  "first_name": "test",
+  "last_name": "",
+  "phone": null,
+  "role": "CLIENT",
+  "active": true,
+  "created_at": "2025-01-15T...",
+  "last_login": "2025-01-15T...",
+  "residents": []
+}
 ```
 
 ---
 
 ## 🚀 Déploiement Vercel
 
-### Étape 1 : Installer Vercel CLI
+### **Étape 1 : Variables d'environnement Vercel**
 
-```bash
-npm install -g vercel
-vercel login
-```
+1. Dashboard Vercel → Projet → **Settings** → **Environment Variables**
+2. Ajouter **TOUTES** les variables de `.env.local` :
 
-### Étape 2 : Déployer depuis le Projet
+**Obligatoires :**
+- `DATABASE_URL`
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
+- `FIREBASE_ADMIN_PROJECT_ID`
+- `FIREBASE_ADMIN_CLIENT_EMAIL`
+- `FIREBASE_ADMIN_PRIVATE_KEY`
 
-```bash
-cd /home/user/webapp
-vercel
-```
+**Pour chaque variable :**
+- Nom : (copier exactement)
+- Value : (copier valeur de `.env.local`)
+- Environments : **Production**, **Preview**, **Development**
 
-Répondre aux questions :
-
-```
-? Set up and deploy "~/webapp"? [Y/n] Y
-? Which scope do you want to deploy to? Your Personal Account
-? Link to existing project? [y/N] N
-? What's your project's name? auberge-boischatel
-? In which directory is your code located? ./
-? Want to modify these settings? [y/N] N
-```
-
-### Étape 3 : Configurer les Variables d'Environnement
-
-**Option A : Via Dashboard** (Recommandé)
-
-1. Aller sur : https://vercel.com/dashboard
-2. Sélectionner le projet **auberge-boischatel**
-3. Settings → **Environment Variables**
-4. Ajouter **TOUTES** les variables de `.env.local` :
-
-| Name | Value | Environment |
-|------|-------|-------------|
-| `NEXT_PUBLIC_FIREBASE_API_KEY` | `AIzaSy...` | Production, Preview, Development |
-| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | `auberge-boischatel.firebaseapp.com` | Production, Preview, Development |
-| ... | ... | ... |
-| `DATABASE_URL` | `postgresql://...` | Production |
-
-**Option B : Via CLI**
-
-```bash
-vercel env add NEXT_PUBLIC_FIREBASE_API_KEY production
-# Coller la valeur quand demandé
-
-vercel env add FIREBASE_ADMIN_PRIVATE_KEY production
-# Pour la private key, coller en une seule ligne avec \n
-```
-
-### Étape 4 : Redéployer
-
-```bash
-vercel --prod
-```
-
-Vercel vous donnera une URL :
-
-```
-✅ Production: https://auberge-boischatel.vercel.app
-```
+3. Cliquer **"Save"** pour chaque variable
 
 ---
 
-## 🌐 Configuration DNS GoDaddy
-
-### Étape 1 : Ajouter le Domaine dans Vercel
-
-1. Vercel Dashboard → **Settings** → **Domains**
-2. Cliquer sur **"Add"**
-3. Entrer : `aubergeboischatel.com`
-4. Vercel affichera les DNS à configurer
-
-### Étape 2 : Configurer GoDaddy DNS
-
-1. Aller sur : https://dcc.godaddy.com/manage/dns
-2. Sélectionner `aubergeboischatel.com`
-3. Modifier les records DNS :
-
-**A) Pour `www.aubergeboischatel.com`** :
-
-| Type | Name | Value | TTL |
-|------|------|-------|-----|
-| CNAME | www | cname.vercel-dns.com | 600 |
-
-**B) Pour le domaine racine `aubergeboischatel.com`** :
-
-| Type | Name | Value | TTL |
-|------|------|-------|-----|
-| A | @ | 76.76.21.21 | 600 |
-
-(Valeur IP fournie par Vercel - vérifier dans Vercel Dashboard)
-
-### Étape 3 : Vérifier la Configuration
-
-Attendre 5-10 minutes, puis :
+### **Étape 2 : Déployer**
 
 ```bash
-# Vérifier DNS
-nslookup aubergeboischatel.com
-nslookup www.aubergeboischatel.com
-
-# Tester HTTPS
-curl -I https://aubergeboischatel.com
-curl -I https://www.aubergeboischatel.com
+# Commit et push
+git add .
+git commit -m "feat: Add Firebase Auth + Supabase PostgreSQL integration"
+git push origin main
 ```
+
+**Vercel déploiera automatiquement** si projet lié à GitHub.
 
 ---
 
-## ✅ Tests & Validation
+### **Étape 3 : Tester en production**
 
-### Test 1 : Firebase Auth
-
-```bash
-# Test que Firebase répond
-curl https://auberge-boischatel.firebaseapp.com
-```
-
-### Test 2 : PostgreSQL
-
-```bash
-# Via psql
-psql $DATABASE_URL -c "SELECT COUNT(*) FROM users;"
-# Devrait afficher au moins 2 (admin + employee)
-```
-
-### Test 3 : API Backend
-
-```bash
-# Test sync user endpoint
-curl -X POST https://aubergeboischatel.com/api/auth/syncUser \
-  -H "Content-Type: application/json" \
-  -d '{"idToken": "test-token"}'
-
-# Devrait retourner une erreur d'auth (normal si token invalide)
-```
-
-### Test 4 : Frontend
-
-1. Ouvrir : https://aubergeboischatel.com
-2. Cliquer sur **"Connexion"**
-3. Essayer de créer un compte test
-4. Vérifier que Firebase envoie un email de vérification
+1. Ouvrir `https://your-project.vercel.app`
+2. Tester `/api/dbTest`
+3. Créer compte test
+4. Vérifier user dans Supabase
 
 ---
 
-## 🔒 Sécurité Post-Installation
+## 🎯 Architecture
 
-### 1. Règles Firebase Security
+### **Flow d'authentification :**
 
-Dans Firebase Console → Authentication → **Settings** :
-
-- ✅ Activer **"Email enumeration protection"**
-- ✅ Désactiver **"Create new user by admin only"** (pour permettre inscription clients)
-- ✅ Configurer **"Authorized domains"** : `aubergeboischatel.com`
-
-### 2. Règles RLS PostgreSQL
-
-Les règles Row Level Security sont déjà configurées dans `schema.sql`.
-
-Vérifier qu'elles sont actives :
-
-```sql
-SELECT tablename, rowsecurity 
-FROM pg_tables 
-WHERE schemaname = 'public' 
-AND rowsecurity = true;
+```
+1. User clique "Connexion" → LoginModal s'ouvre
+2. User entre email/password → Firebase Auth (client-side)
+3. Firebase retourne idToken → Envoyé à /api/auth/syncUser
+4. Backend vérifie token (Firebase Admin) → Valide
+5. Backend cherche user dans PostgreSQL (firebase_uid)
+   - Si inexistant → Créer avec role CLIENT par défaut
+   - Si existe → Update last_login
+6. Backend retourne user data → Frontend
+7. Frontend affiche menu utilisateur + redirige selon role
 ```
 
-### 3. Rate Limiting (Optionnel)
+### **Rôles et redirections :**
 
-Installer Vercel Edge Middleware pour rate limiting :
-
-```bash
-npm install @vercel/edge
-```
-
-Créer `middleware.ts` (voir documentation Vercel).
+| Role | Redirection après login | Accès |
+|------|------------------------|-------|
+| CLIENT | `/client/dashboard` | Voir résidents liés, documents partagés |
+| EMPLOYEE | `/staff/dashboard` | Gestion résidents, horaires, rapports |
+| ADMIN | `/staff/dashboard` | Toutes fonctionnalités + gestion utilisateurs |
 
 ---
 
-## 📊 Monitoring & Logs
+## 🐛 Troubleshooting
 
-### Logs Vercel
+### **Erreur : "Database connection failed"**
 
-```bash
-vercel logs auberge-boischatel --follow
-```
+**Cause** : `DATABASE_URL` invalide ou Supabase non configuré
 
-### Logs Firebase
-
-Firebase Console → **Authentication** → **Users** : voir les inscriptions
-
-### Logs PostgreSQL
-
-Supabase → **Table Editor** → `activity_logs` : voir toutes les actions
+**Solution** :
+1. Vérifier `DATABASE_URL` dans `.env.local`
+2. Tester connexion avec `psql` :
+   ```bash
+   psql "postgresql://postgres:PASSWORD@db.xxx.supabase.co:5432/postgres" -c "\dt"
+   ```
+3. Vérifier tables existent
 
 ---
 
-## 🆘 Troubleshooting
+### **Erreur : "Firebase initialization error"**
 
-### Erreur : "Firebase config is invalid"
+**Cause** : Clés Firebase manquantes ou invalides
 
-- Vérifier que toutes les variables `NEXT_PUBLIC_FIREBASE_*` sont définies
-- Redéployer : `vercel --prod`
+**Solution** :
+1. Vérifier toutes variables `NEXT_PUBLIC_FIREBASE_*` dans `.env.local`
+2. Tester dans console browser :
+   ```javascript
+   console.log(window.ENV)
+   ```
+3. Vérifier injection script dans HTML
 
-### Erreur : "Cannot connect to PostgreSQL"
+---
 
-- Vérifier que `DATABASE_URL` est correcte
-- Tester : `psql $DATABASE_URL -c "SELECT 1;"`
-- Vérifier IP whitelist (Supabase : Settings → Database → IP Allow List)
+### **Erreur : "Token verification error"**
 
-### Erreur : "Vercel deployment failed"
+**Cause** : Service Account Firebase mal configuré
 
-- Vérifier logs : `vercel logs`
-- Vérifier build : `npm run build` en local
-- Vérifier que `vercel.json` est correct
+**Solution** :
+1. Vérifier `FIREBASE_ADMIN_PRIVATE_KEY` contient bien `\n`
+2. Télécharger nouveau Service Account JSON
+3. Copier exactement les valeurs
+
+---
+
+### **Erreur : "User not found in database"**
+
+**Cause** : User existe dans Firebase mais pas dans PostgreSQL
+
+**Solution** :
+1. Appeler manuellement `/api/auth/syncUser` avec idToken
+2. Vérifier table `users` dans Supabase
+3. Vérifier logs backend (PM2 logs)
 
 ---
 
 ## 📚 Ressources
 
-- [Firebase Auth Documentation](https://firebase.google.com/docs/auth)
-- [Supabase Documentation](https://supabase.com/docs)
-- [Vercel Documentation](https://vercel.com/docs)
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- **Firebase Console** : https://console.firebase.google.com/
+- **Supabase Dashboard** : https://supabase.com/dashboard
+- **Vercel Dashboard** : https://vercel.com/dashboard
+- **Firebase Auth Docs** : https://firebase.google.com/docs/auth
+- **Supabase Docs** : https://supabase.com/docs
 
 ---
 
-## 🎯 Prochaines Étapes
+## ✅ Checklist finale
 
-Maintenant que l'infrastructure est en place :
-
-1. ✅ Créer les pages `/client/dashboard` et `/staff/dashboard`
-2. ✅ Implémenter le modal de login dans le header
-3. ✅ Créer le panneau admin `/admin/users` pour gérer les comptes
-4. ✅ Tester avec des vrais utilisateurs
+- [ ] Firebase project créé et Auth activé
+- [ ] Clés Firebase copiées dans `.env.local`
+- [ ] Supabase project créé et schema.sql exécuté
+- [ ] DATABASE_URL ajouté à `.env.local`
+- [ ] `/api/dbTest` retourne success
+- [ ] Compte test créé via UI
+- [ ] User visible dans table Supabase `users`
+- [ ] Login/logout fonctionnels
+- [ ] Redirections selon role fonctionnelles
+- [ ] Variables env ajoutées dans Vercel
+- [ ] Déploiement production réussi
 
 ---
 
-**Support** : Contacter Mathieu Chamberland - mathieu@aubergeboischatel.com
-
-**Dernière mise à jour** : 2025-01-25
+**Projet prêt pour développement des portails Client et Employé !** 🎉

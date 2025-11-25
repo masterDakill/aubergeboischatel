@@ -1,6 +1,9 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/cloudflare-workers'
+import { getEnvScript } from './lib/firebase.config'
+import authRoutes from './routes/auth'
+import dbTestRoutes from './routes/dbTest'
 
 const app = new Hono()
 
@@ -9,6 +12,10 @@ app.use('/api/*', cors())
 
 // Serve static files
 app.use('/static/*', serveStatic({ root: './public' }))
+
+// Mount API routes
+app.route('/api/auth', authRoutes)
+app.route('/api/dbTest', dbTestRoutes)
 
 // API Routes
 app.get('/api/contact', (c) => {
@@ -2872,8 +2879,157 @@ app.get('/', (c) => {
     <!-- Interactive Background Container -->
     <div id="particles-js"></div>
 
+    <!-- Login Modal -->
+    <div id="loginModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center;">
+      <div style="background: white; border-radius: 24px; padding: 0; max-width: 480px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4); overflow: hidden;">
+        
+        <!-- Tabs -->
+        <div style="display: flex; background: #f3f4f6;">
+          <button id="signinTab" class="auth-tab active" onclick="authManager.showSignInTab()" style="flex: 1; padding: 1.25rem; border: none; background: transparent; cursor: pointer; font-weight: 600; font-size: 1rem; color: #6b7280; transition: all 0.3s;">
+            Connexion
+          </button>
+          <button id="signupTab" class="auth-tab" onclick="authManager.showSignUpTab()" style="flex: 1; padding: 1.25rem; border: none; background: transparent; cursor: pointer; font-weight: 600; font-size: 1rem; color: #6b7280; transition: all 0.3s;">
+            Créer un compte
+          </button>
+        </div>
+        
+        <!-- Sign In Form -->
+        <form id="signinForm" class="auth-form active" style="padding: 2.5rem; display: block;">
+          <h2 style="font-family: 'Lora', serif; font-size: 1.875rem; color: #1f2937; margin-bottom: 0.5rem; text-align: center;">Bienvenue</h2>
+          <p style="color: #6b7280; text-align: center; margin-bottom: 2rem; font-size: 0.95rem;">Connectez-vous à votre compte</p>
+          
+          <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; font-size: 0.9rem;">Email</label>
+            <input 
+              type="email" 
+              id="signinEmail" 
+              required 
+              placeholder="votre@email.com"
+              style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: border 0.3s;"
+              onfocus="this.style.borderColor='#5A7D8C'"
+              onblur="this.style.borderColor='#e5e7eb'"
+            >
+          </div>
+          
+          <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; font-size: 0.9rem;">Mot de passe</label>
+            <input 
+              type="password" 
+              id="signinPassword" 
+              required 
+              placeholder="••••••••"
+              style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: border 0.3s;"
+              onfocus="this.style.borderColor='#5A7D8C'"
+              onblur="this.style.borderColor='#e5e7eb'"
+            >
+          </div>
+          
+          <div id="signinError" class="auth-error" style="color: #DC2626; margin-bottom: 1rem; font-size: 0.875rem; text-align: center; min-height: 20px;"></div>
+          
+          <button 
+            type="submit" 
+            id="signinSubmit" 
+            style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #5A7D8C, #A9C7B5); color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.3s;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(90,125,140,0.3)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+          >
+            Se connecter
+          </button>
+        </form>
+        
+        <!-- Sign Up Form -->
+        <form id="signupForm" class="auth-form" style="padding: 2.5rem; display: none;">
+          <h2 style="font-family: 'Lora', serif; font-size: 1.875rem; color: #1f2937; margin-bottom: 0.5rem; text-align: center;">Nouveau compte</h2>
+          <p style="color: #6b7280; text-align: center; margin-bottom: 2rem; font-size: 0.95rem;">Rejoignez L'Auberge Boischatel</p>
+          
+          <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; font-size: 0.9rem;">Email</label>
+            <input 
+              type="email" 
+              id="signupEmail" 
+              required 
+              placeholder="votre@email.com"
+              style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: border 0.3s;"
+              onfocus="this.style.borderColor='#5A7D8C'"
+              onblur="this.style.borderColor='#e5e7eb'"
+            >
+          </div>
+          
+          <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; font-size: 0.9rem;">Mot de passe</label>
+            <input 
+              type="password" 
+              id="signupPassword" 
+              required 
+              placeholder="Minimum 6 caractères"
+              style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: border 0.3s;"
+              onfocus="this.style.borderColor='#5A7D8C'"
+              onblur="this.style.borderColor='#e5e7eb'"
+            >
+          </div>
+          
+          <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; font-size: 0.9rem;">Confirmer le mot de passe</label>
+            <input 
+              type="password" 
+              id="signupConfirmPassword" 
+              required 
+              placeholder="Confirmez votre mot de passe"
+              style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: border 0.3s;"
+              onfocus="this.style.borderColor='#5A7D8C'"
+              onblur="this.style.borderColor='#e5e7eb'"
+            >
+          </div>
+          
+          <div id="signupError" class="auth-error" style="color: #DC2626; margin-bottom: 1rem; font-size: 0.875rem; text-align: center; min-height: 20px;"></div>
+          
+          <button 
+            type="submit" 
+            id="signupSubmit" 
+            style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #5A7D8C, #A9C7B5); color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.3s;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(90,125,140,0.3)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+          >
+            Créer un compte
+          </button>
+        </form>
+        
+        <!-- Close Button -->
+        <button 
+          onclick="authManager.closeModal()" 
+          style="position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px; border: none; background: #f3f4f6; border-radius: 50%; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: all 0.2s;"
+          onmouseover="this.style.background='#e5e7eb'; this.style.transform='rotate(90deg)'"
+          onmouseout="this.style.background='#f3f4f6'; this.style.transform='rotate(0deg)'"
+        >
+          ×
+        </button>
+      </div>
+    </div>
+
+    <style>
+      .auth-tab.active {
+        background: white !important;
+        color: #5A7D8C !important;
+        border-bottom: 3px solid #5A7D8C;
+      }
+      .auth-form {
+        display: none;
+      }
+      .auth-form.active {
+        display: block;
+      }
+    </style>
+
+    <!-- Firebase SDK (CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <!-- Inject Firebase config into window.ENV -->
+    <script>${getEnvScript()}</script>
+
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="/static/auth.js"></script>
     <script>
         // Scroll Progress Bar
         window.addEventListener('scroll', () => {
@@ -3135,6 +3291,115 @@ app.get('/', (c) => {
             }
         });
     </script>
+</body>
+</html>`)
+})
+
+// Client Dashboard
+app.get('/client/dashboard', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Client - L'Auberge Boischatel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-16">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="bg-white rounded-2xl shadow-xl p-12">
+                <div class="mb-8">
+                    <i class="fas fa-home text-6xl text-blue-600 mb-4"></i>
+                </div>
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                    Espace Client
+                </h1>
+                <h2 class="text-2xl text-gray-600 mb-8">
+                    L'Auberge Boischatel
+                </h2>
+                <p class="text-lg text-gray-500 mb-8">
+                    Bienvenue dans votre espace personnel sécurisé
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <i class="fas fa-users text-3xl text-blue-600 mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Mes Proches</h3>
+                        <p class="text-gray-600">Accédez aux informations de vos résidents</p>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <i class="fas fa-file-alt text-3xl text-green-600 mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Documents</h3>
+                        <p class="text-gray-600">Consultez vos documents partagés</p>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <a href="/" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`)
+})
+
+// Staff Dashboard
+app.get('/staff/dashboard', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Employé - L'Auberge Boischatel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-16">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="bg-white rounded-2xl shadow-xl p-12">
+                <div class="mb-8">
+                    <i class="fas fa-briefcase text-6xl text-purple-600 mb-4"></i>
+                </div>
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                    Espace Employé
+                </h1>
+                <h2 class="text-2xl text-gray-600 mb-8">
+                    L'Auberge Boischatel
+                </h2>
+                <p class="text-lg text-gray-500 mb-8">
+                    Tableau de bord pour les employés et administrateurs
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                    <div class="bg-purple-50 p-6 rounded-lg">
+                        <i class="fas fa-users text-3xl text-purple-600 mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Résidents</h3>
+                        <p class="text-gray-600">Gestion des résidents</p>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <i class="fas fa-calendar text-3xl text-blue-600 mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Horaire</h3>
+                        <p class="text-gray-600">Planning du personnel</p>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <i class="fas fa-clipboard-list text-3xl text-green-600 mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">Rapports</h3>
+                        <p class="text-gray-600">Rapports quotidiens</p>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <a href="/" class="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>`)
 })
