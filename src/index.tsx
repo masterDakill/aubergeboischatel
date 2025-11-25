@@ -2015,7 +2015,7 @@ app.get('/', (c) => {
 
         <div class="about-grid">
             <div class="liquid-image mission-image">
-                <img src="/static/images/vue-nocturne.jpg" alt="Équipe">
+                <img src="/static/images/equipe-designer.jpg" alt="Équipe dynamique L'Auberge Boischatel">
             </div>
             <div class="about-content">
                 <h3>Un engagement humain et moderne</h3>
@@ -2327,14 +2327,6 @@ app.get('/', (c) => {
         </div>
 
         <div class="gallery-grid">
-            <div class="gallery-item liquid-image">
-                <img src="/static/images/facade-golden-hour.jpg" alt="Façade">
-                <div class="gallery-overlay">
-                    <h4>Façade Victorienne</h4>
-                    <p>Charme patrimonial et architecture distinctive</p>
-                </div>
-            </div>
-
             <div class="gallery-item liquid-image">
                 <img src="/static/images/salle-manger.png" alt="Salle à manger">
                 <div class="gallery-overlay">
@@ -2704,7 +2696,6 @@ app.get('/', (c) => {
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
-    <script src="https://framer.com/m/Text-Clip-Path-Reveal-LM9j.js@1DkBkJWhFdFFPRhD67TU"></script>
     <script>
         // Scroll Progress Bar
         window.addEventListener('scroll', () => {
