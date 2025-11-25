@@ -4,6 +4,10 @@ import { serveStatic } from 'hono/cloudflare-workers'
 import { getEnvScript } from './lib/firebase.config'
 import authRoutes from './routes/auth'
 import dbTestRoutes from './routes/dbTest'
+import residentsRoutes from './routes/residents'
+import documentsRoutes from './routes/documents'
+import logsRoutes from './routes/logs'
+import usersRoutes from './routes/users'
 
 const app = new Hono()
 
@@ -16,6 +20,10 @@ app.use('/static/*', serveStatic({ root: './public' }))
 // Mount API routes
 app.route('/api/auth', authRoutes)
 app.route('/api/dbTest', dbTestRoutes)
+app.route('/api/residents', residentsRoutes)
+app.route('/api/documents', documentsRoutes)
+app.route('/api/logs', logsRoutes)
+app.route('/api/users', usersRoutes)
 
 // API Routes
 app.get('/api/contact', (c) => {
@@ -3307,42 +3315,37 @@ app.get('/client/dashboard', (c) => {
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <div class="container mx-auto px-4 py-16">
-        <div class="max-w-4xl mx-auto text-center">
-            <div class="bg-white rounded-2xl shadow-xl p-12">
-                <div class="mb-8">
-                    <i class="fas fa-home text-6xl text-blue-600 mb-4"></i>
-                </div>
-                <h1 class="text-4xl font-bold text-gray-800 mb-4">
-                    Espace Client
-                </h1>
-                <h2 class="text-2xl text-gray-600 mb-8">
-                    L'Auberge Boischatel
-                </h2>
-                <p class="text-lg text-gray-500 mb-8">
-                    Bienvenue dans votre espace personnel sécurisé
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                    <div class="bg-blue-50 p-6 rounded-lg">
-                        <i class="fas fa-users text-3xl text-blue-600 mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-2">Mes Proches</h3>
-                        <p class="text-gray-600">Accédez aux informations de vos résidents</p>
-                    </div>
-                    <div class="bg-green-50 p-6 rounded-lg">
-                        <i class="fas fa-file-alt text-3xl text-green-600 mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-2">Documents</h3>
-                        <p class="text-gray-600">Consultez vos documents partagés</p>
-                    </div>
-                </div>
-                <div class="mt-8">
-                    <a href="/" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition">
-                        <i class="fas fa-arrow-left mr-2"></i>
-                        Retour à l'accueil
-                    </a>
-                </div>
-            </div>
+    <!-- Loading Spinner -->
+    <div id="loading" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+        <div class="text-center">
+            <i class="fas fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
+            <p class="text-gray-600">Chargement...</p>
         </div>
     </div>
+
+    <!-- Dashboard Content (rendered by JavaScript) -->
+    <div id="dashboard-content" style="display: none;">
+        <!-- Content will be injected by client-dashboard.js -->
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script>${getEnvScript()}</script>
+    
+    <!-- Axios for API calls -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    
+    <!-- Client Dashboard Script -->
+    <script src="/static/client-dashboard.js"></script>
+    
+    <script>
+        // Show content once loaded
+        setTimeout(() => {
+            document.getElementById('loading').style.display = 'none'
+            document.getElementById('dashboard-content').style.display = 'block'
+        }, 500)
+    </script>
 </body>
 </html>`)
 })
@@ -3359,47 +3362,236 @@ app.get('/staff/dashboard', (c) => {
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50 min-h-screen">
+    <!-- Loading Spinner -->
+    <div id="loading" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+        <div class="text-center">
+            <i class="fas fa-spinner fa-spin text-4xl text-purple-600 mb-4"></i>
+            <p class="text-gray-600">Chargement...</p>
+        </div>
+    </div>
+
+    <!-- Dashboard Content (rendered by JavaScript) -->
+    <div id="dashboard-content" style="display: none;">
+        <!-- Content will be injected by staff-dashboard.js -->
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script>${getEnvScript()}</script>
+    
+    <!-- Axios for API calls -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    
+    <!-- Staff Dashboard Script -->
+    <script src="/static/staff-dashboard.js"></script>
+    
+    <script>
+        // Show content once loaded
+        setTimeout(() => {
+            document.getElementById('loading').style.display = 'none'
+            document.getElementById('dashboard-content').style.display = 'block'
+        }, 500)
+    </script>
+</body>
+</html>`)
+})
+
+// Admin Dashboard
+app.get('/admin/dashboard', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - L'Auberge Boischatel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 min-h-screen">
     <div class="container mx-auto px-4 py-16">
-        <div class="max-w-4xl mx-auto text-center">
-            <div class="bg-white rounded-2xl shadow-xl p-12">
-                <div class="mb-8">
-                    <i class="fas fa-briefcase text-6xl text-purple-600 mb-4"></i>
-                </div>
-                <h1 class="text-4xl font-bold text-gray-800 mb-4">
-                    Espace Employé
-                </h1>
-                <h2 class="text-2xl text-gray-600 mb-8">
-                    L'Auberge Boischatel
-                </h2>
-                <p class="text-lg text-gray-500 mb-8">
-                    Tableau de bord pour les employés et administrateurs
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-                    <div class="bg-purple-50 p-6 rounded-lg">
-                        <i class="fas fa-users text-3xl text-purple-600 mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-2">Résidents</h3>
-                        <p class="text-gray-600">Gestion des résidents</p>
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-red-600 to-red-700 rounded-t-2xl shadow-2xl p-8">
+                <div class="flex items-center justify-between text-white">
+                    <div>
+                        <h1 class="text-4xl font-bold mb-2">
+                            <i class="fas fa-shield-alt mr-3"></i>
+                            Administration
+                        </h1>
+                        <p class="text-red-100">L'Auberge Boischatel - Panneau de Contrôle</p>
                     </div>
-                    <div class="bg-blue-50 p-6 rounded-lg">
-                        <i class="fas fa-calendar text-3xl text-blue-600 mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-2">Horaire</h3>
-                        <p class="text-gray-600">Planning du personnel</p>
-                    </div>
-                    <div class="bg-green-50 p-6 rounded-lg">
-                        <i class="fas fa-clipboard-list text-3xl text-green-600 mb-4"></i>
-                        <h3 class="text-xl font-semibold mb-2">Rapports</h3>
-                        <p class="text-gray-600">Rapports quotidiens</p>
+                    <div class="text-right">
+                        <p class="text-red-100 text-sm mb-2">Accès restreint ADMIN</p>
+                        <button onclick="firebase.auth().signOut().then(() => window.location.href = '/')" 
+                                class="bg-white text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 transition font-semibold">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            Déconnexion
+                        </button>
                     </div>
                 </div>
-                <div class="mt-8">
-                    <a href="/" class="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition">
+            </div>
+
+            <!-- Content -->
+            <div class="bg-white rounded-b-2xl shadow-2xl p-8">
+                
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-lg p-6">
+                        <i class="fas fa-users text-3xl mb-2 opacity-80"></i>
+                        <p class="text-2xl font-bold">38</p>
+                        <p class="text-sm opacity-80">Total Utilisateurs</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg p-6">
+                        <i class="fas fa-home text-3xl mb-2 opacity-80"></i>
+                        <p class="text-2xl font-bold">35</p>
+                        <p class="text-sm opacity-80">Résidents Actifs</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg p-6">
+                        <i class="fas fa-file-alt text-3xl mb-2 opacity-80"></i>
+                        <p class="text-2xl font-bold">127</p>
+                        <p class="text-sm opacity-80">Documents</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-lg p-6">
+                        <i class="fas fa-history text-3xl mb-2 opacity-80"></i>
+                        <p class="text-2xl font-bold">245</p>
+                        <p class="text-sm opacity-80">Logs Aujourd'hui</p>
+                    </div>
+                </div>
+
+                <!-- Admin Sections -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    
+                    <!-- Users Management -->
+                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-red-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-users-cog text-red-600 text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Utilisateurs</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">
+                            Gérer les comptes utilisateurs, rôles et permissions
+                        </p>
+                        <button onclick="alert('Gestion utilisateurs - À développer')" 
+                                class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-semibold">
+                            <i class="fas fa-cog mr-2"></i>
+                            Gérer
+                        </button>
+                    </div>
+
+                    <!-- Residents Management -->
+                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-home text-purple-600 text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Résidents</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">
+                            Supervision complète des résidents et chambres
+                        </p>
+                        <a href="/staff/dashboard" 
+                           class="block w-full text-center bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition font-semibold">
+                            <i class="fas fa-eye mr-2"></i>
+                            Voir Tous
+                        </a>
+                    </div>
+
+                    <!-- Links Management -->
+                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-link text-blue-600 text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Liens Famille</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">
+                            Associer utilisateurs et résidents
+                        </p>
+                        <button onclick="alert('Gestion liens - À développer')" 
+                                class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
+                            <i class="fas fa-link mr-2"></i>
+                            Configurer
+                        </button>
+                    </div>
+
+                    <!-- System Logs -->
+                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-green-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-history text-green-600 text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Journaux Système</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">
+                            Consulter l'historique des actions
+                        </p>
+                        <button onclick="alert('Logs système - À développer')" 
+                                class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition font-semibold">
+                            <i class="fas fa-list mr-2"></i>
+                            Consulter
+                        </button>
+                    </div>
+
+                    <!-- Documents -->
+                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-yellow-100 rounded-full p-3 mr-4">
+                                <i class="fas fa-folder text-yellow-600 text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Documents</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">
+                            Gestion globale des documents
+                        </p>
+                        <button onclick="alert('Gestion documents - À développer')" 
+                                class="w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition font-semibold">
+                            <i class="fas fa-folder-open mr-2"></i>
+                            Gérer
+                        </button>
+                    </div>
+
+                    <!-- Settings -->
+                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-gray-700 rounded-full p-3 mr-4">
+                                <i class="fas fa-cogs text-white text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800">Paramètres</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">
+                            Configuration système et sécurité
+                        </p>
+                        <button onclick="alert('Paramètres - À développer')" 
+                                class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition font-semibold">
+                            <i class="fas fa-wrench mr-2"></i>
+                            Configurer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Back to Staff Dashboard -->
+                <div class="text-center pt-6 border-t border-gray-200">
+                    <a href="/staff/dashboard" 
+                       class="inline-block bg-gray-600 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition font-semibold">
                         <i class="fas fa-arrow-left mr-2"></i>
-                        Retour à l'accueil
+                        Retour Espace Employé
+                    </a>
+                    <a href="/" 
+                       class="inline-block ml-4 bg-gray-200 text-gray-800 px-8 py-3 rounded-lg hover:bg-gray-300 transition font-semibold">
+                        <i class="fas fa-home mr-2"></i>
+                        Accueil
                     </a>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script>${getEnvScript()}</script>
 </body>
 </html>`)
 })
