@@ -371,6 +371,92 @@ app.get('/', (c) => {
 
         /* Removed .hero-right - now using full-width hero with centered content */
 
+        /* Welcome Video Section */
+        .welcome-video-section {
+            background: linear-gradient(135deg, var(--cream) 0%, white 100%);
+            padding: 4rem 2rem;
+            margin: 0;
+            max-width: 100%;
+        }
+
+        .welcome-video-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .welcome-video-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .welcome-video-header h2 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--anthracite);
+            margin-bottom: 1rem;
+        }
+
+        .welcome-video-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .video-wrapper {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            background: #000;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Liquid Image Effect */
+        .liquid-image {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .liquid-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            will-change: transform;
+        }
+
+        .liquid-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .liquid-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(255, 255, 255, 0.1) 0%,
+                transparent 50%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .liquid-image:hover::before {
+            opacity: 1;
+        }
+
         /* Section Styling */
         section {
             padding: 5rem 2rem;
@@ -1382,6 +1468,22 @@ app.get('/', (c) => {
         </div>
     </section>
 
+    <!-- Welcome Video Section -->
+    <section class="welcome-video-section scroll-fade-in">
+        <div class="welcome-video-container">
+            <div class="welcome-video-header">
+                <h2>Mot de Bienvenue de la Direction</h2>
+                <p>Découvrez L'Auberge Boischatel à travers le message chaleureux de notre directrice</p>
+            </div>
+            <div class="video-wrapper">
+                <video controls poster="/static/images/facade-golden-hour.jpg">
+                    <source src="/static/videos/welcome-video.mp4" type="video/mp4">
+                    Votre navigateur ne supporte pas la lecture de vidéos.
+                </video>
+            </div>
+        </div>
+    </section>
+
     <section id="mission">
         <div class="section-header">
             <span class="section-badge">Notre Mission</span>
@@ -1396,7 +1498,9 @@ app.get('/', (c) => {
                 <p>Dirigée par de jeunes propriétaires passionnés, notre résidence conjugue le charme patrimonial d'une architecture victorienne avec les standards les plus élevés en matière de sécurité et de bien-être.</p>
                 <p>Notre approche ? Rester à l'écoute, anticiper les besoins, et améliorer constamment notre milieu de vie pour offrir à nos 38 résidents un environnement chaleureux, stimulant et rassurant.</p>
             </div>
-            <img src="/static/images/facade-golden-hour.jpg" alt="L'Auberge Boischatel" class="mission-image">
+            <div class="liquid-image mission-image">
+                <img src="/static/images/facade-golden-hour.jpg" alt="L'Auberge Boischatel">
+            </div>
         </div>
 
         <div class="values-grid">
@@ -1450,7 +1554,9 @@ app.get('/', (c) => {
         </div>
 
         <div class="about-grid">
-            <img src="/static/images/vue-nocturne.jpg" alt="Équipe" class="mission-image">
+            <div class="liquid-image mission-image">
+                <img src="/static/images/vue-nocturne.jpg" alt="Équipe">
+            </div>
             <div class="about-content">
                 <h3>Un engagement humain et moderne</h3>
                 <p>Acquise récemment par de jeunes entrepreneurs visionnaires, L'Auberge Boischatel bénéficie d'une gestion dynamique, attentive aux besoins actuels et futurs de nos aînés.</p>
@@ -1761,7 +1867,7 @@ app.get('/', (c) => {
         </div>
 
         <div class="gallery-grid">
-            <div class="gallery-item">
+            <div class="gallery-item liquid-image">
                 <img src="/static/images/facade-golden-hour.jpg" alt="Façade">
                 <div class="gallery-overlay">
                     <h4>Façade Victorienne</h4>
@@ -1769,7 +1875,7 @@ app.get('/', (c) => {
                 </div>
             </div>
 
-            <div class="gallery-item">
+            <div class="gallery-item liquid-image">
                 <img src="/static/images/salle-manger.png" alt="Salle à manger">
                 <div class="gallery-overlay">
                     <h4>Salle à Manger</h4>
@@ -1777,7 +1883,7 @@ app.get('/', (c) => {
                 </div>
             </div>
 
-            <div class="gallery-item">
+            <div class="gallery-item liquid-image">
                 <img src="/static/images/chambre.png" alt="Chambre">
                 <div class="gallery-overlay">
                     <h4>Chambres Privées</h4>
@@ -1785,7 +1891,7 @@ app.get('/', (c) => {
                 </div>
             </div>
 
-            <div class="gallery-item">
+            <div class="gallery-item liquid-image">
                 <img src="/static/images/jardin.jpg" alt="Jardin">
                 <div class="gallery-overlay">
                     <h4>Jardins Paysagers</h4>
@@ -1793,7 +1899,7 @@ app.get('/', (c) => {
                 </div>
             </div>
 
-            <div class="gallery-item">
+            <div class="gallery-item liquid-image">
                 <img src="/static/images/galerie.jpg" alt="Galerie">
                 <div class="gallery-overlay">
                     <h4>Terrasse Couverte</h4>
@@ -1801,7 +1907,7 @@ app.get('/', (c) => {
                 </div>
             </div>
 
-            <div class="gallery-item">
+            <div class="gallery-item liquid-image">
                 <img src="/static/images/vue-nocturne.jpg" alt="Vue nocturne">
                 <div class="gallery-overlay">
                     <h4>Ambiance Chaleureuse</h4>
@@ -1838,7 +1944,7 @@ app.get('/', (c) => {
                     </div>
                     <div class="contact-item-content">
                         <h4>Téléphone</h4>
-                        <p>418-822-0347<br>Disponible 7 jours / 7</p>
+                        <p>418-822-0347</p>
                     </div>
                 </div>
 
@@ -2103,6 +2209,27 @@ app.get('/', (c) => {
             }
             
             lastScroll = currentScroll;
+        });
+
+        // Liquid Image Effect - Track mouse position
+        document.addEventListener('DOMContentLoaded', () => {
+            const liquidImages = document.querySelectorAll('.liquid-image');
+            
+            liquidImages.forEach(image => {
+                image.addEventListener('mousemove', (e) => {
+                    const rect = image.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    
+                    image.style.setProperty('--mouse-x', x + '%');
+                    image.style.setProperty('--mouse-y', y + '%');
+                });
+                
+                image.addEventListener('mouseleave', () => {
+                    image.style.setProperty('--mouse-x', '50%');
+                    image.style.setProperty('--mouse-y', '50%');
+                });
+            });
         });
     </script>
 </body>
