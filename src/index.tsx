@@ -712,6 +712,97 @@ app.get('/', (c) => {
             opacity: 0.9;
         }
 
+        /* Virtual Tour 3D Section */
+        .virtual-tour-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 8px 40px rgba(90, 125, 140, 0.12);
+            margin-top: 3rem;
+        }
+
+        .virtual-tour-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        .virtual-tour-intro h3 {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            color: var(--blue-grey);
+            margin-bottom: 1rem;
+        }
+
+        .virtual-tour-intro p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        .polycam-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 12px 50px rgba(90, 125, 140, 0.2);
+            background: var(--cream);
+        }
+
+        .polycam-wrapper::before {
+            content: '';
+            display: block;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+        }
+
+        .polycam-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .tour-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(169, 199, 181, 0.2);
+        }
+
+        .tour-feature {
+            text-align: center;
+        }
+
+        .tour-feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--sage-green) 0%, var(--blue-grey) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .tour-feature h5 {
+            font-size: 1.1rem;
+            color: var(--anthracite);
+            margin-bottom: 0.5rem;
+        }
+
+        .tour-feature p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
         /* Contact Section */
         .contact-container {
             display: grid;
@@ -978,6 +1069,7 @@ app.get('/', (c) => {
                 <li><a href="#securite">Sécurité</a></li>
                 <li><a href="#activites">Activités</a></li>
                 <li><a href="#repas">Repas</a></li>
+                <li><a href="#visite3d">Visite 3D</a></li>
                 <li><a href="#galerie">Galerie</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
@@ -1325,11 +1417,61 @@ app.get('/', (c) => {
         </div>
     </section>
 
+    <section id="visite3d" style="background: var(--cream);">
+        <div class="section-header">
+            <span class="section-badge">Visite Virtuelle</span>
+            <h2 class="section-title">Explorez notre résidence en 3D</h2>
+            <p class="section-subtitle">Une expérience immersive pour découvrir L'Auberge Boischatel depuis chez vous</p>
+        </div>
+
+        <div class="virtual-tour-container">
+            <div class="virtual-tour-intro">
+                <h3>Parcourez nos espaces en toute liberté</h3>
+                <p>Grâce à notre visite virtuelle 3D, explorez chaque recoin de notre résidence : salons, chambres, espaces communs, jardins. Naviguez librement pour vous projeter dans votre futur chez-vous.</p>
+            </div>
+
+            <div class="polycam-wrapper">
+                <iframe 
+                    src="https://poly.cam/capture/0173C8E7-21E2-4AB2-A66E-5757D3EDCFBC/embed" 
+                    title="Visite virtuelle 3D de L'Auberge Boischatel"
+                    allow="xr-spatial-tracking"
+                    loading="lazy">
+                </iframe>
+            </div>
+
+            <div class="tour-features">
+                <div class="tour-feature">
+                    <div class="tour-feature-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h5>Navigation 360°</h5>
+                    <p>Explorez chaque espace sous tous les angles avec une liberté totale de mouvement</p>
+                </div>
+
+                <div class="tour-feature">
+                    <div class="tour-feature-icon">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </div>
+                    <h5>Mesures Réelles</h5>
+                    <p>Visualisez les dimensions exactes et l'aménagement des espaces en 3D</p>
+                </div>
+
+                <div class="tour-feature">
+                    <div class="tour-feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h5>Multi-dispositifs</h5>
+                    <p>Accessible depuis votre ordinateur, tablette ou téléphone intelligent</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="galerie">
         <div class="section-header">
             <span class="section-badge">Galerie</span>
             <h2 class="section-title">Découvrez notre milieu de vie</h2>
-            <p class="section-subtitle">Une visite virtuelle en images de L'Auberge Boischatel</p>
+            <p class="section-subtitle">Une visite en images de L'Auberge Boischatel</p>
         </div>
 
         <div class="gallery-grid">
@@ -1496,6 +1638,7 @@ app.get('/', (c) => {
                 <ul class="footer-links">
                     <li><a href="#activites">Activités</a></li>
                     <li><a href="#repas">Repas & Menus</a></li>
+                    <li><a href="#visite3d">Visite 3D</a></li>
                     <li><a href="#galerie">Galerie</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
