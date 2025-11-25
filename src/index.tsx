@@ -457,6 +457,141 @@ app.get('/', (c) => {
             opacity: 1;
         }
 
+        /* Horizontal Scroller Component */
+        .horizontal-scroller {
+            width: 100%;
+            overflow: hidden;
+            padding: 3rem 0;
+        }
+
+        .scroller-container {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+            padding: 0 2rem;
+        }
+
+        .scroller-container::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .scroller-item {
+            flex: 0 0 auto;
+            width: 400px;
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .scroller-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue-grey), var(--sage-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .testimonial-info h4 {
+            font-size: 1.1rem;
+            color: var(--anthracite);
+            margin-bottom: 0.25rem;
+        }
+
+        .testimonial-info p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .testimonial-content {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Rating Component (0-5 stars) */
+        .rating-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .star {
+            color: #FFD700;
+            font-size: 1.2rem;
+        }
+
+        .star.empty {
+            color: #E0E0E0;
+        }
+
+        .rating-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Scroll Navigation Buttons */
+        .scroller-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .scroller-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--blue-grey);
+            background: white;
+            color: var(--blue-grey);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .scroller-btn:hover {
+            background: var(--blue-grey);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .scroller-btn:active {
+            transform: scale(0.95);
+        }
+
         /* Section Styling */
         section {
             padding: 5rem 2rem;
@@ -1444,6 +1579,7 @@ app.get('/', (c) => {
                 <li><a href="#repas">Repas</a></li>
                 <li><a href="#visite3d">Visite 3D</a></li>
                 <li><a href="#galerie">Galerie</a></li>
+                <li><a href="#temoignages">Témoignages</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -1917,6 +2053,139 @@ app.get('/', (c) => {
         </div>
     </section>
 
+    <!-- Testimonials Section with Horizontal Scroller -->
+    <section id="temoignages" style="background: linear-gradient(135deg, var(--cream) 0%, white 100%);">
+        <div class="section-header">
+            <span class="section-badge">Témoignages</span>
+            <h2 class="section-title">Ce que disent nos résidents et leurs familles</h2>
+            <p class="section-subtitle">La satisfaction de nos résidents et de leurs proches est notre plus grande fierté</p>
+        </div>
+
+        <div class="horizontal-scroller">
+            <div class="scroller-container" id="testimonialsScroller">
+                <!-- Testimonial 1 -->
+                <div class="scroller-item">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">MG</div>
+                        <div class="testimonial-info">
+                            <h4>Marie Gagnon</h4>
+                            <p>Résidente depuis 2 ans</p>
+                        </div>
+                    </div>
+                    <div class="rating-container">
+                        <div class="stars">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                        <span class="rating-text">5/5</span>
+                    </div>
+                    <p class="testimonial-content">"Un cadre de vie exceptionnel ! L'équipe est chaleureuse, attentive et toujours disponible. Je me sens vraiment chez moi dans cette magnifique résidence victorienne."</p>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="scroller-item">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">JT</div>
+                        <div class="testimonial-info">
+                            <h4>Jean Tremblay</h4>
+                            <p>Famille de résident</p>
+                        </div>
+                    </div>
+                    <div class="rating-container">
+                        <div class="stars">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                        <span class="rating-text">5/5</span>
+                    </div>
+                    <p class="testimonial-content">"Ma mère est si heureuse depuis qu'elle a emménagé à L'Auberge. Les propriétaires sont jeunes, dynamiques et apportent une vision moderne tout en gardant une approche humaine."</p>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="scroller-item">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">SL</div>
+                        <div class="testimonial-info">
+                            <h4>Sylvie Lavoie</h4>
+                            <p>Résidente depuis 1 an</p>
+                        </div>
+                    </div>
+                    <div class="rating-container">
+                        <div class="stars">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star empty">★</span>
+                        </div>
+                        <span class="rating-text">4.5/5</span>
+                    </div>
+                    <p class="testimonial-content">"La sécurité est exemplaire et les repas sont délicieux. J'apprécie particulièrement les activités organisées et l'ambiance conviviale entre résidents."</p>
+                </div>
+
+                <!-- Testimonial 4 -->
+                <div class="scroller-item">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">PC</div>
+                        <div class="testimonial-info">
+                            <h4>Pierre Côté</h4>
+                            <p>Famille de résident</p>
+                        </div>
+                    </div>
+                    <div class="rating-container">
+                        <div class="stars">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                        <span class="rating-text">5/5</span>
+                    </div>
+                    <p class="testimonial-content">"L'emplacement est idéal à Boischatel, et l'architecture de la maison est magnifique. Mon père a enfin trouvé un endroit où il se sent respecté et valorisé."</p>
+                </div>
+
+                <!-- Testimonial 5 -->
+                <div class="scroller-item">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">LB</div>
+                        <div class="testimonial-info">
+                            <h4>Louise Bérubé</h4>
+                            <p>Résidente depuis 3 ans</p>
+                        </div>
+                    </div>
+                    <div class="rating-container">
+                        <div class="stars">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                        <span class="rating-text">5/5</span>
+                    </div>
+                    <p class="testimonial-content">"Une résidence à taille humaine où tout le monde se connaît. L'équipe jeune apporte une énergie positive et des idées innovantes pour améliorer notre quotidien."</p>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="scroller-nav">
+                <button class="scroller-btn" id="scrollLeft">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="scroller-btn" id="scrollRight">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
     <section id="contact" style="background: white;">
         <div class="section-header">
             <span class="section-badge">Contact</span>
@@ -2032,6 +2301,7 @@ app.get('/', (c) => {
                     <li><a href="#repas">Repas & Menus</a></li>
                     <li><a href="#visite3d">Visite 3D</a></li>
                     <li><a href="#galerie">Galerie</a></li>
+                    <li><a href="#temoignages">Témoignages</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
@@ -2230,6 +2500,64 @@ app.get('/', (c) => {
                     image.style.setProperty('--mouse-y', '50%');
                 });
             });
+        });
+
+        // Horizontal Scroller Navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            const scroller = document.getElementById('testimonialsScroller');
+            const scrollLeftBtn = document.getElementById('scrollLeft');
+            const scrollRightBtn = document.getElementById('scrollRight');
+
+            if (scroller && scrollLeftBtn && scrollRightBtn) {
+                const scrollAmount = 420; // Width of item (400px) + gap (20px)
+
+                scrollLeftBtn.addEventListener('click', () => {
+                    scroller.scrollBy({
+                        left: -scrollAmount,
+                        behavior: 'smooth'
+                    });
+                });
+
+                scrollRightBtn.addEventListener('click', () => {
+                    scroller.scrollBy({
+                        left: scrollAmount,
+                        behavior: 'smooth'
+                    });
+                });
+
+                // Enable mouse drag scrolling
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                scroller.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    scroller.style.cursor = 'grabbing';
+                    startX = e.pageX - scroller.offsetLeft;
+                    scrollLeft = scroller.scrollLeft;
+                });
+
+                scroller.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    scroller.style.cursor = 'grab';
+                });
+
+                scroller.addEventListener('mouseup', () => {
+                    isDown = false;
+                    scroller.style.cursor = 'grab';
+                });
+
+                scroller.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - scroller.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    scroller.scrollLeft = scrollLeft - walk;
+                });
+
+                // Set initial cursor
+                scroller.style.cursor = 'grab';
+            }
         });
     </script>
 </body>
