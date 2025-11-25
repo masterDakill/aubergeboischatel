@@ -96,22 +96,32 @@ app.get('/', (c) => {
             line-height: 1.7;
         }
 
-        /* Navigation */
+        /* Navigation - Thin & Transparent */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.97);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
-            box-shadow: 0 2px 20px rgba(90, 125, 140, 0.08);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 15px rgba(90, 125, 140, 0.06);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border-bottom: 1px solid rgba(169, 199, 181, 0.15);
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 4px 20px rgba(90, 125, 140, 0.1);
+            border-bottom: 1px solid rgba(169, 199, 181, 0.25);
         }
 
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 1.5rem 2rem;
+            padding: 0.9rem 2rem;
             display: flex;
             justify-content: flex-start;
             align-items: center;
@@ -128,13 +138,13 @@ app.get('/', (c) => {
         }
 
         .logo-icon {
-            width: 125px; /* Enlarged by 25% from 100px */
-            height: 125px;
+            width: 100px;
+            height: 100px;
             background: url('/static/images/logo.png') no-repeat center;
             background-size: contain;
             transition: all 0.6s ease;
             transform-style: preserve-3d;
-            animation: float3d 8s ease-in-out infinite; /* Slower, softer animation */
+            animation: float3d 8s ease-in-out infinite;
         }
 
         @keyframes float3d {
@@ -172,9 +182,10 @@ app.get('/', (c) => {
             text-decoration: none;
             color: var(--text-dark);
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 1rem;
             transition: color 0.3s;
             position: relative;
+            letter-spacing: 0.02em;
         }
 
         .nav-links a::after {
@@ -198,7 +209,7 @@ app.get('/', (c) => {
 
         /* Hero Section - Full-Width Spectacular Golden Hour 4K */
         .hero {
-            margin-top: 80px;
+            margin-top: 65px;
             min-height: 100vh; /* Full viewport height for maximum impact */
             position: relative;
             display: flex;
@@ -370,6 +381,38 @@ app.get('/', (c) => {
         }
 
         /* Removed .hero-right - now using full-width hero with centered content */
+
+        /* Text Clip Path Reveal Effect */
+        .text-clip-reveal {
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .text-clip-reveal::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: inset(0 100% 0 0);
+            background: linear-gradient(90deg, var(--copper), var(--sage-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: revealText 1.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
+
+        @keyframes revealText {
+            to {
+                clip-path: inset(0 0 0 0);
+            }
+        }
+
+        .text-clip-reveal.visible::before {
+            animation: revealText 1.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
 
         /* Liquid Image Effect */
         .liquid-image {
@@ -1848,15 +1891,9 @@ app.get('/', (c) => {
             </a>
             <ul class="nav-links">
                 <li><a href="#accueil">Accueil</a></li>
-                <li><a href="#mission">Mission & Valeurs</a></li>
-                <li><a href="#apropos">À Propos</a></li>
-                <li><a href="#chambres">Chambres</a></li>
-                <li><a href="#securite">Sécurité</a></li>
-                <li><a href="#activites">Activités</a></li>
-                <li><a href="#repas">Repas</a></li>
-                <li><a href="#visite3d">Visite 3D</a></li>
-                <li><a href="#galerie">Galerie</a></li>
-                <li><a href="#services">Services</a></li>
+                <li><a href="#mission">L'Auberge</a></li>
+                <li><a href="#chambres">Hébergement</a></li>
+                <li><a href="#activites">Vie & Activités</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -1865,7 +1902,7 @@ app.get('/', (c) => {
     <section class="hero" id="accueil">
         <div class="hero-content">
             <span class="hero-badge">Résidence Certifiée RPA</span>
-            <h1 class="hero-title">Bienvenue chez vous</h1>
+            <h1 class="hero-title"><span class="text-clip-reveal" data-text="Bienvenue chez vous">Bienvenue chez vous</span></h1>
             <p class="hero-subtitle">Innovation bienveillante au service de la vie quotidienne</p>
             <p class="hero-tagline">Une résidence à taille humaine (38 unités), dirigée par une jeune équipe dynamique, où modernité et chaleur s'harmonisent pour créer un milieu de vie sécuritaire et épanouissant.</p>
             <div class="hero-cta-group">
@@ -2594,22 +2631,21 @@ app.get('/', (c) => {
                 <h4>Navigation</h4>
                 <ul class="footer-links">
                     <li><a href="#accueil">Accueil</a></li>
-                    <li><a href="#mission">Mission & Valeurs</a></li>
-                    <li><a href="#apropos">À Propos</a></li>
-                    <li><a href="#chambres">Chambres</a></li>
-                    <li><a href="#securite">Sécurité</a></li>
+                    <li><a href="#mission">L'Auberge</a></li>
+                    <li><a href="#chambres">Hébergement</a></li>
+                    <li><a href="#activites">Vie & Activités</a></li>
+                    <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
 
             <div class="footer-section">
                 <h4>Services</h4>
                 <ul class="footer-links">
-                    <li><a href="#activites">Activités</a></li>
-                    <li><a href="#repas">Repas & Menus</a></li>
-                    <li><a href="#visite3d">Visite 3D</a></li>
-                    <li><a href="#galerie">Galerie</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#services">Soins & Assistance</a></li>
+                    <li><a href="#securite">Sécurité 24/7</a></li>
+                    <li><a href="#repas">Repas & Nutrition</a></li>
+                    <li><a href="#galerie">Galerie Photos</a></li>
+                    <li><a href="#visite3d">Visite Virtuelle 3D</a></li>
                 </ul>
             </div>
 
@@ -2638,6 +2674,7 @@ app.get('/', (c) => {
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <script src="https://framer.com/m/Text-Clip-Path-Reveal-LM9j.js@1DkBkJWhFdFFPRhD67TU"></script>
     <script>
         // Scroll Progress Bar
         window.addEventListener('scroll', () => {
@@ -2715,6 +2752,13 @@ app.get('/', (c) => {
             slideLeftElements.forEach(el => scrollObserver.observe(el));
             slideRightElements.forEach(el => scrollObserver.observe(el));
 
+            // Activate Text Clip Path Reveal on page load
+            setTimeout(() => {
+                document.querySelectorAll('.text-clip-reveal').forEach(el => {
+                    el.classList.add('visible');
+                });
+            }, 300);
+
             // Add animation classes to sections
             document.querySelectorAll('.section-header').forEach(el => {
                 el.classList.add('scroll-fade-in');
@@ -2774,19 +2818,16 @@ app.get('/', (c) => {
             }
         });
 
-        // Navbar scroll effect
-        let lastScroll = 0;
+        // Navbar scroll effect - Enhanced transparency
         window.addEventListener('scroll', () => {
             const nav = document.querySelector('nav');
             const currentScroll = window.pageYOffset;
             
-            if (currentScroll > 100) {
-                nav.style.boxShadow = '0 2px 30px rgba(90, 125, 140, 0.15)';
+            if (currentScroll > 50) {
+                nav.classList.add('scrolled');
             } else {
-                nav.style.boxShadow = '0 2px 20px rgba(90, 125, 140, 0.08)';
+                nav.classList.remove('scrolled');
             }
-            
-            lastScroll = currentScroll;
         });
 
         // Liquid Image Effect - Track mouse position
