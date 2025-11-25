@@ -4,10 +4,17 @@
 
 Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aînés certifiée RPA située à Boischatel, Québec. Le site incarne notre mission : **Innovation bienveillante au service de la vie quotidienne**.
 
-- **Version actuelle** : V4.1 - Innovation Bienveillante + Visite 3D
+- **Version actuelle** : V5.3 - Hero 4K Spectaculaire
 - **Technologies** : Hono + Cloudflare Pages + TypeScript + Vite + Polycam 3D
 - **Statut** : ✅ Fonctionnel en développement
 - **Dernière mise à jour** : 25 novembre 2025
+
+### 🎆 Améliorations Version 5.3
+- **Photo Hero 4K** : Upscale de 1024x684 → 5056x3392px (5x résolution)
+- **Hero Full-Width** : Photo golden hour en pleine largeur spectaculaire
+- **Optimisations visuelles** : Overlay subtil, effet vignette, animations douces
+- **Logo ajusté** : Agrandi 125px, animation 3D adoucie
+- **Particles optimisés** : 45 particules, couleurs chaudes, mouvement fluide
 
 ## 🎨 Identité Visuelle
 
@@ -46,10 +53,12 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 ## 📄 Structure du Site (10 Sections)
 
 ### 1. **Accueil** (`#accueil`)
-- Hero split-screen moderne
-- Badge "Résidence Certifiée RPA"
+- **Hero 4K full-width** : Photo golden hour spectaculaire (5056x3392px)
+- Effet parallax avec overlay dégradé subtil
+- Badge "Résidence Certifiée RPA" en cuivre
 - CTA : "Planifier une visite" + "Voir les chambres"
 - Tagline : Innovation bienveillante
+- Animation fade-in douce au chargement
 
 ### 2. **Mission & Valeurs** (`#mission`)
 - Vision du bien-vieillir
