@@ -2760,16 +2760,6 @@ app.get('/', (c) => {
         <!-- Phone Extension Diagram Section -->
         <div class="phone-diagram-section" id="phone-diagram">
             <div class="phone-diagram-header">
-                <div class="logo-3d-container" id="logo3d" title="Cliquez pour revenir en haut">
-                    <model-viewer 
-                        src="/static/models/logo-3d.glb"
-                        alt="Logo 3D L'Auberge Boischatel"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="1"
-                        style="width: 100%; height: 100%;">
-                    </model-viewer>
-                </div>
                 <h3>Diagramme des postes téléphoniques internes</h3>
                 <p>Visualisez rapidement quel poste joint quel service à l'interne</p>
             </div>
@@ -2884,7 +2874,6 @@ app.get('/', (c) => {
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     <script>
         // Scroll Progress Bar
         window.addEventListener('scroll', () => {
