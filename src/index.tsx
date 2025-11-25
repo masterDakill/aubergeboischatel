@@ -124,16 +124,17 @@ app.get('/', (c) => {
             text-decoration: none;
             color: var(--anthracite);
             perspective: 1000px;
+            margin-left: 0.4rem; /* Moved ~1cm to the right */
         }
 
         .logo-icon {
-            width: 100px;
-            height: 100px;
+            width: 125px; /* Enlarged by 25% from 100px */
+            height: 125px;
             background: url('/static/images/logo.png') no-repeat center;
             background-size: contain;
             transition: all 0.6s ease;
             transform-style: preserve-3d;
-            animation: float3d 6s ease-in-out infinite;
+            animation: float3d 8s ease-in-out infinite; /* Slower, softer animation */
         }
 
         @keyframes float3d {
@@ -141,13 +142,13 @@ app.get('/', (c) => {
                 transform: translateY(0) rotateY(0deg);
             }
             25% {
-                transform: translateY(-5px) rotateY(5deg);
+                transform: translateY(-4px) rotateY(2deg); /* Reduced rotation from 5deg to 2deg */
             }
             50% {
                 transform: translateY(0) rotateY(0deg);
             }
             75% {
-                transform: translateY(-5px) rotateY(-5deg);
+                transform: translateY(-4px) rotateY(-2deg); /* Reduced rotation from -5deg to -2deg */
             }
         }
 
@@ -195,27 +196,84 @@ app.get('/', (c) => {
             width: 100%;
         }
 
-        /* Hero Section - Modern & Airy */
+        /* Hero Section - Full-Width Spectacular Golden Hour 4K */
         .hero {
             margin-top: 80px;
-            min-height: 90vh;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background: linear-gradient(135deg, var(--cream) 0%, #FFFFFF 100%);
+            min-height: 100vh; /* Full viewport height for maximum impact */
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url('/static/images/facade-golden-hour-4k.jpg') center/cover fixed;
+            overflow: hidden;
+            /* High-quality image rendering */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }
 
-        .hero-left {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 4rem;
-            max-width: 650px;
+        /* Subtle warm overlay - let the photo shine through */
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(31, 31, 31, 0.35) 0%,  /* Lighter overlay to show more photo */
+                rgba(90, 125, 140, 0.25) 50%,
+                rgba(169, 199, 181, 0.15) 100%
+            );
+            z-index: 1;
+        }
+        
+        /* Vignette effect to draw focus to center */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                ellipse at center,
+                transparent 0%,
+                transparent 40%,
+                rgba(0, 0, 0, 0.15) 100%
+            );
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            max-width: 950px;
+            padding: 4rem 3rem;
+            /* More transparent to show photo beauty */
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px) saturate(120%);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            /* Smooth entrance animation */
+            animation: heroContentFadeIn 1.2s ease-out;
+        }
+        
+        @keyframes heroContentFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .hero-badge {
             display: inline-block;
             padding: 0.5rem 1.25rem;
-            background: linear-gradient(135deg, var(--sage-green) 0%, var(--blue-grey) 100%);
+            background: linear-gradient(135deg, var(--copper) 0%, rgba(201, 164, 114, 0.9) 100%);
             color: white;
             border-radius: 50px;
             font-size: 0.85rem;
@@ -223,29 +281,44 @@ app.get('/', (c) => {
             letter-spacing: 0.5px;
             margin-bottom: 2rem;
             width: fit-content;
+            box-shadow: 0 4px 15px rgba(201, 164, 114, 0.3);
         }
 
         .hero-title {
             font-family: var(--font-serif);
-            font-size: 3.5rem;
-            font-weight: 600;
-            color: var(--anthracite);
-            line-height: 1.2;
+            font-size: 4.5rem; /* Larger for more impact */
+            font-weight: 700;
+            color: white;
+            line-height: 1.1;
             margin-bottom: 1.5rem;
+            text-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.2),
+                0 8px 24px rgba(0, 0, 0, 0.15);
+            letter-spacing: -0.5px;
         }
 
         .hero-subtitle {
-            font-size: 1.3rem;
-            color: var(--blue-grey);
+            font-size: 1.6rem;
+            color: rgba(255, 255, 255, 0.98);
             font-weight: 500;
             margin-bottom: 1rem;
+            text-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                0 4px 16px rgba(0, 0, 0, 0.2);
         }
 
         .hero-tagline {
-            font-size: 1.1rem;
-            color: var(--text-muted);
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.92);
             margin-bottom: 2.5rem;
             line-height: 1.8;
+            text-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero-cta-group {
@@ -257,57 +330,46 @@ app.get('/', (c) => {
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: var(--blue-grey);
+            padding: 1.1rem 2.25rem;
+            background: var(--copper);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 1.05rem;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(90, 125, 140, 0.2);
+            box-shadow: 0 6px 20px rgba(201, 164, 114, 0.4);
         }
 
         .hero-cta:hover {
-            background: var(--anthracite);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(90, 125, 140, 0.3);
+            background: #B8935F;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(201, 164, 114, 0.5);
         }
 
         .hero-cta-secondary {
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: transparent;
-            color: var(--blue-grey);
+            padding: 1.1rem 2.25rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
             text-decoration: none;
-            border-radius: 8px;
-            border: 2px solid var(--blue-grey);
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 1.05rem;
             transition: all 0.3s;
+            backdrop-filter: blur(10px);
         }
 
         .hero-cta-secondary:hover {
-            background: var(--blue-grey);
-            color: white;
+            background: rgba(255, 255, 255, 0.25);
+            border-color: white;
+            transform: translateY(-3px);
         }
 
-        .hero-right {
-            background: url('/static/images/facade-golden-hour.jpg') center/cover;
-            position: relative;
-            border-radius: 0 0 0 100px;
-            background-attachment: fixed; /* Parallax effect */
-        }
-
-        .hero-right::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(90, 125, 140, 0.1) 0%, rgba(169, 199, 181, 0.15) 100%);
-            border-radius: 0 0 0 100px;
-        }
+        /* Removed .hero-right - now using full-width hero with centered content */
 
         /* Section Styling */
         section {
@@ -1013,7 +1075,7 @@ app.get('/', (c) => {
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Interactive Background */
+        /* Interactive Background - Softer & Warmer */
         #particles-js {
             position: fixed;
             width: 100%;
@@ -1021,7 +1083,11 @@ app.get('/', (c) => {
             top: 0;
             left: 0;
             z-index: -1;
-            background: linear-gradient(135deg, var(--cream) 0%, rgba(169, 199, 181, 0.1) 100%);
+            background: linear-gradient(135deg, 
+                #FBF9F7 0%, 
+                rgba(245, 244, 242, 0.95) 50%,
+                rgba(169, 199, 181, 0.08) 100%
+            );
         }
 
         /* Scroll Animations */
@@ -1173,9 +1239,14 @@ app.get('/', (c) => {
                 grid-template-columns: 1fr;
             }
             
-            .hero-right {
-                min-height: 500px;
-                border-radius: 0 0 50px 50px;
+            .hero {
+                min-height: 80vh;
+                padding: 2rem;
+            }
+            
+            .hero-content {
+                padding: 3rem 2rem;
+                max-width: 600px;
             }
 
             .mission-content,
@@ -1203,17 +1274,47 @@ app.get('/', (c) => {
                 display: none;
             }
 
+            .logo {
+                margin-left: 0; /* Reset margin on mobile */
+            }
+            
             .logo-icon {
-                width: 100px;
-                height: 100px;
+                width: 90px; /* Smaller on mobile */
+                height: 90px;
             }
 
             .nav-container {
                 padding: 1rem;
             }
+            
+            .hero {
+                min-height: 70vh;
+                padding: 1.5rem;
+            }
+            
+            .hero-content {
+                padding: 2.5rem 1.5rem;
+            }
 
             .hero-title {
                 font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .hero-tagline {
+                font-size: 1rem;
+            }
+            
+            .hero-cta-group {
+                flex-direction: column;
+            }
+            
+            .hero-cta, .hero-cta-secondary {
+                width: 100%;
+                justify-content: center;
             }
 
             .section-title {
@@ -1263,7 +1364,7 @@ app.get('/', (c) => {
     </nav>
 
     <section class="hero" id="accueil">
-        <div class="hero-left">
+        <div class="hero-content">
             <span class="hero-badge">Résidence Certifiée RPA</span>
             <h1 class="hero-title">Bienvenue chez vous</h1>
             <p class="hero-subtitle">Innovation bienveillante au service de la vie quotidienne</p>
@@ -1279,7 +1380,6 @@ app.get('/', (c) => {
                 </a>
             </div>
         </div>
-        <div class="hero-right"></div>
     </section>
 
     <section id="mission">
@@ -1864,26 +1964,26 @@ app.get('/', (c) => {
             scrollProgress.style.width = scrolled + '%';
         });
 
-        // Particles.js Background
+        // Particles.js Background - Softer & Warmer
         particlesJS('particles-js', {
             particles: {
-                number: { value: 80, density: { enable: true, value_area: 800 } },
-                color: { value: '#A9C7B5' },
+                number: { value: 45, density: { enable: true, value_area: 1000 } }, // Reduced from 80 to 45
+                color: { value: '#C9A472' }, // Warm copper tone instead of sage green
                 shape: { type: 'circle' },
-                opacity: { value: 0.5, random: false },
-                size: { value: 3, random: true },
+                opacity: { value: 0.25, random: true }, // More subtle - reduced from 0.5
+                size: { value: 2.5, random: true }, // Slightly smaller
                 line_linked: {
                     enable: true,
-                    distance: 150,
-                    color: '#5A7D8C',
-                    opacity: 0.4,
-                    width: 1
+                    distance: 120, // Shorter connections
+                    color: '#A9C7B5', // Soft sage green for connections
+                    opacity: 0.2, // Very subtle - reduced from 0.4
+                    width: 0.8 // Thinner lines
                 },
                 move: {
                     enable: true,
-                    speed: 2,
+                    speed: 1.2, // Slower, gentler movement
                     direction: 'none',
-                    random: false,
+                    random: true, // More organic movement
                     straight: false,
                     out_mode: 'out',
                     bounce: false
@@ -1892,15 +1992,15 @@ app.get('/', (c) => {
             interactivity: {
                 detect_on: 'canvas',
                 events: {
-                    onhover: { enable: true, mode: 'repulse' },
-                    onclick: { enable: true, mode: 'push' },
+                    onhover: { enable: true, mode: 'grab' }, // Changed from 'repulse' to 'grab' for softer interaction
+                    onclick: { enable: true, mode: 'bubble' }, // Changed from 'push' to 'bubble'
                     resize: true
                 },
                 modes: {
-                    grab: { distance: 400, line_linked: { opacity: 1 } },
-                    bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
-                    repulse: { distance: 200, duration: 0.4 },
-                    push: { particles_nb: 4 },
+                    grab: { distance: 140, line_linked: { opacity: 0.3 } },
+                    bubble: { distance: 250, size: 4, duration: 2, opacity: 0.5, speed: 3 },
+                    repulse: { distance: 100, duration: 0.4 },
+                    push: { particles_nb: 2 },
                     remove: { particles_nb: 2 }
                 }
             },
