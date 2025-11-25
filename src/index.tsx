@@ -121,8 +121,9 @@ app.get('/', (c) => {
             -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
             box-shadow: 0 2px 15px rgba(90, 125, 140, 0.06);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease;
             border-bottom: 1px solid rgba(169, 199, 181, 0.15);
+            opacity: 1;
         }
 
         nav.scrolled {
@@ -131,6 +132,11 @@ app.get('/', (c) => {
             -webkit-backdrop-filter: blur(25px);
             box-shadow: 0 4px 20px rgba(90, 125, 140, 0.1);
             border-bottom: 1px solid rgba(169, 199, 181, 0.25);
+        }
+        
+        nav.hidden {
+            opacity: 0;
+            transform: translateY(-100%);
         }
 
         .nav-container {
@@ -153,8 +159,8 @@ app.get('/', (c) => {
         }
 
         .logo-icon {
-            width: 100px;
-            height: 100px;
+            width: 115px;
+            height: 115px;
             background: url('/static/images/logo.png') no-repeat center;
             background-size: contain;
             transition: all 0.6s ease;
@@ -198,28 +204,47 @@ app.get('/', (c) => {
             color: var(--text-dark);
             font-weight: 500;
             font-size: 1rem;
-            transition: color 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             letter-spacing: 0.02em;
+            padding: 0.5rem 0;
         }
 
         .nav-links a::after {
             content: '';
             position: absolute;
             bottom: -5px;
-            left: 0;
+            left: 50%;
             width: 0;
             height: 2px;
-            background: var(--copper);
-            transition: width 0.3s;
+            background: linear-gradient(90deg, var(--copper), var(--sage-green));
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+            border-radius: 2px;
         }
 
         .nav-links a:hover {
             color: var(--blue-grey);
+            transform: translateY(-2px);
         }
 
         .nav-links a:hover::after {
             width: 100%;
+        }
+        
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            background: linear-gradient(135deg, rgba(169, 199, 181, 0.1), rgba(90, 125, 140, 0.1));
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+        
+        .nav-links a:hover::before {
+            opacity: 1;
         }
 
         /* Login Button & User Menu */
@@ -1991,8 +2016,8 @@ app.get('/', (c) => {
             }
             
             .logo-icon {
-                width: 90px; /* Smaller on mobile */
-                height: 90px;
+                width: 100px; /* Proportional on mobile */
+                height: 100px;
             }
 
             .nav-container {
@@ -2488,9 +2513,11 @@ app.get('/', (c) => {
 
             <div class="polycam-wrapper">
                 <iframe 
-                    src="https://poly.cam/capture/0173C8E7-21E2-4AB2-A66E-5757D3EDCFBC/embed" 
+                    src="https://poly.cam/capture/0173C8E7-21E2-4AB2-A66E-5757D3EDCFBC" 
                     title="Visite virtuelle 3D de L'Auberge Boischatel"
-                    allow="xr-spatial-tracking"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking"
+                    allowfullscreen
+                    frameborder="0"
                     loading="lazy">
                 </iframe>
             </div>
@@ -2775,6 +2802,18 @@ app.get('/', (c) => {
         <!-- Phone Extension Diagram Section -->
         <div class="phone-diagram-section" id="phone-diagram">
             <div class="phone-diagram-header">
+                <!-- Logo 3D GLB -->
+                <div class="logo-3d-container">
+                    <model-viewer
+                        src="/static/models/logo-3d.glb"
+                        alt="Logo 3D L'Auberge Boischatel"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="1"
+                        style="width: 100%; height: 100%;">
+                    </model-viewer>
+                </div>
+                
                 <h3>Diagramme des postes téléphoniques internes</h3>
                 <p>Visualisez rapidement quel poste joint quel service à l'interne</p>
             </div>
@@ -3588,10 +3627,190 @@ app.get('/admin/dashboard', (c) => {
         </div>
     </div>
 
+    <!-- Model Viewer for 3D Logo -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script>${getEnvScript()}</script>
+    
+    <!-- Interactive Navigation Script -->
+    <script>
+        (function() {
+            const nav = document.querySelector('nav');
+            let lastScrollTop = 0;
+            let scrollTimeout;
+            
+            // Smooth scroll for navigation links
+            document.querySelectorAll('.nav-links a, .hero-cta, .hero-cta-secondary').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href.startsWith('#')) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Hide/show navigation on scroll with fade effect
+            window.addEventListener('scroll', function() {
+                clearTimeout(scrollTimeout);
+                
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                // Add scrolled class for styling
+                if (scrollTop > 100) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+                
+                // Hide navigation when scrolling down, show when scrolling up
+                if (scrollTop > lastScrollTop && scrollTop > 200) {
+                    // Scrolling down
+                    nav.classList.add('hidden');
+                } else {
+                    // Scrolling up
+                    nav.classList.remove('hidden');
+                }
+                
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+                
+                // Show nav if user stops scrolling
+                scrollTimeout = setTimeout(() => {
+                    nav.classList.remove('hidden');
+                }, 150);
+            }, false);
+            
+            // Ripple effect for interactive elements
+            function createRipple(event) {
+                const button = event.currentTarget;
+                const circle = document.createElement('span');
+                const diameter = Math.max(button.clientWidth, button.clientHeight);
+                const radius = diameter / 2;
+                
+                circle.style.width = circle.style.height = diameter + 'px';
+                circle.style.left = event.clientX - button.offsetLeft - radius + 'px';
+                circle.style.top = event.clientY - button.offsetTop - radius + 'px';
+                circle.classList.add('ripple');
+                
+                const ripple = button.getElementsByClassName('ripple')[0];
+                if (ripple) {
+                    ripple.remove();
+                }
+                
+                button.appendChild(circle);
+            }
+            
+            // Add ripple to buttons
+            document.querySelectorAll('.hero-cta, .hero-cta-secondary, .login-button, .submit-btn').forEach(button => {
+                button.addEventListener('click', createRipple);
+            });
+            
+            // Liquid image effect
+            document.querySelectorAll('.liquid-image').forEach(image => {
+                image.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    this.style.setProperty('--mouse-x', x + '%');
+                    this.style.setProperty('--mouse-y', y + '%');
+                });
+            });
+            
+            // Scroll reveal animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.scroll-fade-in, .scroll-slide-left, .scroll-slide-right').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Contact form handling
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const formData = {
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value,
+                        visitDate: document.getElementById('visitDate').value,
+                        message: document.getElementById('message').value
+                    };
+                    
+                    try {
+                        const response = await fetch('/api/contact', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            alert(result.message || 'Merci ! Nous vous contacterons sous peu.');
+                            contactForm.reset();
+                        } else {
+                            alert(result.error || 'Une erreur est survenue. Veuillez réessayer.');
+                        }
+                    } catch (error) {
+                        console.error('Erreur:', error);
+                        alert('Erreur de connexion. Veuillez réessayer.');
+                    }
+                });
+            }
+            
+            // Scroll progress bar
+            const createScrollProgress = () => {
+                const progressBar = document.createElement('div');
+                progressBar.className = 'scroll-progress';
+                document.body.appendChild(progressBar);
+                
+                window.addEventListener('scroll', () => {
+                    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const scrolled = (window.scrollY / scrollHeight) * 100;
+                    progressBar.style.width = scrolled + '%';
+                });
+            };
+            
+            createScrollProgress();
+            
+            // Horizontal scroller navigation
+            document.querySelectorAll('.scroller-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const container = this.closest('.horizontal-scroller').querySelector('.scroller-container');
+                    const scrollAmount = 420; // Width of card + gap
+                    
+                    if (this.classList.contains('prev')) {
+                        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                    } else {
+                        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                    }
+                });
+            });
+        })();
+    </script>
 </body>
 </html>`)
 })
