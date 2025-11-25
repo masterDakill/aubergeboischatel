@@ -1454,6 +1454,32 @@ app.get('/', (c) => {
             color: var(--text-muted);
         }
 
+        .phone-diagram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--blue-grey), var(--sage-green));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 4px 12px rgba(90, 125, 140, 0.2);
+        }
+
+        .phone-diagram-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(90, 125, 140, 0.3);
+            background: linear-gradient(135deg, #4A6D7C, #99B7A5);
+        }
+
+        .phone-diagram-link i {
+            font-size: 1rem;
+        }
+
         .contact-form {
             background: white;
             padding: 3rem;
@@ -2490,6 +2516,10 @@ app.get('/', (c) => {
                     <div class="contact-item-content">
                         <h4>Téléphone</h4>
                         <p>418-822-0347</p>
+                        <a href="#phone-diagram" class="phone-diagram-link">
+                            <i class="fas fa-diagram-project"></i>
+                            Voir les postes internes
+                        </a>
                     </div>
                 </div>
 
@@ -2547,7 +2577,7 @@ app.get('/', (c) => {
         </div>
 
         <!-- Phone Extension Diagram Section -->
-        <div class="phone-diagram-section">
+        <div class="phone-diagram-section" id="phone-diagram">
             <div class="phone-diagram-header">
                 <div class="logo-3d-container" id="logo3d" title="Cliquez pour revenir en haut">
                     <model-viewer 
