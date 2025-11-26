@@ -2373,33 +2373,19 @@ app.get('/', (c) => {
         <div class="hero-content">
             <div class="hero-layout">
                 <div>
-                    <span class="hero-badge">Sécurité augmentée pour la RPA</span>
-                    <h1 class="hero-title"><span class="text-clip-reveal" data-text="Tableau de bord intelligent">Tableau de bord intelligent</span></h1>
-                    <p class="hero-subtitle">Sécurité, surveillance intelligente et simplicité d’utilisation pour l’Auberge Boischatel.</p>
-                    <p class="hero-tagline">Le tableau de bord met en avant l’état de l’Auberge, les alertes critiques et les données clés. L’IA assiste l’équipe sur le terrain pour prioriser les actions et rassurer les familles.</p>
+                    <span class="hero-badge">Résidence pour aînés certifiée RPA</span>
+                    <h1 class="hero-title"><span class="text-clip-reveal" data-text="L'Auberge Boischatel">L'Auberge Boischatel</span></h1>
+                    <p class="hero-subtitle">Innovation bienveillante au service de la vie quotidienne.</p>
+                    <p class="hero-tagline">Une résidence chaleureuse où modernité et humanité s'unissent pour offrir à nos aînés un milieu de vie sécuritaire, confortable et épanouissant.</p>
                     <div class="hero-cta-group">
-                        <a href="#visite3d" class="hero-cta">
+                        <a href="#contact" class="hero-cta">
+                            <i class="fas fa-calendar-alt"></i>
+                            Planifier une visite
+                        </a>
+                        <a href="#visite3d" class="hero-cta-secondary">
                             <i class="fas fa-cube"></i>
-                            Voir le plan 3D de l’Auberge
+                            Visite virtuelle 3D
                         </a>
-                        <a href="/admin/dashboard" class="hero-cta-secondary">
-                            <i class="fas fa-bell"></i>
-                            Accéder aux alertes en temps réel
-                        </a>
-                        <a href="/client/dashboard" class="hero-cta-secondary">
-                            <i class="fas fa-user-shield"></i>
-                            Aperçu Espace Client
-                        </a>
-                        <a href="/staff/dashboard" class="hero-cta-secondary">
-                            <i class="fas fa-briefcase"></i>
-                            Aperçu Espace Employé
-                        </a>
-                    </div>
-                    <p class="hero-subnote">Les portails client et employé sont accessibles publiquement : les aperçus statiques s’affichent même sans authentification.</p>
-                </div>
-                <div class="hero-visual">
-                    <div class="hero-logo-canvas">
-                        <img src="/static/images/logo.png" alt="Logo Auberge Boischatel" style="max-width: 280px; height: auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));">
                     </div>
                 </div>
             </div>
@@ -2420,8 +2406,8 @@ app.get('/', (c) => {
                 <p>Dirigée par de jeunes propriétaires passionnés, notre résidence conjugue le charme patrimonial d'une architecture victorienne avec les standards les plus élevés en matière de sécurité et de bien-être.</p>
                 <p>Notre approche ? Rester à l'écoute, anticiper les besoins, et améliorer constamment notre milieu de vie pour offrir à nos 38 résidents un environnement chaleureux, stimulant et rassurant.</p>
             </div>
-            <div class="liquid-image mission-image">
-                <img src="/static/images/facade-golden-hour.jpg" alt="L'Auberge Boischatel">
+            <div class="mission-image" style="display: flex; align-items: center; justify-content: center;">
+                <div id="logo-3d-viewer" style="width: 100%; max-width: 400px; height: 350px; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #f5f4f2 0%, #e8e6e3 100%);"></div>
             </div>
         </div>
 
@@ -3690,6 +3676,21 @@ app.get('/', (c) => {
             };
 
             const webglAvailable = supportsWebGL();
+
+            // Logo 3D interactif dans la section Mission
+            const logoContainer = document.getElementById('logo-3d-viewer');
+            if (webglAvailable && typeof Advanced3DViewer !== 'undefined' && logoContainer) {
+                console.log('✅ Initializing 3D logo...');
+                new Advanced3DViewer('logo-3d-viewer', '/static/models/logo-3d.glb', {
+                    autoRotate: true,
+                    autoRotateSpeed: 2,
+                    cameraControls: true,
+                    glow: true,
+                    glowIntensity: 0.3,
+                    glowColor: 0xC9A472,
+                    backgroundColor: 0xF5F4F2
+                });
+            }
 
             // Viewer 3D principal (modèle Polycam)
             const viewerContainer = document.getElementById('advanced-3d-viewer');
