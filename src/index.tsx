@@ -16,6 +16,7 @@ app.use('/api/*', cors())
 
 // Serve static files
 app.use('/static/*', serveStatic({ root: './public' }))
+app.use('/favicon.png', serveStatic({ root: './public', path: '/favicon.png' }))
 
 // Mount API routes
 app.route('/api/auth', authRoutes)
@@ -66,6 +67,7 @@ app.get('/', (c) => {
     <meta name="description" content="L'Auberge Boischatel - Résidence pour aînés à Boischatel. Innovation bienveillante au service de la vie quotidienne. 38 unités, milieu chaleureux et sécuritaire.">
     <meta name="keywords" content="résidence aînés, Boischatel, RPA, innovation, sécurité, conformité, Québec">
     <meta name="author" content="L'Auberge Boischatel">
+    <link rel="icon" type="image/png" href="/favicon.png">
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -2591,22 +2593,7 @@ app.get('/', (c) => {
             <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">Une expérience immersive pour découvrir L'Auberge Boischatel depuis chez vous</p>
         </div>
 
-        <!-- Modèle 3D Bâtiment -->
-        <div style="max-width: 1200px; margin: 0 auto 4rem;">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h3 style="font-family: 'Lora', serif; font-size: 2rem; color: white; margin-bottom: 1rem;">
-                    <i class="fas fa-building" style="color: var(--copper); margin-right: 0.5rem;"></i>
-                    Notre Bâtiment en 3D
-                </h3>
-                <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                    Découvrez l'architecture victorienne de L'Auberge Boischatel en trois dimensions
-                </p>
-            </div>
-            
-            <!-- Logo 3D GLB - Bâtiment Auberge 3D (Advanced Three.js) -->
-            <div id="advanced-3d-viewer" class="logo-3d-container" style="margin: 0 auto 3rem; max-width: 600px; height: 400px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);"></div>
-            
-            <!-- Postes Téléphoniques -->
+        <!-- Postes Téléphoniques -->
             <div class="phone-cards-grid" style="margin-top: 3rem;">
                 <!-- Direction Card -->
                 <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
@@ -2694,41 +2681,17 @@ app.get('/', (c) => {
                 </button>
             </div>
 
-            <div id="polycamContainer" class="polycam-wrapper" style="
-                position: relative;
+            <!-- Viewer 3D GLB pleine largeur -->
+            <div id="advanced-3d-viewer" style="
                 width: 100%;
-                max-width: 100%;
-                margin: 0;
-                border-radius: 0;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+                height: 70vh;
+                min-height: 500px;
+                max-height: 800px;
+                border-radius: 16px;
                 overflow: hidden;
-            ">
-                <!-- Overlay pour bloquer clics externes (empêcher redirection vers poly.cam) -->
-                <div style="
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 60px;
-                    z-index: 10;
-                    pointer-events: auto;
-                    background: transparent;
-                " title="Navigation 3D - Utilisez le bouton Mode Plein Écran ci-dessus"></div>
-                
-                <iframe 
-                    id="polycamIframe"
-                    src="https://poly.cam/capture/0173C8E7-21E2-4AB2-A66E-5757D3EDCFBC?mode=embed&background=%231a1a1a" 
-                    title="Visite virtuelle 3D de L'Auberge Boischatel"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking; fullscreen"
-                    allowfullscreen
-                    webkitallowfullscreen
-                    mozallowfullscreen
-                    frameborder="0"
-                    loading="eager"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: auto;">
-                </iframe>
-            </div>
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+                background: #1a1a1a;
+            "></div>
 
             <div class="tour-features" style="border-top: 1px solid rgba(255, 255, 255, 0.2);">
                 <div class="tour-feature">
@@ -3303,9 +3266,9 @@ app.get('/', (c) => {
     </style>
 
     <!-- Three.js for Advanced 3D Viewer -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     
     <!-- Firebase SDK (CDN) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -3582,7 +3545,12 @@ app.get('/', (c) => {
             });
 
             // Initialize Advanced 3D Viewer
+            console.log('🔍 Checking for Advanced3DViewer...', typeof Advanced3DViewer);
+            console.log('🔍 THREE available?', typeof THREE);
+            console.log('🔍 GLTFLoader available?', typeof THREE !== 'undefined' ? typeof THREE.GLTFLoader : 'THREE not loaded');
+
             if (typeof Advanced3DViewer !== 'undefined') {
+                console.log('✅ Advanced3DViewer found, initializing...');
                 const viewer = new Advanced3DViewer('advanced-3d-viewer', '/static/models/auberge-3d.glb', {
                     autoRotate: true,
                     autoRotateSpeed: 1.5,
@@ -3593,26 +3561,26 @@ app.get('/', (c) => {
                     backgroundColor: 0x1a1a1a // Dark background to match section
                 });
 
-                // Click to scroll to top
-                document.getElementById('advanced-3d-viewer').addEventListener('click', () => {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                });
             }
 
-            // Mode Plein Écran pour Polycam
+            // Mode Plein Écran pour le viewer 3D
             const fullscreenBtn = document.getElementById('fullscreenBtn');
-            const polycamContainer = document.getElementById('polycamContainer');
+            const viewer3DContainer = document.getElementById('advanced-3d-viewer');
             let isFullscreen = false;
             let exitBtn = null;
 
-            if (fullscreenBtn && polycamContainer) {
+            if (fullscreenBtn && viewer3DContainer) {
                 fullscreenBtn.addEventListener('click', () => {
                     if (!isFullscreen) {
                         // Activer mode plein écran
-                        polycamContainer.classList.add('fullscreen-mode');
+                        viewer3DContainer.style.position = 'fixed';
+                        viewer3DContainer.style.top = '0';
+                        viewer3DContainer.style.left = '0';
+                        viewer3DContainer.style.width = '100vw';
+                        viewer3DContainer.style.height = '100vh';
+                        viewer3DContainer.style.maxHeight = '100vh';
+                        viewer3DContainer.style.zIndex = '9999';
+                        viewer3DContainer.style.borderRadius = '0';
                         document.body.style.overflow = 'hidden';
                         isFullscreen = true;
 
@@ -3620,18 +3588,26 @@ app.get('/', (c) => {
                         exitBtn = document.createElement('button');
                         exitBtn.className = 'exit-fullscreen-btn';
                         exitBtn.innerHTML = '<i class="fas fa-times"></i> Quitter Plein Écran';
+                        exitBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;padding:12px 24px;background:rgba(0,0,0,0.8);color:white;border:none;border-radius:8px;cursor:pointer;font-size:14px;';
                         document.body.appendChild(exitBtn);
 
                         // Événement fermer
                         exitBtn.addEventListener('click', exitFullscreen);
-                        
+
                         // Événement ESC
                         document.addEventListener('keydown', handleEscKey);
                     }
                 });
 
                 function exitFullscreen() {
-                    polycamContainer.classList.remove('fullscreen-mode');
+                    viewer3DContainer.style.position = '';
+                    viewer3DContainer.style.top = '';
+                    viewer3DContainer.style.left = '';
+                    viewer3DContainer.style.width = '100%';
+                    viewer3DContainer.style.height = '70vh';
+                    viewer3DContainer.style.maxHeight = '800px';
+                    viewer3DContainer.style.zIndex = '';
+                    viewer3DContainer.style.borderRadius = '16px';
                     document.body.style.overflow = '';
                     isFullscreen = false;
 
