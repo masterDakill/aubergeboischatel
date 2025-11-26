@@ -1514,6 +1514,49 @@ app.get('/', (c) => {
             border: none;
         }
 
+        /* Mode Plein Écran pour Polycam */
+        #polycamContainer.fullscreen-mode {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            z-index: 9999 !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+        }
+
+        #polycamContainer.fullscreen-mode::before {
+            padding-top: 0 !important;
+        }
+
+        /* Bouton Fermer Mode Plein Écran */
+        .exit-fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--copper), #D4B378);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+        }
+
+        .exit-fullscreen-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+        }
+
         .tour-features {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -2619,8 +2662,8 @@ app.get('/', (c) => {
         <div style="max-width: 1200px; margin: 4rem auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);"></div>
 
         <!-- Visite Virtuelle Polycam -->
-        <div class="virtual-tour-container" style="background: transparent;">
-            <div class="virtual-tour-intro" style="text-align: center; max-width: 800px; margin: 0 auto 3rem;">
+        <div class="virtual-tour-container" style="background: transparent; max-width: 100%; padding: 0;">
+            <div class="virtual-tour-intro" style="text-align: center; max-width: 800px; margin: 0 auto 2rem; padding: 0 2rem;">
                 <h3 style="font-family: 'Lora', serif; font-size: 2rem; color: white; margin-bottom: 1rem;">
                     <i class="fas fa-vr-cardboard" style="color: var(--copper); margin-right: 0.5rem;"></i>
                     Visite Immersive 360°
@@ -2628,10 +2671,52 @@ app.get('/', (c) => {
                 <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; line-height: 1.8;">
                     Grâce à notre visite virtuelle 3D, explorez chaque recoin de notre résidence : salons, chambres, espaces communs, jardins. Naviguez librement pour vous projeter dans votre futur chez-vous.
                 </p>
+                
+                <!-- Bouton Mode Plein Écran -->
+                <button id="fullscreenBtn" style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    margin-top: 1.5rem;
+                    padding: 1rem 2rem;
+                    background: linear-gradient(135deg, var(--copper), #D4B378);
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    font-weight: 600;
+                    font-size: 1.05rem;
+                    cursor: pointer;
+                    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+                    box-shadow: 0 6px 20px rgba(201, 164, 114, 0.4);
+                " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 30px rgba(201, 164, 114, 0.6)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(201, 164, 114, 0.4)'">
+                    <i class="fas fa-expand"></i>
+                    Mode Plein Écran
+                </button>
             </div>
 
-            <div class="polycam-wrapper" style="box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);">
+            <div id="polycamContainer" class="polycam-wrapper" style="
+                position: relative;
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+                overflow: hidden;
+            ">
+                <!-- Overlay pour bloquer clics externes (empêcher redirection vers poly.cam) -->
+                <div style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 60px;
+                    z-index: 10;
+                    pointer-events: auto;
+                    background: transparent;
+                " title="Navigation 3D - Utilisez le bouton Mode Plein Écran ci-dessus"></div>
+                
                 <iframe 
+                    id="polycamIframe"
                     src="https://poly.cam/capture/0173C8E7-21E2-4AB2-A66E-5757D3EDCFBC?mode=embed&background=%231a1a1a" 
                     title="Visite virtuelle 3D de L'Auberge Boischatel"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking; fullscreen"
@@ -2640,7 +2725,8 @@ app.get('/', (c) => {
                     mozallowfullscreen
                     frameborder="0"
                     loading="eager"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms">
+                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: auto;">
                 </iframe>
             </div>
 
@@ -3514,6 +3600,54 @@ app.get('/', (c) => {
                         behavior: 'smooth'
                     });
                 });
+            }
+
+            // Mode Plein Écran pour Polycam
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const polycamContainer = document.getElementById('polycamContainer');
+            let isFullscreen = false;
+            let exitBtn = null;
+
+            if (fullscreenBtn && polycamContainer) {
+                fullscreenBtn.addEventListener('click', () => {
+                    if (!isFullscreen) {
+                        // Activer mode plein écran
+                        polycamContainer.classList.add('fullscreen-mode');
+                        document.body.style.overflow = 'hidden';
+                        isFullscreen = true;
+
+                        // Créer bouton de sortie
+                        exitBtn = document.createElement('button');
+                        exitBtn.className = 'exit-fullscreen-btn';
+                        exitBtn.innerHTML = '<i class="fas fa-times"></i> Quitter Plein Écran';
+                        document.body.appendChild(exitBtn);
+
+                        // Événement fermer
+                        exitBtn.addEventListener('click', exitFullscreen);
+                        
+                        // Événement ESC
+                        document.addEventListener('keydown', handleEscKey);
+                    }
+                });
+
+                function exitFullscreen() {
+                    polycamContainer.classList.remove('fullscreen-mode');
+                    document.body.style.overflow = '';
+                    isFullscreen = false;
+
+                    if (exitBtn) {
+                        exitBtn.remove();
+                        exitBtn = null;
+                    }
+
+                    document.removeEventListener('keydown', handleEscKey);
+                }
+
+                function handleEscKey(e) {
+                    if (e.key === 'Escape' && isFullscreen) {
+                        exitFullscreen();
+                    }
+                }
             }
         });
     </script>
