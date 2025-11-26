@@ -16,6 +16,7 @@ app.use('/api/*', cors())
 
 // Serve static files
 app.use('/static/*', serveStatic({ root: './public' }))
+app.use('/favicon.png', serveStatic({ root: './public', path: '/favicon.png' }))
 
 // Mount API routes
 app.route('/api/auth', authRoutes)
@@ -66,6 +67,7 @@ app.get('/', (c) => {
     <meta name="description" content="L'Auberge Boischatel - Résidence pour aînés à Boischatel. Innovation bienveillante au service de la vie quotidienne. 38 unités, milieu chaleureux et sécuritaire.">
     <meta name="keywords" content="résidence aînés, Boischatel, RPA, innovation, sécurité, conformité, Québec">
     <meta name="author" content="L'Auberge Boischatel">
+    <link rel="icon" type="image/png" href="/favicon.png">
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -2729,6 +2731,7 @@ app.get('/', (c) => {
             <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">Une expérience immersive pour découvrir L'Auberge Boischatel depuis chez vous</p>
         </div>
 
+ codex/perform-complete-application-review-2025-11-26
         <!-- Modèle 3D Bâtiment -->
         <div class="immersive-viewer-wrapper">
             <div style="text-align: center; margin-bottom: 2rem;">
@@ -2808,6 +2811,9 @@ app.get('/', (c) => {
         <div style="max-width: 1200px; margin: 4rem auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);"></div>
 
         <!-- Visite Virtuelle Polycam -->
+
+        <!-- Visite Virtuelle 3D -->
+ main
         <div class="virtual-tour-container" style="background: transparent; max-width: 100%; padding: 0;">
             <div class="virtual-tour-intro" style="text-align: center; max-width: 800px; margin: 0 auto 2rem; padding: 0 2rem;">
                 <h3 style="font-family: 'Lora', serif; font-size: 2rem; color: white; margin-bottom: 1rem;">
@@ -2840,41 +2846,17 @@ app.get('/', (c) => {
                 </button>
             </div>
 
-            <div id="polycamContainer" class="polycam-wrapper" style="
-                position: relative;
+            <!-- Viewer 3D GLB pleine largeur -->
+            <div id="advanced-3d-viewer" style="
                 width: 100%;
-                max-width: 100%;
-                margin: 0;
-                border-radius: 0;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+                height: 70vh;
+                min-height: 500px;
+                max-height: 800px;
+                border-radius: 16px;
                 overflow: hidden;
-            ">
-                <!-- Overlay pour bloquer clics externes (empêcher redirection vers poly.cam) -->
-                <div style="
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 60px;
-                    z-index: 10;
-                    pointer-events: auto;
-                    background: transparent;
-                " title="Navigation 3D - Utilisez le bouton Mode Plein Écran ci-dessus"></div>
-                
-                <iframe 
-                    id="polycamIframe"
-                    src="https://poly.cam/capture/0173C8E7-21E2-4AB2-A66E-5757D3EDCFBC?mode=embed&background=%231a1a1a" 
-                    title="Visite virtuelle 3D de L'Auberge Boischatel"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking; fullscreen"
-                    allowfullscreen
-                    webkitallowfullscreen
-                    mozallowfullscreen
-                    frameborder="0"
-                    loading="eager"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: auto;">
-                </iframe>
-            </div>
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+                background: #1a1a1a;
+            "></div>
 
             <div class="tour-features" style="border-top: 1px solid rgba(255, 255, 255, 0.2);">
                 <div class="tour-feature">
@@ -3244,6 +3226,65 @@ app.get('/', (c) => {
         </div>
     </section>
 
+    <!-- Section Postes Téléphoniques -->
+    <section id="phone-diagram" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 4rem 2rem;">
+        <div class="section-header">
+            <span class="section-badge" style="background: var(--copper);">Postes Internes</span>
+            <h2 class="section-title" style="color: white;">Annuaire téléphonique</h2>
+            <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">Composez le 418-822-0347 puis le numéro de poste désiré</p>
+        </div>
+
+        <div class="phone-cards-grid" style="max-width: 1000px; margin: 0 auto;">
+            <!-- Direction Card -->
+            <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h4 style="color: white;">Direction</h4>
+                <p style="color: rgba(255, 255, 255, 0.7);">Bureau de la Directrice</p>
+                <div class="phone-card-extensions">
+                    <span class="extension-badge" style="background: var(--copper); color: white;">Poste 200</span>
+                </div>
+                <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
+                    Administration, gestion, demandes générales
+                </div>
+            </div>
+
+            <!-- Soins Infirmiers Card -->
+            <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h4 style="color: white;">Soins infirmiers</h4>
+                <p style="color: rgba(255, 255, 255, 0.7);">Infirmière de garde</p>
+                <div class="phone-card-extensions">
+                    <span class="extension-badge" style="background: var(--copper); color: white;">203</span>
+                    <span class="extension-badge" style="background: var(--copper); color: white;">204</span>
+                    <span class="extension-badge" style="background: var(--copper); color: white;">212</span>
+                    <span class="extension-badge" style="background: var(--copper); color: white;">213</span>
+                </div>
+                <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
+                    Pour rejoindre l'infirmière de garde
+                </div>
+            </div>
+
+            <!-- Cuisine Card -->
+            <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h4 style="color: white;">Cuisine</h4>
+                <p style="color: rgba(255, 255, 255, 0.7);">Service alimentaire</p>
+                <div class="phone-card-extensions">
+                    <span class="extension-badge" style="background: var(--copper); color: white;">Poste 205</span>
+                </div>
+                <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
+                    Repas et services alimentaires (usage interne)
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer>
         <div class="footer-content">
             <div class="footer-brand">
@@ -3449,9 +3490,9 @@ app.get('/', (c) => {
     </style>
 
     <!-- Three.js for Advanced 3D Viewer -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     
     <!-- Firebase SDK (CDN) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -3730,6 +3771,7 @@ app.get('/', (c) => {
                 element.addEventListener('click', createRipple);
             });
 
+ codex/perform-complete-application-review-2025-11-26
             const supportsWebGL = () => {
                 try {
                     const canvas = document.createElement('canvas');
@@ -3744,6 +3786,16 @@ app.get('/', (c) => {
             // Logo 3D dans le hero
             if (webglAvailable && typeof Advanced3DViewer !== 'undefined' && document.getElementById('logo-3d-viewer')) {
                 new Advanced3DViewer('logo-3d-viewer', '/static/models/logo-3d.glb', {
+
+            // Initialize Advanced 3D Viewer
+            console.log('🔍 Checking for Advanced3DViewer...', typeof Advanced3DViewer);
+            console.log('🔍 THREE available?', typeof THREE);
+            console.log('🔍 GLTFLoader available?', typeof THREE !== 'undefined' ? typeof THREE.GLTFLoader : 'THREE not loaded');
+
+            if (typeof Advanced3DViewer !== 'undefined') {
+                console.log('✅ Advanced3DViewer found, initializing...');
+                const viewer = new Advanced3DViewer('advanced-3d-viewer', '/static/models/auberge-3d.glb', {
+ main
                     autoRotate: true,
                     autoRotateSpeed: 1,
                     cameraControls: false,
@@ -3766,10 +3818,15 @@ app.get('/', (c) => {
                     autoRotate: true,
                     autoRotateSpeed: 1.25,
                     cameraControls: true,
+ codex/perform-complete-application-review-2025-11-26
                     glow: true,
                     glowIntensity: 0.32,
                     glowColor: 0xC9A472,
                     backgroundColor: 0x0f1215
+
+                    glow: false, // Désactivé pour afficher les textures du modèle Polycam
+                    backgroundColor: 0x1a1a1a // Dark background to match section
+ main
                 });
             } else if (viewerContainer) {
                 viewerContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:white;background:linear-gradient(135deg,rgba(201,164,114,0.25),rgba(15,18,21,0.9));text-align:center;padding:1.5rem;">La visite 3D nécessite WebGL. Essayez sur un navigateur récent ou contactez-nous pour une vidéo guidée.</div>';
@@ -3789,25 +3846,35 @@ app.get('/', (c) => {
                     }
                 };
 
+ codex/perform-complete-application-review-2025-11-26
                 immersiveFullscreenBtn.addEventListener('click', toggleFullscreen);
                 document.addEventListener('fullscreenchange', () => {
                     if (!document.fullscreenElement) {
                         immersiveShell.classList.remove('fullscreen-active');
                     }
                 });
+
+ main
             }
 
-            // Mode Plein Écran pour Polycam
+            // Mode Plein Écran pour le viewer 3D
             const fullscreenBtn = document.getElementById('fullscreenBtn');
-            const polycamContainer = document.getElementById('polycamContainer');
+            const viewer3DContainer = document.getElementById('advanced-3d-viewer');
             let isFullscreen = false;
             let exitBtn = null;
 
-            if (fullscreenBtn && polycamContainer) {
+            if (fullscreenBtn && viewer3DContainer) {
                 fullscreenBtn.addEventListener('click', () => {
                     if (!isFullscreen) {
                         // Activer mode plein écran
-                        polycamContainer.classList.add('fullscreen-mode');
+                        viewer3DContainer.style.position = 'fixed';
+                        viewer3DContainer.style.top = '0';
+                        viewer3DContainer.style.left = '0';
+                        viewer3DContainer.style.width = '100vw';
+                        viewer3DContainer.style.height = '100vh';
+                        viewer3DContainer.style.maxHeight = '100vh';
+                        viewer3DContainer.style.zIndex = '9999';
+                        viewer3DContainer.style.borderRadius = '0';
                         document.body.style.overflow = 'hidden';
                         isFullscreen = true;
 
@@ -3815,18 +3882,26 @@ app.get('/', (c) => {
                         exitBtn = document.createElement('button');
                         exitBtn.className = 'exit-fullscreen-btn';
                         exitBtn.innerHTML = '<i class="fas fa-times"></i> Quitter Plein Écran';
+                        exitBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;padding:12px 24px;background:rgba(0,0,0,0.8);color:white;border:none;border-radius:8px;cursor:pointer;font-size:14px;';
                         document.body.appendChild(exitBtn);
 
                         // Événement fermer
                         exitBtn.addEventListener('click', exitFullscreen);
-                        
+
                         // Événement ESC
                         document.addEventListener('keydown', handleEscKey);
                     }
                 });
 
                 function exitFullscreen() {
-                    polycamContainer.classList.remove('fullscreen-mode');
+                    viewer3DContainer.style.position = '';
+                    viewer3DContainer.style.top = '';
+                    viewer3DContainer.style.left = '';
+                    viewer3DContainer.style.width = '100%';
+                    viewer3DContainer.style.height = '70vh';
+                    viewer3DContainer.style.maxHeight = '800px';
+                    viewer3DContainer.style.zIndex = '';
+                    viewer3DContainer.style.borderRadius = '16px';
                     document.body.style.overflow = '';
                     isFullscreen = false;
 

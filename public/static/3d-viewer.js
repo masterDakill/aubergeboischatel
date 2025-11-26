@@ -6,11 +6,13 @@
 
 class Advanced3DViewer {
     constructor(containerId, modelPath, options = {}) {
+        console.log('🎨 Advanced3DViewer initializing...', containerId, modelPath);
         this.container = document.getElementById(containerId);
         if (!this.container) {
-            console.error(`Container #${containerId} not found`);
+            console.error(`❌ Container #${containerId} not found`);
             return;
         }
+        console.log('✅ Container found:', this.container);
 
         this.modelPath = modelPath;
         this.options = {
@@ -106,14 +108,16 @@ class Advanced3DViewer {
     }
 
     loadModel() {
+        console.log('📦 Loading 3D model:', this.modelPath);
         const loader = new THREE.GLTFLoader();
-        
+
         // Show loading indicator
         this.showLoading();
 
         loader.load(
             this.modelPath,
             (gltf) => {
+                console.log('✅ Model loaded successfully!', gltf);
                 this.model = gltf.scene;
                 
                 // Center and scale model
@@ -159,7 +163,8 @@ class Advanced3DViewer {
                 this.updateLoadingProgress(percent);
             },
             (error) => {
-                console.error('Error loading 3D model:', error);
+                console.error('❌ Error loading 3D model:', error);
+                console.error('❌ Model path was:', this.modelPath);
                 this.hideLoading();
                 this.showError('Erreur lors du chargement du modèle 3D');
             }
