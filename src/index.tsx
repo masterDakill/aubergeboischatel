@@ -2540,52 +2540,64 @@ app.get('/', (c) => {
         </div>
     </section>
 
-    <section id="repas" style="background: white;">
-        <div class="section-header">
-            <span class="section-badge">Repas & Menus</span>
-            <h2 class="section-title">Une cuisine savoureuse et équilibrée</h2>
-            <p class="section-subtitle">Des repas frais, préparés sur place, qui conjuguent plaisir gustatif, nutrition et respect des besoins individuels.</p>
+    <!-- Modèle 3D Bâtiment Section -->
+    <section class="phone-diagram-section" id="modele3d" style="background: #F5EAD0; padding: 4rem 2rem; margin: 0; border-radius: 0;">
+        <div class="phone-diagram-header" style="text-align: center; margin-bottom: 3rem;">
+            <span class="section-badge" style="display: inline-block; padding: 0.4rem 1rem; background: var(--sage-green); color: white; border-radius: 50px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 1rem;">Modèle 3D</span>
+            
+            <!-- Logo 3D GLB - Bâtiment Auberge 3D (Advanced Three.js) -->
+            <div id="advanced-3d-viewer" class="logo-3d-container" style="margin: 0 auto 2rem;"></div>
+            
+            <h2 class="section-title" style="font-family: 'Lora', serif; font-size: 2.8rem; color: var(--anthracite); font-weight: 600; margin-bottom: 1rem;">Découvrez notre bâtiment en 3D</h2>
+            <p class="section-subtitle" style="font-size: 1.2rem; color: var(--text-muted); max-width: 700px; margin: 0 auto;">Explorez l'architecture victorienne de L'Auberge Boischatel en trois dimensions</p>
         </div>
 
-        <div class="meals-content">
-            <img src="/static/images/salle-manger.png" alt="Salle à manger" class="meals-image">
-            <div class="meals-text">
-                <h3>Le plaisir de bien manger, chaque jour</h3>
-                <p>Notre cuisine met l'accent sur la fraîcheur, la variété et le goût. Nous proposons trois repas complets par jour, élaborés par notre équipe culinaire en tenant compte des préférences, allergies et régimes spéciaux de chacun.</p>
-                <p>Les repas sont servis dans notre salle à manger lumineuse et conviviale, favorisant les échanges et le sentiment de communauté. Chaque repas est une occasion de se retrouver, de partager et de savourer.</p>
+        <div class="phone-cards-grid">
+            <!-- Direction Card -->
+            <div class="phone-card">
+                <div class="phone-card-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h4>Direction</h4>
+                <p>Poste 200 – Bureau de la Directrice</p>
+                <div class="phone-card-extensions">
+                    <span class="extension-badge">200</span>
+                </div>
+                <div class="phone-card-tooltip">
+                    Administration, gestion, demandes générales
+                </div>
+            </div>
 
-                <div class="meals-features">
-                    <div class="meal-feature">
-                        <i class="fas fa-utensils"></i>
-                        <div>
-                            <h5>Repas équilibrés</h5>
-                            <p>Menus variés respectant les recommandations nutritionnelles pour aînés</p>
-                        </div>
-                    </div>
+            <!-- Soins Infirmiers Card -->
+            <div class="phone-card">
+                <div class="phone-card-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h4>Soins infirmiers</h4>
+                <p>Postes multiples pour l'infirmière de garde</p>
+                <div class="phone-card-extensions">
+                    <span class="extension-badge">203</span>
+                    <span class="extension-badge">204</span>
+                    <span class="extension-badge">212</span>
+                    <span class="extension-badge">213</span>
+                </div>
+                <div class="phone-card-tooltip">
+                    Pour rejoindre l'infirmière de garde
+                </div>
+            </div>
 
-                    <div class="meal-feature">
-                        <i class="fas fa-carrot"></i>
-                        <div>
-                            <h5>Ingrédients frais</h5>
-                            <p>Produits locaux et de saison privilégiés pour une qualité optimale</p>
-                        </div>
-                    </div>
-
-                    <div class="meal-feature">
-                        <i class="fas fa-allergies"></i>
-                        <div>
-                            <h5>Besoins spéciaux</h5>
-                            <p>Adaptation aux régimes diabétiques, sans sel, sans gluten, etc.</p>
-                        </div>
-                    </div>
-
-                    <div class="meal-feature">
-                        <i class="fas fa-birthday-cake"></i>
-                        <div>
-                            <h5>Occasions spéciales</h5>
-                            <p>Repas thématiques, menus festifs et célébrations gourmandes</p>
-                        </div>
-                    </div>
+            <!-- Cuisine Card -->
+            <div class="phone-card">
+                <div class="phone-card-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h4>Cuisine</h4>
+                <p>Poste 205 – Cuisine interne</p>
+                <div class="phone-card-extensions">
+                    <span class="extension-badge">205</span>
+                </div>
+                <div class="phone-card-tooltip">
+                    Usage interne : repas et services alimentaires
                 </div>
             </div>
         </div>
@@ -2641,6 +2653,57 @@ app.get('/', (c) => {
                     </div>
                     <h5>Multi-dispositifs</h5>
                     <p>Accessible depuis votre ordinateur, tablette ou téléphone intelligent</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="repas" style="background: white;">
+        <div class="section-header">
+            <span class="section-badge">Repas & Menus</span>
+            <h2 class="section-title">Une cuisine savoureuse et équilibrée</h2>
+            <p class="section-subtitle">Des repas frais, préparés sur place, qui conjuguent plaisir gustatif, nutrition et respect des besoins individuels.</p>
+        </div>
+
+        <div class="meals-content">
+            <img src="/static/images/salle-manger.png" alt="Salle à manger" class="meals-image">
+            <div class="meals-text">
+                <h3>Le plaisir de bien manger, chaque jour</h3>
+                <p>Notre cuisine met l'accent sur la fraîcheur, la variété et le goût. Nous proposons trois repas complets par jour, élaborés par notre équipe culinaire en tenant compte des préférences, allergies et régimes spéciaux de chacun.</p>
+                <p>Les repas sont servis dans notre salle à manger lumineuse et conviviale, favorisant les échanges et le sentiment de communauté. Chaque repas est une occasion de se retrouver, de partager et de savourer.</p>
+
+                <div class="meals-features">
+                    <div class="meal-feature">
+                        <i class="fas fa-utensils"></i>
+                        <div>
+                            <h5>Repas équilibrés</h5>
+                            <p>Menus variés respectant les recommandations nutritionnelles pour aînés</p>
+                        </div>
+                    </div>
+
+                    <div class="meal-feature">
+                        <i class="fas fa-carrot"></i>
+                        <div>
+                            <h5>Ingrédients frais</h5>
+                            <p>Produits locaux et de saison privilégiés pour une qualité optimale</p>
+                        </div>
+                    </div>
+
+                    <div class="meal-feature">
+                        <i class="fas fa-allergies"></i>
+                        <div>
+                            <h5>Besoins spéciaux</h5>
+                            <p>Adaptation aux régimes diabétiques, sans sel, sans gluten, etc.</p>
+                        </div>
+                    </div>
+
+                    <div class="meal-feature">
+                        <i class="fas fa-birthday-cake"></i>
+                        <div>
+                            <h5>Occasions spéciales</h5>
+                            <p>Repas thématiques, menus festifs et célébrations gourmandes</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2927,67 +2990,6 @@ app.get('/', (c) => {
 
                     <button type="submit" class="submit-btn">Envoyer ma demande</button>
                 </form>
-            </div>
-        </div>
-
-        <!-- Phone Extension Diagram Section -->
-        <div class="phone-diagram-section" id="phone-diagram">
-            <div class="phone-diagram-header">
-                <!-- Logo 3D GLB - Bâtiment Auberge 3D (Advanced Three.js) -->
-                <div id="advanced-3d-viewer" class="logo-3d-container"></div>
-                
-                <h3>Diagramme des postes téléphoniques internes</h3>
-                <p>Visualisez rapidement quel poste joint quel service à l'interne</p>
-            </div>
-
-            <div class="phone-cards-grid">
-                <!-- Direction Card -->
-                <div class="phone-card">
-                    <div class="phone-card-icon">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <h4>Direction</h4>
-                    <p>Poste 200 – Bureau de la Directrice</p>
-                    <div class="phone-card-extensions">
-                        <span class="extension-badge">200</span>
-                    </div>
-                    <div class="phone-card-tooltip">
-                        Administration, gestion, demandes générales
-                    </div>
-                </div>
-
-                <!-- Soins Infirmiers Card -->
-                <div class="phone-card">
-                    <div class="phone-card-icon">
-                        <i class="fas fa-heartbeat"></i>
-                    </div>
-                    <h4>Soins infirmiers</h4>
-                    <p>Postes multiples pour l'infirmière de garde</p>
-                    <div class="phone-card-extensions">
-                        <span class="extension-badge">203</span>
-                        <span class="extension-badge">204</span>
-                        <span class="extension-badge">212</span>
-                        <span class="extension-badge">213</span>
-                    </div>
-                    <div class="phone-card-tooltip">
-                        Pour rejoindre l'infirmière de garde
-                    </div>
-                </div>
-
-                <!-- Cuisine Card -->
-                <div class="phone-card">
-                    <div class="phone-card-icon">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <h4>Cuisine</h4>
-                    <p>Poste 205 – Cuisine interne</p>
-                    <div class="phone-card-extensions">
-                        <span class="extension-badge">205</span>
-                    </div>
-                    <div class="phone-card-tooltip">
-                        Usage interne : repas et services alimentaires
-                    </div>
-                </div>
             </div>
         </div>
 
