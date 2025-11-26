@@ -29,7 +29,7 @@ app.route('/api/users', usersRoutes)
 // API Routes
 app.get('/api/contact', (c) => {
   return c.json({ 
-    email: 'info@aubergeboischatel.com',
+    email: 'contact@aubergeboischatel.com',
     phone: '418-822-0347',
     address: '5424 Avenue Royale, Boischatel, QC G0A 1H0'
   })
@@ -3074,8 +3074,8 @@ app.get('/', (c) => {
                         <h4>Téléphone</h4>
                         <p>418-822-0347</p>
                         <a href="#phone-diagram" class="phone-diagram-link">
-                            <i class="fas fa-diagram-project"></i>
-                            Voir les postes internes
+                            <i class="fas fa-phone-alt"></i>
+                            Voir le menu téléphonique
                         </a>
                     </div>
                 </div>
@@ -3086,7 +3086,7 @@ app.get('/', (c) => {
                     </div>
                     <div class="contact-item-content">
                         <h4>Courriel</h4>
-                        <p>info@aubergeboischatel.com<br>Réponse sous 24h</p>
+                        <p>contact@aubergeboischatel.com<br>Réponse sous 24h</p>
                     </div>
                 </div>
 
@@ -3138,31 +3138,31 @@ app.get('/', (c) => {
         </div>
     </section>
 
-    <!-- Section Postes Téléphoniques -->
+    <!-- Section Menu Téléphonique -->
     <section id="phone-diagram" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 4rem 2rem;">
         <div class="section-header">
-            <span class="section-badge" style="background: var(--copper);">Postes Internes</span>
-            <h2 class="section-title" style="color: white;">Annuaire téléphonique</h2>
-            <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">Composez le 418-822-0347 puis le numéro de poste désiré</p>
+            <span class="section-badge" style="background: var(--copper);">Menu Téléphonique</span>
+            <h2 class="section-title" style="color: white;">Options téléphoniques</h2>
+            <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">Composez le 418-822-0347 puis sélectionnez l'option désirée</p>
         </div>
 
         <div class="phone-cards-grid" style="max-width: 1000px; margin: 0 auto;">
-            <!-- Direction Card -->
+            <!-- Option 0 - Urgences -->
             <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
-                <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
-                    <i class="fas fa-user-tie"></i>
+                <div class="phone-card-icon" style="background: linear-gradient(135deg, #DC2626, #EF4444);">
+                    <i class="fas fa-exclamation-triangle"></i>
                 </div>
-                <h4 style="color: white;">Direction</h4>
-                <p style="color: rgba(255, 255, 255, 0.7);">Bureau de la Directrice</p>
+                <h4 style="color: white;">Urgences</h4>
+                <p style="color: rgba(255, 255, 255, 0.7);">Situations urgentes</p>
                 <div class="phone-card-extensions">
-                    <span class="extension-badge" style="background: var(--copper); color: white;">Poste 200</span>
+                    <span class="extension-badge" style="background: #DC2626; color: white; font-size: 1.1rem; padding: 0.5rem 1rem;">Option 0</span>
                 </div>
-                <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
-                    Administration, gestion, demandes générales
+                <div class="phone-card-tooltip" style="background: rgba(220, 38, 38, 0.95);">
+                    Pour les situations d'urgence uniquement
                 </div>
             </div>
 
-            <!-- Soins Infirmiers Card -->
+            <!-- Option 1 - Soins Infirmiers -->
             <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
                 <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
                     <i class="fas fa-heartbeat"></i>
@@ -3170,28 +3170,25 @@ app.get('/', (c) => {
                 <h4 style="color: white;">Soins infirmiers</h4>
                 <p style="color: rgba(255, 255, 255, 0.7);">Infirmière de garde</p>
                 <div class="phone-card-extensions">
-                    <span class="extension-badge" style="background: var(--copper); color: white;">203</span>
-                    <span class="extension-badge" style="background: var(--copper); color: white;">204</span>
-                    <span class="extension-badge" style="background: var(--copper); color: white;">212</span>
-                    <span class="extension-badge" style="background: var(--copper); color: white;">213</span>
+                    <span class="extension-badge" style="background: var(--copper); color: white; font-size: 1.1rem; padding: 0.5rem 1rem;">Option 1</span>
                 </div>
                 <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
                     Pour rejoindre l'infirmière de garde
                 </div>
             </div>
 
-            <!-- Cuisine Card -->
+            <!-- Option 2 - Direction -->
             <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
                 <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
-                    <i class="fas fa-utensils"></i>
+                    <i class="fas fa-user-tie"></i>
                 </div>
-                <h4 style="color: white;">Cuisine</h4>
-                <p style="color: rgba(255, 255, 255, 0.7);">Service alimentaire</p>
+                <h4 style="color: white;">Direction</h4>
+                <p style="color: rgba(255, 255, 255, 0.7);">Bureau de la Directrice</p>
                 <div class="phone-card-extensions">
-                    <span class="extension-badge" style="background: var(--copper); color: white;">Poste 205</span>
+                    <span class="extension-badge" style="background: var(--copper); color: white; font-size: 1.1rem; padding: 0.5rem 1rem;">Option 2</span>
                 </div>
                 <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
-                    Repas et services alimentaires (usage interne)
+                    Administration, gestion, demandes générales
                 </div>
             </div>
         </div>
@@ -3233,7 +3230,7 @@ app.get('/', (c) => {
                     <li>5424 Avenue Royale</li>
                     <li>Boischatel, QC G0A 1H0</li>
                     <li>418-822-0347</li>
-                    <li>info@aubergeboischatel.com</li>
+                    <li>contact@aubergeboischatel.com</li>
                     <li style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; color: var(--copper);">
                         <div class="moon-sleep-icon" style="width: 20px; height: 20px;">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3264,14 +3261,6 @@ app.get('/', (c) => {
     <div id="loginModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center;">
       <div style="background: white; border-radius: 24px; padding: 0; max-width: 480px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4); overflow: hidden;">
 
-        <!-- Banner "À venir" -->
-        <div style="background: linear-gradient(135deg, var(--copper), #D4B378); padding: 1rem 1.5rem; text-align: center;">
-          <p style="color: white; font-weight: 600; margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-            <i class="fas fa-tools"></i>
-            Fonctionnalité en cours de développement
-          </p>
-        </div>
-
         <!-- Tabs -->
         <div style="display: flex; background: #f3f4f6;">
           <button id="signinTab" class="auth-tab active" onclick="authManager.showSignInTab()" style="flex: 1; padding: 1.25rem; border: none; background: transparent; cursor: pointer; font-weight: 600; font-size: 1rem; color: #6b7280; transition: all 0.3s;">
@@ -3285,15 +3274,7 @@ app.get('/', (c) => {
         <!-- Sign In Form -->
         <form id="signinForm" class="auth-form active" style="padding: 2.5rem; display: block;">
           <h2 style="font-family: 'Lora', serif; font-size: 1.875rem; color: #1f2937; margin-bottom: 0.5rem; text-align: center;">Bienvenue</h2>
-          <p style="color: #6b7280; text-align: center; margin-bottom: 1rem; font-size: 0.95rem;">Connectez-vous à votre compte</p>
-
-          <!-- Message "À venir" -->
-          <div style="background: #FEF3C7; border: 1px solid #F59E0B; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; text-align: center;">
-            <p style="color: #92400E; font-size: 0.9rem; margin: 0;">
-              <i class="fas fa-clock" style="margin-right: 0.5rem;"></i>
-              Le portail client sera disponible prochainement. Contactez-nous au <strong>418-822-0347</strong> pour toute demande.
-            </p>
-          </div>
+          <p style="color: #6b7280; text-align: center; margin-bottom: 2rem; font-size: 0.95rem;">Connectez-vous à votre compte</p>
           
           <div style="margin-bottom: 1.5rem;">
             <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; font-size: 0.9rem;">Email</label>
