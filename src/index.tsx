@@ -402,20 +402,63 @@ app.get('/', (c) => {
         .hero-content {
             position: relative;
             z-index: 2;
-            text-align: center;
+            text-align: left;
             color: white;
-            max-width: 950px;
-            padding: 4rem 3rem;
-            /* More transparent to show photo beauty */
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px) saturate(120%);
+            max-width: 1100px;
+            padding: 3.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(14px) saturate(140%);
             border-radius: 28px;
             border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 
+            box-shadow:
                 0 8px 32px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-            /* Smooth entrance animation */
+                0 0 0 1px rgba(255, 255, 255, 0.12) inset;
             animation: heroContentFadeIn 1.2s ease-out;
+        }
+
+        .hero-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .hero-visual {
+            position: relative;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .hero-logo-canvas {
+            position: relative;
+            height: 320px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: radial-gradient(circle at 20% 20%, rgba(201, 164, 114, 0.35), transparent 45%),
+                        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.15), transparent 50%),
+                        rgba(15, 20, 25, 0.85);
+        }
+
+        .hero-logo-fallback {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(201, 164, 114, 0.15), rgba(90, 125, 140, 0.2));
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .hero-logo-fallback img {
+            width: 140px;
+            height: auto;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
         }
         
         @keyframes heroContentFadeIn {
@@ -480,9 +523,17 @@ app.get('/', (c) => {
             margin-right: auto;
         }
 
+        .hero-subnote {
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+
         .hero-cta-group {
             display: flex;
+            flex-wrap: wrap;
             gap: 1rem;
+            justify-content: flex-start;
         }
 
         .hero-cta {
@@ -811,6 +862,67 @@ app.get('/', (c) => {
         .logo-3d-container model-viewer {
             width: 100%;
             height: 100%;
+        }
+
+        .immersive-viewer-wrapper {
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+        }
+
+        .immersive-viewer-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 20px;
+            overflow: hidden;
+            background: radial-gradient(circle at 30% 30%, rgba(201, 164, 114, 0.25), transparent 50%),
+                        radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.12), transparent 55%),
+                        #0f1215;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .immersive-viewer {
+            position: absolute;
+            inset: 0;
+        }
+
+        .viewer-toolbar {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 5;
+        }
+
+        .viewer-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.7rem 1rem;
+            background: rgba(15, 18, 21, 0.7);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .viewer-btn:hover {
+            background: rgba(201, 164, 114, 0.8);
+            border-color: rgba(201, 164, 114, 0.5);
+        }
+
+        .fullscreen-active {
+            position: fixed !important;
+            inset: 0;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 2000;
+            border-radius: 0;
         }
 
         .phone-cards-grid {
@@ -2215,6 +2327,8 @@ app.get('/', (c) => {
                 <li><a href="#mission">L'Auberge</a></li>
                 <li><a href="#chambres">Hébergement</a></li>
                 <li><a href="#activites">Vie & Activités</a></li>
+                <li><a href="/client/dashboard">Espace Client</a></li>
+                <li><a href="/staff/dashboard">Espace Employé</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
             
@@ -2255,19 +2369,43 @@ app.get('/', (c) => {
 
     <section class="hero" id="accueil">
         <div class="hero-content">
-            <span class="hero-badge">Résidence Certifiée RPA</span>
-            <h1 class="hero-title"><span class="text-clip-reveal" data-text="Bienvenue chez vous">Bienvenue chez vous</span></h1>
-            <p class="hero-subtitle">Innovation bienveillante au service de la vie quotidienne</p>
-            <p class="hero-tagline">Une résidence à taille humaine (38 unités), dirigée par une jeune équipe dynamique, où modernité et chaleur s'harmonisent pour créer un milieu de vie sécuritaire et épanouissant.</p>
-            <div class="hero-cta-group">
-                <a href="#contact" class="hero-cta">
-                    <i class="fas fa-calendar-check"></i>
-                    Planifier une visite
-                </a>
-                <a href="#chambres" class="hero-cta-secondary">
-                    <i class="fas fa-door-open"></i>
-                    Voir les chambres
-                </a>
+            <div class="hero-layout">
+                <div>
+                    <span class="hero-badge">Sécurité augmentée pour la RPA</span>
+                    <h1 class="hero-title"><span class="text-clip-reveal" data-text="Tableau de bord intelligent">Tableau de bord intelligent</span></h1>
+                    <p class="hero-subtitle">Sécurité, surveillance intelligente et simplicité d’utilisation pour l’Auberge Boischatel.</p>
+                    <p class="hero-tagline">Le tableau de bord met en avant l’état de l’Auberge, les alertes critiques et les données clés. L’IA assiste l’équipe sur le terrain pour prioriser les actions et rassurer les familles.</p>
+                    <div class="hero-cta-group">
+                        <a href="#visite3d" class="hero-cta">
+                            <i class="fas fa-cube"></i>
+                            Voir le plan 3D de l’Auberge
+                        </a>
+                        <a href="/admin/dashboard" class="hero-cta-secondary">
+                            <i class="fas fa-bell"></i>
+                            Accéder aux alertes en temps réel
+                        </a>
+                        <a href="/client/dashboard" class="hero-cta-secondary">
+                            <i class="fas fa-user-shield"></i>
+                            Aperçu Espace Client
+                        </a>
+                        <a href="/staff/dashboard" class="hero-cta-secondary">
+                            <i class="fas fa-briefcase"></i>
+                            Aperçu Espace Employé
+                        </a>
+                    </div>
+                    <p class="hero-subnote">Les portails client et employé sont accessibles publiquement : les aperçus statiques s’affichent même sans authentification.</p>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-logo-canvas" id="logo-3d-viewer">
+                        <div class="hero-logo-fallback" id="logo-3d-fallback">
+                            <div>
+                                <img src="/static/images/logo.png" alt="Logo Auberge Boischatel">
+                                <p>Prévisualisation statique – activez WebGL pour profiter du logo 3D animé.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="color: rgba(255, 255, 255, 0.85); margin-top: 0.75rem; font-size: 0.95rem;">Logo 3D animé : rotation douce, mise en avant dans le hero avec fallback automatique.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -2592,21 +2730,29 @@ app.get('/', (c) => {
         </div>
 
         <!-- Modèle 3D Bâtiment -->
-        <div style="max-width: 1200px; margin: 0 auto 4rem;">
+        <div class="immersive-viewer-wrapper">
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h3 style="font-family: 'Lora', serif; font-size: 2rem; color: white; margin-bottom: 1rem;">
                     <i class="fas fa-building" style="color: var(--copper); margin-right: 0.5rem;"></i>
                     Notre Bâtiment en 3D
                 </h3>
-                <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                    Découvrez l'architecture victorienne de L'Auberge Boischatel en trois dimensions
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 700px; margin: 0 auto;">
+                    Découvrez l'architecture victorienne de L'Auberge Boischatel en plein écran, avec contrôles fluides et lecture immersive.
                 </p>
             </div>
-            
-            <!-- Logo 3D GLB - Bâtiment Auberge 3D (Advanced Three.js) -->
-            <div id="advanced-3d-viewer" class="logo-3d-container" style="margin: 0 auto 3rem; max-width: 600px; height: 400px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);"></div>
-            
-            <!-- Postes Téléphoniques -->
+
+            <div class="immersive-viewer-frame" id="advanced-3d-shell">
+                <div class="viewer-toolbar">
+                    <button class="viewer-btn" id="viewer-fullscreen-btn" type="button">
+                        <i class="fas fa-expand"></i>
+                        Plein écran
+                    </button>
+                </div>
+                <div id="advanced-3d-viewer" class="immersive-viewer"></div>
+            </div>
+            <p style="color: rgba(255, 255, 255, 0.75); margin-top: 1rem; text-align: center;">Astuce : cliquez-glissez pour explorer, double-cliquez sur Plein écran pour quitter.</p>
+        </div>
+        <!-- Postes Téléphoniques -->
             <div class="phone-cards-grid" style="margin-top: 3rem;">
                 <!-- Direction Card -->
                 <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
@@ -3576,29 +3722,75 @@ app.get('/', (c) => {
             const rippleElements = document.querySelectorAll(
                 '.hero-cta, .hero-cta-secondary, .scroller-btn, .nav-links a, .submit-btn, .gallery-item'
             );
-            
+
             rippleElements.forEach(element => {
                 element.addEventListener('click', createRipple);
             });
 
-            // Initialize Advanced 3D Viewer
-            if (typeof Advanced3DViewer !== 'undefined') {
-                const viewer = new Advanced3DViewer('advanced-3d-viewer', '/static/models/auberge-3d.glb', {
+            const supportsWebGL = () => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    return !!window.WebGLRenderingContext && !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+                } catch (error) {
+                    return false;
+                }
+            };
+
+            const webglAvailable = supportsWebGL();
+
+            // Logo 3D dans le hero
+            if (webglAvailable && typeof Advanced3DViewer !== 'undefined' && document.getElementById('logo-3d-viewer')) {
+                new Advanced3DViewer('logo-3d-viewer', '/static/models/logo-3d.glb', {
                     autoRotate: true,
-                    autoRotateSpeed: 1.5,
-                    cameraControls: true,
+                    autoRotateSpeed: 1,
+                    cameraControls: false,
                     glow: true,
-                    glowIntensity: 0.3,
-                    glowColor: 0xC9A472, // Copper
-                    backgroundColor: 0x1a1a1a // Dark background to match section
+                    glowIntensity: 0.35,
+                    glowColor: 0xC9A472,
+                    backgroundColor: 0x0f1419
                 });
 
-                // Click to scroll to top
-                document.getElementById('advanced-3d-viewer').addEventListener('click', () => {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
+                const fallback = document.getElementById('logo-3d-fallback');
+                if (fallback) {
+                    fallback.style.display = 'none';
+                }
+            }
+
+            // Viewer 3D principal
+            const viewerContainer = document.getElementById('advanced-3d-viewer');
+            if (webglAvailable && typeof Advanced3DViewer !== 'undefined' && viewerContainer) {
+                new Advanced3DViewer('advanced-3d-viewer', '/static/models/auberge-3d.glb', {
+                    autoRotate: true,
+                    autoRotateSpeed: 1.25,
+                    cameraControls: true,
+                    glow: true,
+                    glowIntensity: 0.32,
+                    glowColor: 0xC9A472,
+                    backgroundColor: 0x0f1215
+                });
+            } else if (viewerContainer) {
+                viewerContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:white;background:linear-gradient(135deg,rgba(201,164,114,0.25),rgba(15,18,21,0.9));text-align:center;padding:1.5rem;">La visite 3D nécessite WebGL. Essayez sur un navigateur récent ou contactez-nous pour une vidéo guidée.</div>';
+            }
+
+            // Plein écran pour la visite 3D
+            const immersiveShell = document.getElementById('advanced-3d-shell');
+            const immersiveFullscreenBtn = document.getElementById('viewer-fullscreen-btn');
+
+            if (immersiveShell && immersiveFullscreenBtn) {
+                const toggleFullscreen = async () => {
+                    if (!document.fullscreenElement && immersiveShell.requestFullscreen) {
+                        await immersiveShell.requestFullscreen();
+                        immersiveShell.classList.add('fullscreen-active');
+                    } else if (document.fullscreenElement) {
+                        await document.exitFullscreen();
+                    }
+                };
+
+                immersiveFullscreenBtn.addEventListener('click', toggleFullscreen);
+                document.addEventListener('fullscreenchange', () => {
+                    if (!document.fullscreenElement) {
+                        immersiveShell.classList.remove('fullscreen-active');
+                    }
                 });
             }
 
@@ -3676,9 +3868,124 @@ app.get('/client/dashboard', (c) => {
     </div>
 
     <!-- Dashboard Content (rendered by JavaScript) -->
-    <div id="dashboard-content" style="display: none;">
-        <!-- Content will be injected by client-dashboard.js -->
+    <div id="dashboard-content" class="min-h-screen bg-gradient-to-b from-white via-slate-50 to-blue-50">
+        <div class="max-w-6xl mx-auto px-5 py-16 space-y-10">
+            <!-- Welcome / fallback hero -->
+            <section class="bg-white/80 backdrop-blur shadow-sm rounded-2xl border border-slate-100 overflow-hidden">
+                <div class="grid md:grid-cols-5">
+                    <div class="p-8 md:col-span-3 space-y-4">
+                        <div class="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-full">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                            Espace famille protégé
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                            Tableau de bord connecté à l'Auberge Boischatel
+                        </h1>
+                        <p class="text-gray-600 text-lg leading-relaxed">
+                            Consultez l'état des résidents liés, accédez aux documents partagés et restez informé des
+                            alertes de sécurité en temps réel. Une fois connecté, les données familiales sont synchronisées
+                            automatiquement.
+                        </p>
+                        <div class="flex flex-wrap gap-3 pt-2">
+                            <a href="/#visite-3d" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm transition">
+                                <i class="fa-solid fa-vr-cardboard"></i>
+                                Voir le plan 3D de l'Auberge
+                            </a>
+                            <a href="/" class="inline-flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg shadow-sm transition">
+                                <i class="fa-solid fa-bell"></i>
+                                Accéder aux alertes en temps réel
+                            </a>
+                            <span class="inline-flex items-center gap-2 text-sm text-gray-600">
+                                <i class="fa-solid fa-shield-halved text-green-600"></i>
+                                Connexion requise pour les données privées
+                            </span>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 bg-gradient-to-bl from-blue-600 via-blue-500 to-indigo-600 text-white p-8 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <p class="text-sm font-semibold uppercase tracking-wide text-white/80">Aperçu rapide</p>
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white/20 rounded-xl p-3">
+                                    <i class="fa-solid fa-house-chimney text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-white/80">Résidence sécurisée</p>
+                                    <p class="text-xl font-bold">Familles et proches</p>
+                                </div>
+                            </div>
+                            <ul class="space-y-2 text-sm text-white/90">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-emerald-200"></i> Présentation claire des résidents liés</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-emerald-200"></i> Documents médicaux/administratifs centralisés</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-emerald-200"></i> Alertes et communications sécurisées</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white/15 rounded-lg p-4 text-sm text-white/80">
+                            <p class="font-semibold text-white">Conseil rapide</p>
+                            <p>Connectez-vous via le portail sécurisé pour afficher les dossiers personnalisés de votre proche.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feature highlights -->
+            <section class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 space-y-3">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-100 text-blue-600">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900">Suivi des proches</h3>
+                    <p class="text-gray-600 text-sm">Liens résidents, chambres et notes clés accessibles après connexion.</p>
+                    <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-flex items-center gap-2">
+                        <i class="fa-solid fa-lock"></i> Accès réservé
+                    </span>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 space-y-3">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600">
+                        <i class="fa-solid fa-file-shield"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900">Documents sécurisés</h3>
+                    <p class="text-gray-600 text-sm">Rapports, consignes et factures sont partagés via le coffre-fort numérique.</p>
+                    <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full inline-flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i> Chiffrement TLS
+                    </span>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 space-y-3">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-100 text-purple-600">
+                        <i class="fa-solid fa-bell"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900">Alertes en direct</h3>
+                    <p class="text-gray-600 text-sm">Notifications de sécurité et mises à jour importantes dès l'ouverture de session.</p>
+                    <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full inline-flex items-center gap-2">
+                        <i class="fa-solid fa-wave-square"></i> Temps réel
+                    </span>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-gray-900">Accéder à vos informations privées</h2>
+                        <p class="text-gray-600 mt-1">Connectez-vous pour afficher vos résidents et documents. Vous serez redirigé automatiquement après authentification.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            Se connecter
+                        </a>
+                        <a href="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-gray-800 border border-slate-200 hover:border-slate-300 shadow-sm transition">
+                            <i class="fa-solid fa-circle-question"></i>
+                            Besoin d'aide ?
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
+    <noscript>
+        <div class="max-w-3xl mx-auto mt-6 text-center text-sm text-red-700 bg-red-50 border border-red-100 px-4 py-3 rounded-lg">
+            JavaScript doit être activé pour afficher le tableau de bord sécurisé. Veuillez l'activer puis recharger la page.
+        </div>
+    </noscript>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -3723,9 +4030,121 @@ app.get('/staff/dashboard', (c) => {
     </div>
 
     <!-- Dashboard Content (rendered by JavaScript) -->
-    <div id="dashboard-content" style="display: none;">
-        <!-- Content will be injected by staff-dashboard.js -->
+    <div id="dashboard-content" class="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950">
+        <div class="max-w-6xl mx-auto px-5 py-16 space-y-10">
+            <!-- Welcome / fallback hero -->
+            <section class="bg-slate-800/70 backdrop-blur border border-slate-700 rounded-2xl shadow-lg overflow-hidden">
+                <div class="grid md:grid-cols-5">
+                    <div class="p-8 md:col-span-3 space-y-4 text-white">
+                        <div class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-200 bg-emerald-900/40 px-3 py-1 rounded-full">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
+                            Espace employé - accès sécurisé
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-bold leading-tight">
+                            Console opérationnelle de l'Auberge Boischatel
+                        </h1>
+                        <p class="text-slate-200 text-lg leading-relaxed">
+                            Surveillez les alertes en temps réel, consultez les résidents et partagez les documents essentiels. Après connexion, les données et actions internes sont chargées automatiquement.
+                        </p>
+                        <div class="flex flex-wrap gap-3 pt-2">
+                            <a href="/#visite-3d" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-2 rounded-lg shadow-sm transition">
+                                <i class="fa-solid fa-arrows-up-down-left-right"></i>
+                                Ouvrir le plan 3D
+                            </a>
+                            <a href="/" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white px-4 py-2 rounded-lg shadow-sm border border-white/10 transition">
+                                <i class="fa-solid fa-bolt"></i>
+                                Accéder aux alertes
+                            </a>
+                            <span class="inline-flex items-center gap-2 text-sm text-slate-200">
+                                <i class="fa-solid fa-lock"></i>
+                                Authentification requise
+                            </span>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 bg-gradient-to-bl from-emerald-500 via-emerald-400 to-teal-400 text-slate-900 p-8 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <p class="text-sm font-semibold uppercase tracking-wide text-slate-800">Prêt pour l'intervention</p>
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white rounded-xl p-3 text-emerald-600">
+                                    <i class="fa-solid fa-shield-heart text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-slate-800">Sécurité & qualité</p>
+                                    <p class="text-xl font-bold">Support aux équipes</p>
+                                </div>
+                            </div>
+                            <ul class="space-y-2 text-sm text-slate-900/90">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-emerald-700"></i> Vue synthétique des résidents affectés</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-emerald-700"></i> Documents et consignes toujours disponibles</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check-circle text-emerald-700"></i> Alertes et interventions à prioriser</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white/80 rounded-lg p-4 text-sm text-slate-900">
+                            <p class="font-semibold">Astuce</p>
+                            <p>Utilisez vos identifiants internes; la redirection est automatique après connexion.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feature highlights -->
+            <section class="grid md:grid-cols-3 gap-6">
+                <div class="bg-slate-800/60 border border-slate-700 rounded-xl shadow-sm p-6 space-y-3 text-white">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-300">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold">Tournées et tâches</h3>
+                    <p class="text-slate-200 text-sm">Suivi des tâches quotidiennes, notes et incidents dès que vous êtes connecté.</p>
+                    <span class="text-xs font-semibold text-emerald-200 bg-emerald-900/40 px-3 py-1 rounded-full inline-flex items-center gap-2">
+                        <i class="fa-solid fa-clock"></i> Temps réel
+                    </span>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700 rounded-xl shadow-sm p-6 space-y-3 text-white">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-300">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold">Dossiers résidents</h3>
+                    <p class="text-slate-200 text-sm">Historique, chambres et plans de soins disponibles selon vos permissions.</p>
+                    <span class="text-xs font-semibold text-cyan-200 bg-cyan-900/40 px-3 py-1 rounded-full inline-flex items-center gap-2">
+                        <i class="fa-solid fa-lock"></i> Accès sécurisé
+                    </span>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700 rounded-xl shadow-sm p-6 space-y-3 text-white">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-amber-500/20 text-amber-200">
+                        <i class="fa-solid fa-wave-square"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold">Alertes critiques</h3>
+                    <p class="text-slate-200 text-sm">Notifications sécurité, rondes incendie, incidents et communications direction.</p>
+                    <span class="text-xs font-semibold text-amber-200 bg-amber-900/40 px-3 py-1 rounded-full inline-flex items-center gap-2">
+                        <i class="fa-solid fa-bolt"></i> Priorité</span>
+                </div>
+            </section>
+
+            <section class="bg-slate-800/70 border border-slate-700 rounded-2xl shadow-sm p-6 md:p-8 space-y-4 text-white">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-semibold">Connexion interne requise</h2>
+                        <p class="text-slate-200 mt-1">Identifiez-vous pour charger vos résidents, documents et alertes. Le contenu ci-dessus reste disponible comme mémo rapide.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold shadow-sm transition">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            Se connecter
+                        </a>
+                        <a href="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 text-white border border-white/10 hover:border-white/20 shadow-sm transition">
+                            <i class="fa-solid fa-question"></i>
+                            Assistance
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
+    <noscript>
+        <div class="max-w-3xl mx-auto mt-6 text-center text-sm text-amber-100 bg-amber-900/40 border border-amber-800 px-4 py-3 rounded-lg">
+            JavaScript doit être activé pour afficher le tableau de bord employé. Activez-le puis rechargez la page.
+        </div>
+    </noscript>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
