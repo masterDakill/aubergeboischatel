@@ -2593,62 +2593,7 @@ app.get('/', (c) => {
             <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">Une expérience immersive pour découvrir L'Auberge Boischatel depuis chez vous</p>
         </div>
 
-        <!-- Postes Téléphoniques -->
-            <div class="phone-cards-grid" style="margin-top: 3rem;">
-                <!-- Direction Card -->
-                <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
-                    <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <h4 style="color: white;">Direction</h4>
-                    <p style="color: rgba(255, 255, 255, 0.7);">Poste 200 – Bureau de la Directrice</p>
-                    <div class="phone-card-extensions">
-                        <span class="extension-badge" style="background: var(--copper); color: white;">200</span>
-                    </div>
-                    <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
-                        Administration, gestion, demandes générales
-                    </div>
-                </div>
-
-                <!-- Soins Infirmiers Card -->
-                <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
-                    <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
-                        <i class="fas fa-heartbeat"></i>
-                    </div>
-                    <h4 style="color: white;">Soins infirmiers</h4>
-                    <p style="color: rgba(255, 255, 255, 0.7);">Postes multiples pour l'infirmière de garde</p>
-                    <div class="phone-card-extensions">
-                        <span class="extension-badge" style="background: var(--copper); color: white;">203</span>
-                        <span class="extension-badge" style="background: var(--copper); color: white;">204</span>
-                        <span class="extension-badge" style="background: var(--copper); color: white;">212</span>
-                        <span class="extension-badge" style="background: var(--copper); color: white;">213</span>
-                    </div>
-                    <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
-                        Pour rejoindre l'infirmière de garde
-                    </div>
-                </div>
-
-                <!-- Cuisine Card -->
-                <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
-                    <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <h4 style="color: white;">Cuisine</h4>
-                    <p style="color: rgba(255, 255, 255, 0.7);">Poste 205 – Cuisine interne</p>
-                    <div class="phone-card-extensions">
-                        <span class="extension-badge" style="background: var(--copper); color: white;">205</span>
-                    </div>
-                    <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
-                        Usage interne : repas et services alimentaires
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Séparateur visuel -->
-        <div style="max-width: 1200px; margin: 4rem auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);"></div>
-
-        <!-- Visite Virtuelle Polycam -->
+        <!-- Visite Virtuelle 3D -->
         <div class="virtual-tour-container" style="background: transparent; max-width: 100%; padding: 0;">
             <div class="virtual-tour-intro" style="text-align: center; max-width: 800px; margin: 0 auto 2rem; padding: 0 2rem;">
                 <h3 style="font-family: 'Lora', serif; font-size: 2rem; color: white; margin-bottom: 1rem;">
@@ -3058,6 +3003,65 @@ app.get('/', (c) => {
 
         <div class="map-container">
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2726.4536937853567!2d-71.15844492345898!3d46.90666997101488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8bcbc9c7e9e8f%3A0x7c9c9c9c9c9c9c9c!2s5424%20Avenue%20Royale%2C%20Boischatel%2C%20QC%20G0A%201H0!5e0!3m2!1sen!2sca!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- Section Postes Téléphoniques -->
+    <section id="phone-diagram" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 4rem 2rem;">
+        <div class="section-header">
+            <span class="section-badge" style="background: var(--copper);">Postes Internes</span>
+            <h2 class="section-title" style="color: white;">Annuaire téléphonique</h2>
+            <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">Composez le 418-822-0347 puis le numéro de poste désiré</p>
+        </div>
+
+        <div class="phone-cards-grid" style="max-width: 1000px; margin: 0 auto;">
+            <!-- Direction Card -->
+            <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h4 style="color: white;">Direction</h4>
+                <p style="color: rgba(255, 255, 255, 0.7);">Bureau de la Directrice</p>
+                <div class="phone-card-extensions">
+                    <span class="extension-badge" style="background: var(--copper); color: white;">Poste 200</span>
+                </div>
+                <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
+                    Administration, gestion, demandes générales
+                </div>
+            </div>
+
+            <!-- Soins Infirmiers Card -->
+            <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h4 style="color: white;">Soins infirmiers</h4>
+                <p style="color: rgba(255, 255, 255, 0.7);">Infirmière de garde</p>
+                <div class="phone-card-extensions">
+                    <span class="extension-badge" style="background: var(--copper); color: white;">203</span>
+                    <span class="extension-badge" style="background: var(--copper); color: white;">204</span>
+                    <span class="extension-badge" style="background: var(--copper); color: white;">212</span>
+                    <span class="extension-badge" style="background: var(--copper); color: white;">213</span>
+                </div>
+                <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
+                    Pour rejoindre l'infirmière de garde
+                </div>
+            </div>
+
+            <!-- Cuisine Card -->
+            <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h4 style="color: white;">Cuisine</h4>
+                <p style="color: rgba(255, 255, 255, 0.7);">Service alimentaire</p>
+                <div class="phone-card-extensions">
+                    <span class="extension-badge" style="background: var(--copper); color: white;">Poste 205</span>
+                </div>
+                <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
+                    Repas et services alimentaires (usage interne)
+                </div>
+            </div>
         </div>
     </section>
 
@@ -3555,9 +3559,7 @@ app.get('/', (c) => {
                     autoRotate: true,
                     autoRotateSpeed: 1.5,
                     cameraControls: true,
-                    glow: true,
-                    glowIntensity: 0.3,
-                    glowColor: 0xC9A472, // Copper
+                    glow: false, // Désactivé pour afficher les textures du modèle Polycam
                     backgroundColor: 0x1a1a1a // Dark background to match section
                 });
 
