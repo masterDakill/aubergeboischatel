@@ -7,7 +7,49 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 - **Version actuelle** : V6.0 - Dashboards Complets + API CRUD
 - **Technologies** : Hono + Firebase Auth + Supabase PostgreSQL + TypeScript + Vite
 - **Statut** : ✅ Fonctionnel - Dashboards intégrés
-- **Dernière mise à jour** : 20 janvier 2025
+- **Dernière mise à jour** : 22 février 2025
+
+> 📘 Nouvelle fiche de synthèse : consultez **SOMMAIRE-PROJET.md** pour un overview rapide (URLs, stack, déploiement, 3D, tâches futures).
+
+### 📍 Accès immédiat aux pages mises à jour
+- Accueil (hero sécurité + logo 3D + CTA) : https://auberge-boischatel.pages.dev/
+- Visite 3D plein écran : https://auberge-boischatel.pages.dev/#visite3d
+- Aperçu dashboard Client : https://auberge-boischatel.pages.dev/client/dashboard
+- Aperçu dashboard Employé : https://auberge-boischatel.pages.dev/staff/dashboard
+
+## ⚙️ Installation & build
+
+1. Installer les dépendances (obligatoire avant tout build) :
+   ```bash
+   npm install
+   ```
+2. Démarrer en local :
+   ```bash
+   npm run dev
+   ```
+3. Build de production Cloudflare Pages :
+   ```bash
+   npm run build
+   ```
+
+> Vite et Wrangler sont installés via `npm install` ; sans cette étape, la commande de build échoue ("vite: command not found").
+
+## 🔗 Liens publics
+
+- **Production (Cloudflare Pages)** : https://auberge-boischatel.pages.dev/
+- **Domaine personnalisé** : https://aubergeboischatel.com
+- **Dernier déploiement prévisualisation** : https://03d7ec48.auberge-boischatel.pages.dev/
+
+### 🔗 Liens directs des dashboards (aperçus accessibles sans connexion)
+- **Portail Client** : https://auberge-boischatel.pages.dev/client/dashboard (ou https://aubergeboischatel.com/client/dashboard)
+- **Portail Employé** : https://auberge-boischatel.pages.dev/staff/dashboard (ou https://aubergeboischatel.com/staff/dashboard)
+- Les deux pages affichent un aperçu statique immédiat (hero + cartes) même sans authentification, puis se remplacent par le contenu dynamique dès qu'une session Firebase valide est détectée.
+
+## 🔐 Authentification Firebase (compat)
+
+- Le bouton « Connexion » de la navigation ouvre désormais la modale Firebase (connexion + création de compte) au lieu d'un simple placeholder.
+- L'initialisation Firebase est mutualisée dans `/public/static/firebase-init.js` (vérifie `FIREBASE_*`, évite les doublons, journalise les erreurs) et est incluse sur l'accueil, les dashboards Client/Employé et l'espace Admin.
+- Si la configuration est manquante, les trois dashboards affichent un message clair plutôt qu'un écran vide ou un spinner infini; le bouton de déconnexion Admin est également protégé.
 
 ### 🎆 Améliorations Version 6.0 (Dashboards Complets)
 - **3 Dashboards dynamiques** : Client, Staff, Admin avec interfaces interactives
@@ -16,6 +58,11 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 - **Autorisations par rôle** : CLIENT, EMPLOYEE, ADMIN avec permissions granulaires
 - **4 Nouvelles tables SQL** : documents, activity_logs, resident_observations, notifications
 - **Documentation exhaustive** : README-API-DASHBOARDS.md (17,700 caractères)
+
+### 🖥️ Portails client et employé (aperçu sans connexion)
+- Les pages `/client/dashboard` et `/staff/dashboard` affichent maintenant un hero descriptif, des cartes de fonctionnalités et des CTA tant que la session n'est pas chargée.
+- Objectif : éviter les écrans vides lorsque les scripts ne sont pas encore prêts ou que l'utilisateur n'est pas authentifié.
+- Dès qu'une session valide est détectée, le contenu dynamique remplace automatiquement l'aperçu statique.
 
 ## 🎨 Identité Visuelle
 
@@ -54,11 +101,11 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 ## 📄 Structure du Site (10 Sections)
 
 ### 1. **Accueil** (`#accueil`)
-- **Hero 4K full-width** : Photo golden hour spectaculaire (5056x3392px)
-- Effet parallax avec overlay dégradé subtil
-- Badge "Résidence Certifiée RPA" en cuivre
-- CTA : "Planifier une visite" + "Voir les chambres"
-- Tagline : Innovation bienveillante
+- **Hero 4K full-width** : Photo golden hour spectaculaire (5056x3392px) + bloc verre dépoli
+- Logo 3D animé (GLB) avec fallback statique si WebGL indisponible
+- Badge cuivre : "Sécurité augmentée pour la RPA"
+- CTA : "Voir le plan 3D de l’Auberge" + "Accéder aux alertes en temps réel"
+- Pitch : sécurité, surveillance intelligente, assistance IA pour l’équipe et les familles
 - Animation fade-in douce au chargement
 
 ### 2. **Mission & Valeurs** (`#mission`)
@@ -100,13 +147,13 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 - 4 caractéristiques mises en avant
 
 ### 8. **Visite Virtuelle 3D** (`#visite3d`) 🆕
+- Viewer Three.js pleine largeur avec bouton **Plein écran** et fond immersif
 - Intégration Polycam 3D interactive
-- Navigation 360° immersive
 - 3 caractéristiques mises en avant :
   - Navigation 360° libre
   - Mesures réelles et dimensions exactes
   - Compatible multi-dispositifs
-- Iframe responsive avec aspect-ratio 16:9
+- Iframe responsive avec aspect-ratio 16:9 et fallback texte si WebGL indisponible
 - Permet aux familles d'explorer à distance
 
 ### 9. **Galerie** (`#galerie`)

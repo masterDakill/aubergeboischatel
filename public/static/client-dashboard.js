@@ -14,7 +14,12 @@ class ClientDashboard {
 
   async init() {
     console.log('🏠 Initializing Client Dashboard')
-    
+
+    if (!window.firebaseAppInitialized) {
+      this.renderInitError(window.firebaseInitError || 'Initialisation Firebase requise pour charger votre espace client.')
+      return
+    }
+
     // Check authentication
     const isAuthenticated = await this.checkAuth()
     if (!isAuthenticated) {
@@ -78,6 +83,24 @@ class ClientDashboard {
       console.error('❌ Error loading documents:', error)
       this.documents = []
     }
+  }
+
+  renderInitError(message) {
+    const loading = document.getElementById('loading')
+    if (loading) loading.style.display = 'none'
+
+    const container = document.getElementById('dashboard-content')
+    if (!container) return
+
+    container.innerHTML = `
+      <div class="max-w-3xl mx-auto mt-16 bg-white border border-red-100 text-red-700 rounded-2xl shadow-sm p-8 text-center">
+        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-50 text-red-500 mx-auto mb-4">
+          <i class="fas fa-triangle-exclamation"></i>
+        </div>
+        <h2 class="text-xl font-semibold mb-2">Impossible de démarrer l'espace client</h2>
+        <p class="text-sm text-red-600">${message}</p>
+      </div>
+    `
   }
 
   render() {
