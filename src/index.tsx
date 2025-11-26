@@ -2332,8 +2332,8 @@ app.get('/', (c) => {
                 <li><a href="#contact">Contact</a></li>
             </ul>
             
-            <!-- Login Button (Placeholder for Firebase Auth) -->
-            <button class="login-button" onclick="alert('Authentification Firebase à venir !')">
+            <!-- Login Button (opens Firebase auth modal) -->
+            <button class="login-button" type="button" onclick="authManager?.openModal()">
                 <i class="fas fa-user"></i>
                 <span>Connexion</span>
             </button>
@@ -3460,6 +3460,9 @@ app.get('/', (c) => {
     <!-- Inject Firebase config into window.ENV -->
     <script>${getEnvScript()}</script>
 
+    <!-- Guarded Firebase initialization shared by all pages -->
+    <script src="/static/firebase-init.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="/static/3d-viewer.js"></script>
@@ -3991,7 +3994,71 @@ app.get('/client/dashboard', (c) => {
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script>${getEnvScript()}</script>
-    
+    <script src="/static/firebase-init.js"></script>
+
+    <script>
+        const adminFirebaseStatus = window.ensureFirebaseInitialized ? window.ensureFirebaseInitialized() : { ok: false };
+        if (!adminFirebaseStatus.ok) {
+            const container = document.querySelector('.container');
+            if (container) {
+                container.insertAdjacentHTML('afterbegin', \`
+                  <div class="mb-4 bg-red-500/10 border border-red-200 text-red-100 rounded-xl p-4 flex items-start gap-3">
+                    <i class="fas fa-triangle-exclamation mt-1"></i>
+                    <div>
+                      <p class="font-semibold text-white">Connexion Firebase indisponible</p>
+                      <p class="text-sm text-red-100/80">\${window.firebaseInitError || 'Complétez les variables FIREBASE_* pour activer la déconnexion sécurisée.'}</p>
+                    </div>
+                  </div>
+                \`);
+            }
+        }
+    </script>
+
+    <script>
+        (function () {
+            const signOutBtn = document.getElementById('adminSignOutBtn');
+            if (!signOutBtn) return;
+
+            signOutBtn.addEventListener('click', async () => {
+                if (!window.firebaseAppInitialized || !firebase?.auth) {
+                    alert('Connexion Firebase indisponible. Vérifiez la configuration.');
+                    return;
+                }
+
+                try {
+                    await firebase.auth().signOut();
+                    window.location.href = '/';
+                } catch (error) {
+                    console.error('❌ Sign out error:', error);
+                    alert('Impossible de se déconnecter pour le moment.');
+                }
+            });
+        })();
+    </script>
+    <script src="/static/firebase-init.js"></script>
+
+    <script>
+        const clientFirebaseStatus = window.ensureFirebaseInitialized ? window.ensureFirebaseInitialized() : { ok: false };
+        if (!clientFirebaseStatus.ok) {
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('dashboard-content');
+            if (loading) loading.style.display = 'none';
+            if (content) {
+                content.innerHTML = \`
+                  <div class="max-w-3xl mx-auto mt-16 bg-white border border-red-100 text-red-700 rounded-2xl shadow-sm p-8 text-center">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-50 text-red-500 mx-auto mb-4">
+                      <i class="fas fa-triangle-exclamation"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold mb-2">Connexion Firebase indisponible</h2>
+                    <p class="text-sm text-red-600">
+                      \${window.firebaseInitError || 'Vérifiez la configuration FIREBASE_* dans les variables d\'environnement.'}
+                    </p>
+                  </div>
+                \`;
+            }
+        }
+    </script>
+
     <!-- Axios for API calls -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     
@@ -4150,7 +4217,30 @@ app.get('/staff/dashboard', (c) => {
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script>${getEnvScript()}</script>
-    
+    <script src="/static/firebase-init.js"></script>
+
+    <script>
+        const staffFirebaseStatus = window.ensureFirebaseInitialized ? window.ensureFirebaseInitialized() : { ok: false };
+        if (!staffFirebaseStatus.ok) {
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('dashboard-content');
+            if (loading) loading.style.display = 'none';
+            if (content) {
+                content.innerHTML = \`
+                  <div class="max-w-3xl mx-auto mt-16 bg-slate-800/80 border border-red-500/40 text-red-100 rounded-2xl shadow-lg p-8 text-center">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-500/20 text-red-200 mx-auto mb-4">
+                      <i class="fas fa-triangle-exclamation"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold mb-2 text-white">Connexion Firebase indisponible</h2>
+                    <p class="text-sm text-red-100/90">
+                      \${window.firebaseInitError || 'Vérifiez la configuration FIREBASE_* dans les variables d\'environnement.'}
+                    </p>
+                  </div>
+                \`;
+            }
+        }
+    </script>
+
     <!-- Axios for API calls -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     
@@ -4194,7 +4284,7 @@ app.get('/admin/dashboard', (c) => {
                     </div>
                     <div class="text-right">
                         <p class="text-red-100 text-sm mb-2">Accès restreint ADMIN</p>
-                        <button onclick="firebase.auth().signOut().then(() => window.location.href = '/')" 
+                        <button id="adminSignOutBtn"
                                 class="bg-white text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 transition font-semibold">
                             <i class="fas fa-sign-out-alt mr-2"></i>
                             Déconnexion
@@ -4371,6 +4461,7 @@ app.get('/admin/dashboard', (c) => {
     <script>
         (function() {
             const nav = document.querySelector('nav');
+            if (!nav) return;
             let lastScrollTop = 0;
             let scrollTimeout;
             

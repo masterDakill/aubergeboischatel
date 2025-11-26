@@ -1,5 +1,10 @@
 # Changelog
 
+## 2025-11-26
+- Bouton « Connexion » relié à la modale Firebase (login + création) au lieu du placeholder.
+- Initialisation Firebase mutualisée via `/public/static/firebase-init.js` + messages d'erreur explicites sur les dashboards Client/Employé/Admin.
+- Bouton de déconnexion Admin protégé contre l'absence de configuration Firebase.
+
 ## 2025-02-28
 - Ajout de `SOMMAIRE-PROJET.md` pour fournir un overview immédiat (URLs, stack, déploiement, 3D, backlog).
 - README enrichi avec les liens directs vers les pages mises à jour (hero, visite 3D, dashboards) pour faciliter la vérification.

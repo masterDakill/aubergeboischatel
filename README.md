@@ -45,6 +45,12 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 - **Portail Employé** : https://auberge-boischatel.pages.dev/staff/dashboard (ou https://aubergeboischatel.com/staff/dashboard)
 - Les deux pages affichent un aperçu statique immédiat (hero + cartes) même sans authentification, puis se remplacent par le contenu dynamique dès qu'une session Firebase valide est détectée.
 
+## 🔐 Authentification Firebase (compat)
+
+- Le bouton « Connexion » de la navigation ouvre désormais la modale Firebase (connexion + création de compte) au lieu d'un simple placeholder.
+- L'initialisation Firebase est mutualisée dans `/public/static/firebase-init.js` (vérifie `FIREBASE_*`, évite les doublons, journalise les erreurs) et est incluse sur l'accueil, les dashboards Client/Employé et l'espace Admin.
+- Si la configuration est manquante, les trois dashboards affichent un message clair plutôt qu'un écran vide ou un spinner infini; le bouton de déconnexion Admin est également protégé.
+
 ### 🎆 Améliorations Version 6.0 (Dashboards Complets)
 - **3 Dashboards dynamiques** : Client, Staff, Admin avec interfaces interactives
 - **4 Modules API CRUD** : Residents, Documents, Logs, Users (24 endpoints)

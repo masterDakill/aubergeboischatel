@@ -18,7 +18,12 @@ class StaffDashboard {
 
   async init() {
     console.log('👔 Initializing Staff Dashboard')
-    
+
+    if (!window.firebaseAppInitialized) {
+      this.renderInitError(window.firebaseInitError || 'Initialisation Firebase requise pour charger le tableau de bord employé.')
+      return
+    }
+
     // Check authentication
     const isAuthenticated = await this.checkAuth()
     if (!isAuthenticated) {
@@ -106,6 +111,24 @@ class StaffDashboard {
       const today = new Date().toDateString()
       return logDate === today
     }).length
+  }
+
+  renderInitError(message) {
+    const loading = document.getElementById('loading')
+    if (loading) loading.style.display = 'none'
+
+    const container = document.getElementById('dashboard-content')
+    if (!container) return
+
+    container.innerHTML = `
+      <div class="max-w-3xl mx-auto mt-16 bg-slate-800/80 border border-red-500/40 text-red-100 rounded-2xl shadow-lg p-8 text-center">
+        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-500/20 text-red-200 mx-auto mb-4">
+          <i class="fas fa-triangle-exclamation"></i>
+        </div>
+        <h2 class="text-xl font-semibold mb-2 text-white">Impossible de démarrer l'espace employé</h2>
+        <p class="text-sm text-red-100/90">${message}</p>
+      </div>
+    `
   }
 
   render() {

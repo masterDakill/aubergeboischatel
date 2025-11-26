@@ -14,25 +14,37 @@ class AuthManager {
    * Initialize Firebase with configuration from window.ENV
    */
   async initFirebase() {
-    if (!window.ENV) {
+    const hasEnv = Boolean(window.ENV && window.ENV.FIREBASE_API_KEY)
+    if (!hasEnv) {
       console.error('❌ Firebase configuration not found in window.ENV')
       return
-    }
-
-    const firebaseConfig = {
-      apiKey: window.ENV.FIREBASE_API_KEY,
-      authDomain: window.ENV.FIREBASE_AUTH_DOMAIN,
-      projectId: window.ENV.FIREBASE_PROJECT_ID,
-      storageBucket: window.ENV.FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: window.ENV.FIREBASE_MESSAGING_SENDER_ID,
-      appId: window.ENV.FIREBASE_APP_ID
     }
 
     console.log('🔧 Initializing Firebase...')
 
     try {
-      // Initialize Firebase (loaded via CDN)
-      firebase.initializeApp(firebaseConfig)
+      // Initialize Firebase (loaded via CDN) with guard to avoid duplicate apps
+      if (window.ensureFirebaseInitialized) {
+        const status = window.ensureFirebaseInitialized()
+        if (!status.ok) {
+          console.error('❌ Firebase initialization guard failed', status)
+          return
+        }
+      } else if (!firebase.apps || firebase.apps.length === 0) {
+        firebase.initializeApp({
+          apiKey: window.ENV.FIREBASE_API_KEY,
+          authDomain: window.ENV.FIREBASE_AUTH_DOMAIN,
+          projectId: window.ENV.FIREBASE_PROJECT_ID,
+          storageBucket: window.ENV.FIREBASE_STORAGE_BUCKET,
+          messagingSenderId: window.ENV.FIREBASE_MESSAGING_SENDER_ID,
+          appId: window.ENV.FIREBASE_APP_ID
+        })
+      }
+
+      if (firebase.apps && firebase.apps.length > 0) {
+        window.firebaseAppInitialized = true
+      }
+
       this.auth = firebase.auth()
 
       // Listen for auth state changes
