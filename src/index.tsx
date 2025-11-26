@@ -2398,15 +2398,9 @@ app.get('/', (c) => {
                     <p class="hero-subnote">Les portails client et employé sont accessibles publiquement : les aperçus statiques s’affichent même sans authentification.</p>
                 </div>
                 <div class="hero-visual">
-                    <div class="hero-logo-canvas" id="logo-3d-viewer">
-                        <div class="hero-logo-fallback" id="logo-3d-fallback">
-                            <div>
-                                <img src="/static/images/logo.png" alt="Logo Auberge Boischatel">
-                                <p>Prévisualisation statique – activez WebGL pour profiter du logo 3D animé.</p>
-                            </div>
-                        </div>
+                    <div class="hero-logo-canvas">
+                        <img src="/static/images/logo.png" alt="Logo Auberge Boischatel" style="max-width: 280px; height: auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));">
                     </div>
-                    <p style="color: rgba(255, 255, 255, 0.85); margin-top: 0.75rem; font-size: 0.95rem;">Logo 3D animé : rotation douce, mise en avant dans le hero avec fallback automatique.</p>
                 </div>
             </div>
         </div>
