@@ -9,6 +9,14 @@ Site web officiel de **L'Auberge Boischatel**, une résidence privée pour aîn�
 - **Statut** : ✅ Fonctionnel - Dashboards intégrés
 - **Dernière mise à jour** : 22 février 2025
 
+> 📘 Nouvelle fiche de synthèse : consultez **SOMMAIRE-PROJET.md** pour un overview rapide (URLs, stack, déploiement, 3D, tâches futures).
+
+### 📍 Accès immédiat aux pages mises à jour
+- Accueil (hero sécurité + logo 3D + CTA) : https://auberge-boischatel.pages.dev/
+- Visite 3D plein écran : https://auberge-boischatel.pages.dev/#visite3d
+- Aperçu dashboard Client : https://auberge-boischatel.pages.dev/client/dashboard
+- Aperçu dashboard Employé : https://auberge-boischatel.pages.dev/staff/dashboard
+
 ## ⚙️ Installation & build
 
 1. Installer les dépendances (obligatoire avant tout build) :

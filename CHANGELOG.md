@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-02-28
+- Ajout de `SOMMAIRE-PROJET.md` pour fournir un overview immédiat (URLs, stack, déploiement, 3D, backlog).
+- README enrichi avec les liens directs vers les pages mises à jour (hero, visite 3D, dashboards) pour faciliter la vérification.
+
 ## 2025-02-27
 - Ajout de liens publics directs vers les dashboards client et employé pour faciliter la vérification des aperçus pré-login.
 - Hero d'accueil enrichi avec des CTA vers les deux portails afin de rendre les nouveaux aperçus immédiatement accessibles.
