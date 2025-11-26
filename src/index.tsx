@@ -2406,8 +2406,40 @@ app.get('/', (c) => {
                 <p>Dirigée par de jeunes propriétaires passionnés, notre résidence conjugue le charme patrimonial d'une architecture victorienne avec les standards les plus élevés en matière de sécurité et de bien-être.</p>
                 <p>Notre approche ? Rester à l'écoute, anticiper les besoins, et améliorer constamment notre milieu de vie pour offrir à nos 38 résidents un environnement chaleureux, stimulant et rassurant.</p>
             </div>
-            <div class="mission-image" style="display: flex; align-items: center; justify-content: center;">
-                <div id="logo-3d-viewer" style="width: 100%; max-width: 400px; height: 350px; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #f5f4f2 0%, #e8e6e3 100%);"></div>
+            <div class="mission-image" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div id="logo-3d-viewer" style="width: 100%; max-width: 400px; height: 350px; border-radius: 20px; overflow: hidden; background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);"></div>
+                <p style="margin-top: 1rem; color: var(--copper); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-hand-pointer"></i>
+                    Essayez-le, c'est interactif !
+                </p>
+            </div>
+        </div>
+
+        <!-- Carousel Photos -->
+        <div class="horizontal-scroller" style="margin-top: 3rem;">
+            <div class="scroller-container" style="gap: 1.5rem; padding: 1rem 0;">
+                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                    <img src="/static/images/facade.jpg" alt="Façade de L'Auberge" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                    <img src="/static/images/salle-manger.png" alt="Salle à manger" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                    <img src="/static/images/chambre.png" alt="Chambre type" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                    <img src="/static/images/jardin.jpg" alt="Jardin" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                    <img src="/static/images/facade-golden-hour.jpg" alt="Façade au coucher du soleil" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                    <img src="/static/images/vue-nocturne.jpg" alt="Vue nocturne" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+            <div class="scroller-nav">
+                <button class="scroller-btn" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
+                <button class="scroller-btn" data-direction="1"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
 
@@ -3683,12 +3715,12 @@ app.get('/', (c) => {
                 console.log('✅ Initializing 3D logo...');
                 new Advanced3DViewer('logo-3d-viewer', '/static/models/logo-3d.glb', {
                     autoRotate: true,
-                    autoRotateSpeed: 2,
+                    autoRotateSpeed: 1.5,
                     cameraControls: true,
                     glow: true,
-                    glowIntensity: 0.3,
+                    glowIntensity: 0.4,
                     glowColor: 0xC9A472,
-                    backgroundColor: 0xF5F4F2
+                    backgroundColor: 0x1a1a1a
                 });
             }
 
