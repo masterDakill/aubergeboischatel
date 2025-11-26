@@ -2540,85 +2540,99 @@ app.get('/', (c) => {
         </div>
     </section>
 
-    <!-- Modèle 3D Bâtiment Section -->
-    <section class="phone-diagram-section" id="modele3d" style="background: #F5EAD0; padding: 4rem 2rem; margin: 0; border-radius: 0;">
-        <div class="phone-diagram-header" style="text-align: center; margin-bottom: 3rem;">
-            <span class="section-badge" style="display: inline-block; padding: 0.4rem 1rem; background: var(--sage-green); color: white; border-radius: 50px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 1rem;">Modèle 3D</span>
+    <!-- Section Visite 3D avec Modèle 3D Intégré -->
+    <section id="visite3d" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 5rem 2rem;">
+        <div class="section-header">
+            <span class="section-badge" style="background: var(--copper);">Visite Virtuelle 3D</span>
+            <h2 class="section-title" style="color: white;">Explorez notre résidence en 3D</h2>
+            <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">Une expérience immersive pour découvrir L'Auberge Boischatel depuis chez vous</p>
+        </div>
+
+        <!-- Modèle 3D Bâtiment -->
+        <div style="max-width: 1200px; margin: 0 auto 4rem;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h3 style="font-family: 'Lora', serif; font-size: 2rem; color: white; margin-bottom: 1rem;">
+                    <i class="fas fa-building" style="color: var(--copper); margin-right: 0.5rem;"></i>
+                    Notre Bâtiment en 3D
+                </h3>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                    Découvrez l'architecture victorienne de L'Auberge Boischatel en trois dimensions
+                </p>
+            </div>
             
             <!-- Logo 3D GLB - Bâtiment Auberge 3D (Advanced Three.js) -->
-            <div id="advanced-3d-viewer" class="logo-3d-container" style="margin: 0 auto 2rem;"></div>
+            <div id="advanced-3d-viewer" class="logo-3d-container" style="margin: 0 auto 3rem; max-width: 600px; height: 400px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);"></div>
             
-            <h2 class="section-title" style="font-family: 'Lora', serif; font-size: 2.8rem; color: var(--anthracite); font-weight: 600; margin-bottom: 1rem;">Découvrez notre bâtiment en 3D</h2>
-            <p class="section-subtitle" style="font-size: 1.2rem; color: var(--text-muted); max-width: 700px; margin: 0 auto;">Explorez l'architecture victorienne de L'Auberge Boischatel en trois dimensions</p>
-        </div>
+            <!-- Postes Téléphoniques -->
+            <div class="phone-cards-grid" style="margin-top: 3rem;">
+                <!-- Direction Card -->
+                <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                    <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4 style="color: white;">Direction</h4>
+                    <p style="color: rgba(255, 255, 255, 0.7);">Poste 200 – Bureau de la Directrice</p>
+                    <div class="phone-card-extensions">
+                        <span class="extension-badge" style="background: var(--copper); color: white;">200</span>
+                    </div>
+                    <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
+                        Administration, gestion, demandes générales
+                    </div>
+                </div>
 
-        <div class="phone-cards-grid">
-            <!-- Direction Card -->
-            <div class="phone-card">
-                <div class="phone-card-icon">
-                    <i class="fas fa-user-tie"></i>
+                <!-- Soins Infirmiers Card -->
+                <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                    <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h4 style="color: white;">Soins infirmiers</h4>
+                    <p style="color: rgba(255, 255, 255, 0.7);">Postes multiples pour l'infirmière de garde</p>
+                    <div class="phone-card-extensions">
+                        <span class="extension-badge" style="background: var(--copper); color: white;">203</span>
+                        <span class="extension-badge" style="background: var(--copper); color: white;">204</span>
+                        <span class="extension-badge" style="background: var(--copper); color: white;">212</span>
+                        <span class="extension-badge" style="background: var(--copper); color: white;">213</span>
+                    </div>
+                    <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
+                        Pour rejoindre l'infirmière de garde
+                    </div>
                 </div>
-                <h4>Direction</h4>
-                <p>Poste 200 – Bureau de la Directrice</p>
-                <div class="phone-card-extensions">
-                    <span class="extension-badge">200</span>
-                </div>
-                <div class="phone-card-tooltip">
-                    Administration, gestion, demandes générales
-                </div>
-            </div>
 
-            <!-- Soins Infirmiers Card -->
-            <div class="phone-card">
-                <div class="phone-card-icon">
-                    <i class="fas fa-heartbeat"></i>
-                </div>
-                <h4>Soins infirmiers</h4>
-                <p>Postes multiples pour l'infirmière de garde</p>
-                <div class="phone-card-extensions">
-                    <span class="extension-badge">203</span>
-                    <span class="extension-badge">204</span>
-                    <span class="extension-badge">212</span>
-                    <span class="extension-badge">213</span>
-                </div>
-                <div class="phone-card-tooltip">
-                    Pour rejoindre l'infirmière de garde
-                </div>
-            </div>
-
-            <!-- Cuisine Card -->
-            <div class="phone-card">
-                <div class="phone-card-icon">
-                    <i class="fas fa-utensils"></i>
-                </div>
-                <h4>Cuisine</h4>
-                <p>Poste 205 – Cuisine interne</p>
-                <div class="phone-card-extensions">
-                    <span class="extension-badge">205</span>
-                </div>
-                <div class="phone-card-tooltip">
-                    Usage interne : repas et services alimentaires
+                <!-- Cuisine Card -->
+                <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                    <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h4 style="color: white;">Cuisine</h4>
+                    <p style="color: rgba(255, 255, 255, 0.7);">Poste 205 – Cuisine interne</p>
+                    <div class="phone-card-extensions">
+                        <span class="extension-badge" style="background: var(--copper); color: white;">205</span>
+                    </div>
+                    <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
+                        Usage interne : repas et services alimentaires
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <section id="visite3d" style="background: var(--cream);">
-        <div class="section-header">
-            <span class="section-badge">Visite Virtuelle</span>
-            <h2 class="section-title">Explorez notre résidence en 3D</h2>
-            <p class="section-subtitle">Une expérience immersive pour découvrir L'Auberge Boischatel depuis chez vous</p>
-        </div>
+        <!-- Séparateur visuel -->
+        <div style="max-width: 1200px; margin: 4rem auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);"></div>
 
-        <div class="virtual-tour-container">
-            <div class="virtual-tour-intro">
-                <h3>Parcourez nos espaces en toute liberté</h3>
-                <p>Grâce à notre visite virtuelle 3D, explorez chaque recoin de notre résidence : salons, chambres, espaces communs, jardins. Naviguez librement pour vous projeter dans votre futur chez-vous.</p>
+        <!-- Visite Virtuelle Polycam -->
+        <div class="virtual-tour-container" style="background: transparent;">
+            <div class="virtual-tour-intro" style="text-align: center; max-width: 800px; margin: 0 auto 3rem;">
+                <h3 style="font-family: 'Lora', serif; font-size: 2rem; color: white; margin-bottom: 1rem;">
+                    <i class="fas fa-vr-cardboard" style="color: var(--copper); margin-right: 0.5rem;"></i>
+                    Visite Immersive 360°
+                </h3>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; line-height: 1.8;">
+                    Grâce à notre visite virtuelle 3D, explorez chaque recoin de notre résidence : salons, chambres, espaces communs, jardins. Naviguez librement pour vous projeter dans votre futur chez-vous.
+                </p>
             </div>
 
-            <div class="polycam-wrapper">
+            <div class="polycam-wrapper" style="box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);">
                 <iframe 
-                    src="https://poly.cam/capture/0173C8E7-21E2-4AB2-A66E-5757D3EDCFBC?mode=embed&background=%23ffffff" 
+                    src="https://poly.cam/capture/0173C8E7-21E2-4AB2-A66E-5757D3EDCFBC?mode=embed&background=%231a1a1a" 
                     title="Visite virtuelle 3D de L'Auberge Boischatel"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking; fullscreen"
                     allowfullscreen
@@ -2630,29 +2644,29 @@ app.get('/', (c) => {
                 </iframe>
             </div>
 
-            <div class="tour-features">
+            <div class="tour-features" style="border-top: 1px solid rgba(255, 255, 255, 0.2);">
                 <div class="tour-feature">
-                    <div class="tour-feature-icon">
+                    <div class="tour-feature-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
                         <i class="fas fa-cube"></i>
                     </div>
-                    <h5>Navigation 360°</h5>
-                    <p>Explorez chaque espace sous tous les angles avec une liberté totale de mouvement</p>
+                    <h5 style="color: white;">Navigation 360°</h5>
+                    <p style="color: rgba(255, 255, 255, 0.7);">Explorez chaque espace sous tous les angles avec une liberté totale de mouvement</p>
                 </div>
 
                 <div class="tour-feature">
-                    <div class="tour-feature-icon">
+                    <div class="tour-feature-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
                         <i class="fas fa-expand-arrows-alt"></i>
                     </div>
-                    <h5>Mesures Réelles</h5>
-                    <p>Visualisez les dimensions exactes et l'aménagement des espaces en 3D</p>
+                    <h5 style="color: white;">Mesures Réelles</h5>
+                    <p style="color: rgba(255, 255, 255, 0.7);">Visualisez les dimensions exactes et l'aménagement des espaces en 3D</p>
                 </div>
 
                 <div class="tour-feature">
-                    <div class="tour-feature-icon">
+                    <div class="tour-feature-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
                         <i class="fas fa-mobile-alt"></i>
                     </div>
-                    <h5>Multi-dispositifs</h5>
-                    <p>Accessible depuis votre ordinateur, tablette ou téléphone intelligent</p>
+                    <h5 style="color: white;">Multi-dispositifs</h5>
+                    <p style="color: rgba(255, 255, 255, 0.7);">Accessible depuis votre ordinateur, tablette ou téléphone intelligent</p>
                 </div>
             </div>
         </div>
@@ -3488,9 +3502,9 @@ app.get('/', (c) => {
                     autoRotateSpeed: 1.5,
                     cameraControls: true,
                     glow: true,
-                    glowIntensity: 0.2,
+                    glowIntensity: 0.3,
                     glowColor: 0xC9A472, // Copper
-                    backgroundColor: 0xF5EAD0 // Phone diagram section background
+                    backgroundColor: 0x1a1a1a // Dark background to match section
                 });
 
                 // Click to scroll to top
