@@ -2723,7 +2723,7 @@ app.get('/', (c) => {
         </div>
     </section>
 
-    <!-- Section Visite 3D avec Modèle 3D Intégré -->
+    <!-- Section Visite 3D avec Modèle Polycam -->
     <section id="visite3d" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 5rem 2rem;">
         <div class="section-header">
             <span class="section-badge" style="background: var(--copper);">Visite Virtuelle 3D</span>
@@ -2731,99 +2731,12 @@ app.get('/', (c) => {
             <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">Une expérience immersive pour découvrir L'Auberge Boischatel depuis chez vous</p>
         </div>
 
- codex/perform-complete-application-review-2025-11-26
-        <!-- Modèle 3D Bâtiment -->
-        <div class="immersive-viewer-wrapper">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h3 style="font-family: 'Lora', serif; font-size: 2rem; color: white; margin-bottom: 1rem;">
-                    <i class="fas fa-building" style="color: var(--copper); margin-right: 0.5rem;"></i>
-                    Notre Bâtiment en 3D
-                </h3>
-                <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 700px; margin: 0 auto;">
-                    Découvrez l'architecture victorienne de L'Auberge Boischatel en plein écran, avec contrôles fluides et lecture immersive.
-                </p>
-            </div>
-
-            <div class="immersive-viewer-frame" id="advanced-3d-shell">
-                <div class="viewer-toolbar">
-                    <button class="viewer-btn" id="viewer-fullscreen-btn" type="button">
-                        <i class="fas fa-expand"></i>
-                        Plein écran
-                    </button>
-                </div>
-                <div id="advanced-3d-viewer" class="immersive-viewer"></div>
-            </div>
-            <p style="color: rgba(255, 255, 255, 0.75); margin-top: 1rem; text-align: center;">Astuce : cliquez-glissez pour explorer, double-cliquez sur Plein écran pour quitter.</p>
-        </div>
-        <!-- Postes Téléphoniques -->
-            <div class="phone-cards-grid" style="margin-top: 3rem;">
-                <!-- Direction Card -->
-                <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
-                    <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <h4 style="color: white;">Direction</h4>
-                    <p style="color: rgba(255, 255, 255, 0.7);">Poste 200 – Bureau de la Directrice</p>
-                    <div class="phone-card-extensions">
-                        <span class="extension-badge" style="background: var(--copper); color: white;">200</span>
-                    </div>
-                    <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
-                        Administration, gestion, demandes générales
-                    </div>
-                </div>
-
-                <!-- Soins Infirmiers Card -->
-                <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
-                    <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
-                        <i class="fas fa-heartbeat"></i>
-                    </div>
-                    <h4 style="color: white;">Soins infirmiers</h4>
-                    <p style="color: rgba(255, 255, 255, 0.7);">Postes multiples pour l'infirmière de garde</p>
-                    <div class="phone-card-extensions">
-                        <span class="extension-badge" style="background: var(--copper); color: white;">203</span>
-                        <span class="extension-badge" style="background: var(--copper); color: white;">204</span>
-                        <span class="extension-badge" style="background: var(--copper); color: white;">212</span>
-                        <span class="extension-badge" style="background: var(--copper); color: white;">213</span>
-                    </div>
-                    <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
-                        Pour rejoindre l'infirmière de garde
-                    </div>
-                </div>
-
-                <!-- Cuisine Card -->
-                <div class="phone-card" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
-                    <div class="phone-card-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <h4 style="color: white;">Cuisine</h4>
-                    <p style="color: rgba(255, 255, 255, 0.7);">Poste 205 – Cuisine interne</p>
-                    <div class="phone-card-extensions">
-                        <span class="extension-badge" style="background: var(--copper); color: white;">205</span>
-                    </div>
-                    <div class="phone-card-tooltip" style="background: rgba(201, 164, 114, 0.95);">
-                        Usage interne : repas et services alimentaires
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Séparateur visuel -->
-        <div style="max-width: 1200px; margin: 4rem auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);"></div>
-
-        <!-- Visite Virtuelle Polycam -->
-
-        <!-- Visite Virtuelle 3D -->
- main
         <div class="virtual-tour-container" style="background: transparent; max-width: 100%; padding: 0;">
             <div class="virtual-tour-intro" style="text-align: center; max-width: 800px; margin: 0 auto 2rem; padding: 0 2rem;">
-                <h3 style="font-family: 'Lora', serif; font-size: 2rem; color: white; margin-bottom: 1rem;">
-                    <i class="fas fa-vr-cardboard" style="color: var(--copper); margin-right: 0.5rem;"></i>
-                    Visite Immersive 360°
-                </h3>
                 <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; line-height: 1.8;">
                     Grâce à notre visite virtuelle 3D, explorez chaque recoin de notre résidence : salons, chambres, espaces communs, jardins. Naviguez librement pour vous projeter dans votre futur chez-vous.
                 </p>
-                
+
                 <!-- Bouton Mode Plein Écran -->
                 <button id="fullscreenBtn" style="
                     display: inline-flex;
@@ -2858,7 +2771,12 @@ app.get('/', (c) => {
                 background: #1a1a1a;
             "></div>
 
-            <div class="tour-features" style="border-top: 1px solid rgba(255, 255, 255, 0.2);">
+            <p style="color: rgba(255, 255, 255, 0.6); margin-top: 1rem; text-align: center; font-size: 0.9rem;">
+                <i class="fas fa-mouse-pointer" style="margin-right: 0.5rem;"></i>
+                Cliquez-glissez pour tourner • Scroll pour zoomer • Double-cliquez pour recentrer
+            </p>
+
+            <div class="tour-features" style="border-top: 1px solid rgba(255, 255, 255, 0.2); margin-top: 2rem; padding-top: 2rem;">
                 <div class="tour-feature">
                     <div class="tour-feature-icon" style="background: linear-gradient(135deg, var(--copper), #D4B378);">
                         <i class="fas fa-cube"></i>
@@ -3351,7 +3269,15 @@ app.get('/', (c) => {
     <!-- Login Modal -->
     <div id="loginModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center;">
       <div style="background: white; border-radius: 24px; padding: 0; max-width: 480px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4); overflow: hidden;">
-        
+
+        <!-- Banner "À venir" -->
+        <div style="background: linear-gradient(135deg, var(--copper), #D4B378); padding: 1rem 1.5rem; text-align: center;">
+          <p style="color: white; font-weight: 600; margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+            <i class="fas fa-tools"></i>
+            Fonctionnalité en cours de développement
+          </p>
+        </div>
+
         <!-- Tabs -->
         <div style="display: flex; background: #f3f4f6;">
           <button id="signinTab" class="auth-tab active" onclick="authManager.showSignInTab()" style="flex: 1; padding: 1.25rem; border: none; background: transparent; cursor: pointer; font-weight: 600; font-size: 1rem; color: #6b7280; transition: all 0.3s;">
@@ -3361,11 +3287,19 @@ app.get('/', (c) => {
             Créer un compte
           </button>
         </div>
-        
+
         <!-- Sign In Form -->
         <form id="signinForm" class="auth-form active" style="padding: 2.5rem; display: block;">
           <h2 style="font-family: 'Lora', serif; font-size: 1.875rem; color: #1f2937; margin-bottom: 0.5rem; text-align: center;">Bienvenue</h2>
-          <p style="color: #6b7280; text-align: center; margin-bottom: 2rem; font-size: 0.95rem;">Connectez-vous à votre compte</p>
+          <p style="color: #6b7280; text-align: center; margin-bottom: 1rem; font-size: 0.95rem;">Connectez-vous à votre compte</p>
+
+          <!-- Message "À venir" -->
+          <div style="background: #FEF3C7; border: 1px solid #F59E0B; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; text-align: center;">
+            <p style="color: #92400E; font-size: 0.9rem; margin: 0;">
+              <i class="fas fa-clock" style="margin-right: 0.5rem;"></i>
+              Le portail client sera disponible prochainement. Contactez-nous au <strong>418-822-0347</strong> pour toute demande.
+            </p>
+          </div>
           
           <div style="margin-bottom: 1.5rem;">
             <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; font-size: 0.9rem;">Email</label>
@@ -3771,7 +3705,6 @@ app.get('/', (c) => {
                 element.addEventListener('click', createRipple);
             });
 
- codex/perform-complete-application-review-2025-11-26
             const supportsWebGL = () => {
                 try {
                     const canvas = document.createElement('canvas');
@@ -3783,78 +3716,19 @@ app.get('/', (c) => {
 
             const webglAvailable = supportsWebGL();
 
-            // Logo 3D dans le hero
-            if (webglAvailable && typeof Advanced3DViewer !== 'undefined' && document.getElementById('logo-3d-viewer')) {
-                new Advanced3DViewer('logo-3d-viewer', '/static/models/logo-3d.glb', {
-
-            // Initialize Advanced 3D Viewer
-            console.log('🔍 Checking for Advanced3DViewer...', typeof Advanced3DViewer);
-            console.log('🔍 THREE available?', typeof THREE);
-            console.log('🔍 GLTFLoader available?', typeof THREE !== 'undefined' ? typeof THREE.GLTFLoader : 'THREE not loaded');
-
-            if (typeof Advanced3DViewer !== 'undefined') {
-                console.log('✅ Advanced3DViewer found, initializing...');
-                const viewer = new Advanced3DViewer('advanced-3d-viewer', '/static/models/auberge-3d.glb', {
- main
-                    autoRotate: true,
-                    autoRotateSpeed: 1,
-                    cameraControls: false,
-                    glow: true,
-                    glowIntensity: 0.35,
-                    glowColor: 0xC9A472,
-                    backgroundColor: 0x0f1419
-                });
-
-                const fallback = document.getElementById('logo-3d-fallback');
-                if (fallback) {
-                    fallback.style.display = 'none';
-                }
-            }
-
-            // Viewer 3D principal
+            // Viewer 3D principal (modèle Polycam)
             const viewerContainer = document.getElementById('advanced-3d-viewer');
             if (webglAvailable && typeof Advanced3DViewer !== 'undefined' && viewerContainer) {
+                console.log('✅ Initializing 3D viewer with Polycam model...');
                 new Advanced3DViewer('advanced-3d-viewer', '/static/models/auberge-3d.glb', {
                     autoRotate: true,
-                    autoRotateSpeed: 1.25,
+                    autoRotateSpeed: 1.5,
                     cameraControls: true,
- codex/perform-complete-application-review-2025-11-26
-                    glow: true,
-                    glowIntensity: 0.32,
-                    glowColor: 0xC9A472,
-                    backgroundColor: 0x0f1215
-
                     glow: false, // Désactivé pour afficher les textures du modèle Polycam
-                    backgroundColor: 0x1a1a1a // Dark background to match section
- main
+                    backgroundColor: 0x1a1a1a
                 });
             } else if (viewerContainer) {
                 viewerContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:white;background:linear-gradient(135deg,rgba(201,164,114,0.25),rgba(15,18,21,0.9));text-align:center;padding:1.5rem;">La visite 3D nécessite WebGL. Essayez sur un navigateur récent ou contactez-nous pour une vidéo guidée.</div>';
-            }
-
-            // Plein écran pour la visite 3D
-            const immersiveShell = document.getElementById('advanced-3d-shell');
-            const immersiveFullscreenBtn = document.getElementById('viewer-fullscreen-btn');
-
-            if (immersiveShell && immersiveFullscreenBtn) {
-                const toggleFullscreen = async () => {
-                    if (!document.fullscreenElement && immersiveShell.requestFullscreen) {
-                        await immersiveShell.requestFullscreen();
-                        immersiveShell.classList.add('fullscreen-active');
-                    } else if (document.fullscreenElement) {
-                        await document.exitFullscreen();
-                    }
-                };
-
- codex/perform-complete-application-review-2025-11-26
-                immersiveFullscreenBtn.addEventListener('click', toggleFullscreen);
-                document.addEventListener('fullscreenchange', () => {
-                    if (!document.fullscreenElement) {
-                        immersiveShell.classList.remove('fullscreen-active');
-                    }
-                });
-
- main
             }
 
             // Mode Plein Écran pour le viewer 3D
