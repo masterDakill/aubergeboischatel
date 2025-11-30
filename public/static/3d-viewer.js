@@ -35,6 +35,25 @@ class Advanced3DViewer {
         this.clock = null;
         this.composer = null;
 
+        // Interactive effects - Sparkle colors
+        this.sparkleColors = [
+            0xFFD700, // Gold
+            0xC9A472, // Copper
+            0xFFFFFF, // White
+            0xFFA500, // Orange
+            0xFF6B35, // Bright orange
+        ];
+        this.totalRotation = 0;
+        this.lastRotationAngle = 0;
+        this.rotationMilestone = 0;
+        this.isIlluminated = false;
+
+        // Particle system
+        this.particles = [];
+        this.particleGeometry = null;
+        this.particleMaterial = null;
+        this.particleSystem = null;
+
         this.init();
         this.loadModel();
     }
@@ -42,7 +61,11 @@ class Advanced3DViewer {
     init() {
         // Scene setup
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(this.options.backgroundColor);
+        if (this.options.transparentBackground) {
+            this.scene.background = null;
+        } else {
+            this.scene.background = new THREE.Color(this.options.backgroundColor);
+        }
 
         // Clock for animations
         this.clock = new THREE.Clock();
@@ -93,8 +116,8 @@ class Advanced3DViewer {
             this.controls.enableDamping = true;
             this.controls.dampingFactor = 0.05;
             this.controls.screenSpacePanning = false;
-            this.controls.minDistance = 1;
-            this.controls.maxDistance = 50;
+            this.controls.minDistance = this.options.minZoom || 2;
+            this.controls.maxDistance = this.options.maxZoom || 8;
             this.controls.maxPolarAngle = Math.PI;
             this.controls.autoRotate = this.options.autoRotate;
             this.controls.autoRotateSpeed = this.options.autoRotateSpeed;
@@ -103,8 +126,165 @@ class Advanced3DViewer {
         // Handle window resize
         window.addEventListener('resize', () => this.onWindowResize(), false);
 
+        // Click handler for color change
+        if (this.options.interactive !== false) {
+            this.renderer.domElement.addEventListener('click', (e) => this.onModelClick(e), false);
+            this.renderer.domElement.style.cursor = 'pointer';
+        }
+
         // Start animation loop
         this.animate();
+    }
+
+    onModelClick(event) {
+        if (!this.model) return;
+
+        // Créer une explosion d'étincelles légère
+        this.createSparkles(12);
+
+        // Petit pulse sur le modèle
+        this.triggerPulse();
+    }
+
+    createSparkles(count) {
+        // Limiter le nombre total de particules pour la performance
+        const maxParticles = 30;
+        if (this.particles.length > maxParticles) return;
+
+        // Créer des étincelles simples (sans lumières individuelles)
+        for (let i = 0; i < count; i++) {
+            const sparkle = this.createSingleSparkle();
+            this.particles.push(sparkle);
+            this.scene.add(sparkle.mesh);
+        }
+    }
+
+    createSingleSparkle() {
+        // Géométrie ultra-légère (juste un point/sprite)
+        const geometry = new THREE.PlaneGeometry(0.08, 0.08);
+        const color = this.sparkleColors[Math.floor(Math.random() * this.sparkleColors.length)];
+        const material = new THREE.MeshBasicMaterial({
+            color: color,
+            transparent: true,
+            opacity: 1,
+            side: THREE.DoubleSide
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+
+        // Position initiale
+        mesh.position.set(
+            (Math.random() - 0.5) * 1.2,
+            (Math.random() - 0.5) * 1.2,
+            (Math.random() - 0.5) * 1.2
+        );
+
+        // Toujours face caméra
+        mesh.lookAt(this.camera.position);
+
+        // Vélocité vers l'extérieur
+        const velocity = new THREE.Vector3(
+            (Math.random() - 0.5) * 0.12,
+            (Math.random() - 0.5) * 0.12 + 0.04,
+            (Math.random() - 0.5) * 0.12
+        );
+
+        return {
+            mesh,
+            velocity,
+            life: 1.0,
+            decay: 0.025 + Math.random() * 0.015 // Disparition plus rapide
+        };
+    }
+
+    updateParticles() {
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            const p = this.particles[i];
+
+            // Mouvement
+            p.mesh.position.add(p.velocity);
+            p.velocity.y -= 0.003; // Gravité
+            p.velocity.multiplyScalar(0.96); // Friction
+
+            // Faire face à la caméra
+            p.mesh.lookAt(this.camera.position);
+
+            // Fade out
+            p.life -= p.decay;
+            p.mesh.material.opacity = p.life;
+            p.mesh.scale.setScalar(0.5 + p.life * 0.5);
+
+            // Cleanup
+            if (p.life <= 0) {
+                this.scene.remove(p.mesh);
+                p.mesh.geometry.dispose();
+                p.mesh.material.dispose();
+                this.particles.splice(i, 1);
+            }
+        }
+    }
+
+    triggerPulse() {
+        if (!this.model) return;
+
+        const originalScale = this.model.scale.clone();
+        const pulseScale = originalScale.clone().multiplyScalar(1.06);
+        this.model.scale.copy(pulseScale);
+
+        // Un seul flash léger
+        const flashLight = new THREE.PointLight(0xFFD700, 1.5, 4);
+        flashLight.position.set(0, 0, 2);
+        this.scene.add(flashLight);
+
+        let flashIntensity = 1.5;
+        const fadeFlash = () => {
+            flashIntensity *= 0.85;
+            flashLight.intensity = flashIntensity;
+            if (flashIntensity > 0.05) {
+                requestAnimationFrame(fadeFlash);
+            } else {
+                this.scene.remove(flashLight);
+            }
+        };
+        requestAnimationFrame(fadeFlash);
+
+        // Scale back
+        const startTime = performance.now();
+        const animatePulse = (currentTime) => {
+            const progress = Math.min((currentTime - startTime) / 200, 1);
+            this.model.scale.lerpVectors(pulseScale, originalScale, progress);
+            if (progress < 1) requestAnimationFrame(animatePulse);
+        };
+        requestAnimationFrame(animatePulse);
+    }
+
+    triggerIllumination() {
+        if (!this.model || this.isIlluminated) return;
+        this.isIlluminated = true;
+
+        // Étincelles en vagues légères
+        this.createSparkles(15);
+        setTimeout(() => this.createSparkles(10), 150);
+        setTimeout(() => this.createSparkles(8), 300);
+
+        // Un seul anneau de lumière (pas 8)
+        const ringLight = new THREE.PointLight(0xFFD700, 2, 8);
+        ringLight.position.set(0, 0, 0);
+        this.scene.add(ringLight);
+
+        let ringRadius = 0.5;
+        const expandRing = () => {
+            ringRadius += 0.15;
+            ringLight.intensity = Math.max(0, 2 - ringRadius * 0.4);
+
+            if (ringRadius < 5) {
+                requestAnimationFrame(expandRing);
+            } else {
+                this.scene.remove(ringLight);
+                this.isIlluminated = false;
+            }
+        };
+        expandRing();
     }
 
     loadModel() {
@@ -130,16 +310,18 @@ class Advanced3DViewer {
                 this.model.scale.multiplyScalar(scale);
                 this.model.position.sub(center.multiplyScalar(scale));
 
-                // Enable shadows
+                // Enable shadows and prepare materials for color changes
                 this.model.traverse((node) => {
                     if (node.isMesh) {
                         node.castShadow = true;
                         node.receiveShadow = true;
-                        
-                        // Apply glow effect
-                        if (this.options.glow && node.material) {
-                            node.material.emissive = new THREE.Color(this.options.glowColor);
-                            node.material.emissiveIntensity = this.options.glowIntensity;
+
+                        // Clone material to allow individual modifications
+                        if (node.material) {
+                            node.material = node.material.clone();
+                            // Enable emissive for color change effects
+                            node.material.emissive = new THREE.Color(this.options.glowColor || 0xC9A472);
+                            node.material.emissiveIntensity = this.options.glow ? this.options.glowIntensity : 0.15;
                         }
                     }
                 });
@@ -179,11 +361,36 @@ class Advanced3DViewer {
         // Update controls
         if (this.controls) {
             this.controls.update();
+
+            // Track rotation for illumination trigger
+            if (this.options.interactive !== false && this.model) {
+                const currentAngle = this.controls.getAzimuthalAngle();
+                let angleDelta = currentAngle - this.lastRotationAngle;
+
+                // Handle wrap-around
+                if (angleDelta > Math.PI) angleDelta -= 2 * Math.PI;
+                if (angleDelta < -Math.PI) angleDelta += 2 * Math.PI;
+
+                this.totalRotation += Math.abs(angleDelta);
+                this.lastRotationAngle = currentAngle;
+
+                // Trigger illumination every full rotation (2π radians)
+                const currentMilestone = Math.floor(this.totalRotation / (2 * Math.PI));
+                if (currentMilestone > this.rotationMilestone) {
+                    this.rotationMilestone = currentMilestone;
+                    this.triggerIllumination();
+                }
+            }
         }
 
         // Update animations
         if (this.mixer) {
             this.mixer.update(delta);
+        }
+
+        // Update particle system (sparkles)
+        if (this.particles.length > 0) {
+            this.updateParticles();
         }
 
         // Render scene

@@ -7,6 +7,7 @@ class AuthManager {
   constructor() {
     this.user = null
     this.firebaseUser = null
+    this.syncing = false  // Prevent multiple sync calls
     this.initFirebase()
   }
 
@@ -67,6 +68,14 @@ class AuthManager {
    * @param {firebase.User} firebaseUser Firebase user object
    */
   async handleAuthStateChanged(firebaseUser) {
+    // Prevent multiple simultaneous sync calls
+    if (this.syncing) {
+      console.log('⏳ Already syncing, skipping...')
+      return
+    }
+
+    this.syncing = true
+
     try {
       console.log('🔐 User logged in:', firebaseUser.email)
 
@@ -74,20 +83,33 @@ class AuthManager {
       const idToken = await firebaseUser.getIdToken()
 
       // Sync with PostgreSQL via backend
-      const response = await axios.post('/api/auth/syncUser', { idToken })
+      const response = await axios.post('/api/auth/syncUser', { idToken }, { timeout: 10000 })
 
       if (response.data.success) {
         this.user = response.data.user
         this.firebaseUser = firebaseUser
         this.updateUI(true)
         console.log('✅ User synced:', this.user)
+
+        // Auto-redirect only if on homepage (not on dashboards)
+        const path = window.location.pathname
+        const isOnDashboard = path.includes('/staff/') || path.includes('/client/') || path.includes('/admin/')
+        if (!isOnDashboard && (path === '/' || path === '/index.html')) {
+          console.log('🏠 On homepage, redirecting based on role...')
+          this.redirectByRole()
+        }
       } else {
         console.error('❌ Sync failed:', response.data.error)
         this.handleLogout()
       }
     } catch (error) {
       console.error('❌ Auth state error:', error)
-      this.handleLogout()
+      // Don't logout on network errors, just log
+      if (error.code !== 'ECONNABORTED') {
+        this.handleLogout()
+      }
+    } finally {
+      this.syncing = false
     }
   }
 
@@ -100,16 +122,22 @@ class AuthManager {
   async signIn(email, password) {
     try {
       console.log('🔑 Signing in...', email)
-      
+
       const userCredential = await this.auth.signInWithEmailAndPassword(email, password)
+      console.log('✅ Firebase auth success')
+
       const idToken = await userCredential.user.getIdToken()
+      console.log('✅ Got ID token')
 
       // Sync with backend
+      console.log('📡 Syncing with backend...')
       const response = await axios.post('/api/auth/syncUser', { idToken })
+      console.log('📡 Backend response:', response.data)
 
       if (response.data.success) {
         this.user = response.data.user
         this.firebaseUser = userCredential.user
+        console.log('✅ User synced, role:', this.user.role)
         this.updateUI(true)
         this.closeModal()
 
@@ -118,13 +146,14 @@ class AuthManager {
 
         return { success: true }
       } else {
+        console.error('❌ Sync failed:', response.data.error)
         return { success: false, error: response.data.error }
       }
     } catch (error) {
       console.error('❌ Sign in error:', error)
-      return { 
-        success: false, 
-        error: this.getErrorMessage(error.code) 
+      return {
+        success: false,
+        error: this.getErrorMessage(error.code)
       }
     }
   }
@@ -276,15 +305,23 @@ class AuthManager {
    * Redirect user based on role
    */
   redirectByRole() {
-    if (!this.user) return
+    if (!this.user) {
+      console.error('❌ redirectByRole: No user found')
+      return
+    }
 
-    setTimeout(() => {
-      if (this.user.role === 'CLIENT') {
-        window.location.href = '/client/dashboard'
-      } else if (this.user.role === 'EMPLOYEE' || this.user.role === 'ADMIN') {
-        window.location.href = '/staff/dashboard'
-      }
-    }, 1000)
+    console.log('🔄 Redirecting user with role:', this.user.role)
+
+    // Redirect immediately based on role
+    if (this.user.role === 'CLIENT') {
+      console.log('➡️ Redirecting to /client/dashboard')
+      window.location.href = '/client/dashboard'
+    } else if (this.user.role === 'EMPLOYEE' || this.user.role === 'ADMIN') {
+      console.log('➡️ Redirecting to /staff/dashboard')
+      window.location.href = '/staff/dashboard'
+    } else {
+      console.error('❌ Unknown role:', this.user.role)
+    }
   }
 
   /**

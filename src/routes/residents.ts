@@ -9,7 +9,7 @@ const residents = new Hono()
  */
 async function authenticate(c: any, next: any) {
   const authHeader = c.req.header('Authorization')
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return c.json({ error: 'Missing or invalid Authorization header' }, 401)
   }
@@ -17,7 +17,7 @@ async function authenticate(c: any, next: any) {
   try {
     const idToken = authHeader.split('Bearer ')[1]
     const decodedToken = await verifyIdToken(idToken)
-    
+
     // Get user from database
     const userResult = await query(
       'SELECT * FROM users WHERE firebase_uid = $1',
@@ -42,7 +42,7 @@ async function authenticate(c: any, next: any) {
  */
 function requireStaffRole(c: any, next: any) {
   const user = c.get('user')
-  
+
   if (!user || (user.role !== 'EMPLOYEE' && user.role !== 'ADMIN')) {
     return c.json({ error: 'Forbidden: Staff role required' }, 403)
   }
@@ -57,7 +57,7 @@ function requireStaffRole(c: any, next: any) {
 residents.get('/', authenticate, requireStaffRole, async (c) => {
   try {
     const result = await query(
-      `SELECT 
+      `SELECT
         id,
         full_name,
         room_number,
@@ -65,6 +65,8 @@ residents.get('/', authenticate, requireStaffRole, async (c) => {
         date_of_birth,
         emergency_contact_name,
         emergency_contact_phone,
+        emergency_contact_relation,
+        medical_notes,
         active,
         created_at
        FROM residents
@@ -91,7 +93,7 @@ residents.get('/:id', authenticate, async (c) => {
     // STAFF peut voir tous les résidents
     if (user.role === 'EMPLOYEE' || user.role === 'ADMIN') {
       const result = await query(
-        `SELECT 
+        `SELECT
           r.*,
           json_agg(
             json_build_object(
@@ -116,7 +118,7 @@ residents.get('/:id', authenticate, async (c) => {
 
     // CLIENT ne peut voir que ses résidents liés
     const result = await query(
-      `SELECT 
+      `SELECT
         r.*,
         url.relation
        FROM residents r
@@ -152,7 +154,8 @@ residents.post('/', authenticate, requireStaffRole, async (c) => {
       admission_date,
       medical_notes,
       emergency_contact_name,
-      emergency_contact_phone
+      emergency_contact_phone,
+      emergency_contact_relation
     } = body
 
     // Validation
@@ -169,9 +172,10 @@ residents.post('/', authenticate, requireStaffRole, async (c) => {
         medical_notes,
         emergency_contact_name,
         emergency_contact_phone,
+        emergency_contact_relation,
         active
        )
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
       [
         full_name,
@@ -181,6 +185,7 @@ residents.post('/', authenticate, requireStaffRole, async (c) => {
         medical_notes || null,
         emergency_contact_name || null,
         emergency_contact_phone || null,
+        emergency_contact_relation || null,
         true
       ]
     )
@@ -223,6 +228,7 @@ residents.put('/:id', authenticate, requireStaffRole, async (c) => {
       medical_notes,
       emergency_contact_name,
       emergency_contact_phone,
+      emergency_contact_relation,
       active
     } = body
 
@@ -236,8 +242,10 @@ residents.put('/:id', authenticate, requireStaffRole, async (c) => {
          medical_notes = COALESCE($5, medical_notes),
          emergency_contact_name = COALESCE($6, emergency_contact_name),
          emergency_contact_phone = COALESCE($7, emergency_contact_phone),
-         active = COALESCE($8, active)
-       WHERE id = $9
+         emergency_contact_relation = COALESCE($8, emergency_contact_relation),
+         active = COALESCE($9, active),
+         updated_at = NOW()
+       WHERE id = $10
        RETURNING *`,
       [
         full_name,
@@ -247,6 +255,7 @@ residents.put('/:id', authenticate, requireStaffRole, async (c) => {
         medical_notes,
         emergency_contact_name,
         emergency_contact_phone,
+        emergency_contact_relation,
         active,
         id
       ]
@@ -293,7 +302,7 @@ residents.delete('/:id', authenticate, async (c) => {
     // Soft delete (set active = false)
     const result = await query(
       `UPDATE residents
-       SET active = false
+       SET active = false, updated_at = NOW()
        WHERE id = $1
        RETURNING *`,
       [id]
@@ -349,7 +358,7 @@ residents.get('/:id/observations', authenticate, async (c) => {
     }
 
     const result = await query(
-      `SELECT 
+      `SELECT
         ro.id,
         ro.observation_type,
         ro.title,
@@ -392,10 +401,37 @@ residents.post('/:id/observations', authenticate, requireStaffRole, async (c) =>
       visible_to_family
     } = body
 
+    // Validation des champs requis
     if (!observation_type || !title || !content) {
       return c.json({ error: 'observation_type, title, and content are required' }, 400)
     }
 
+    // Valider le type d'observation
+    const validTypes = ['general', 'medical', 'behavior', 'nutrition', 'mobility', 'social', 'incident']
+    if (!validTypes.includes(observation_type)) {
+      return c.json({ error: `Invalid observation_type. Must be one of: ${validTypes.join(', ')}` }, 400)
+    }
+
+    // Valider la sévérité
+    const validSeverities = ['INFO', 'WARNING', 'URGENT']
+    const finalSeverity = severity || 'INFO'
+    if (!validSeverities.includes(finalSeverity)) {
+      return c.json({ error: `Invalid severity. Must be one of: ${validSeverities.join(', ')}` }, 400)
+    }
+
+    // Vérifier que le résident existe
+    const residentCheck = await query(
+      `SELECT id, full_name FROM residents WHERE id = $1`,
+      [id]
+    )
+
+    if (residentCheck.rows.length === 0) {
+      return c.json({ error: 'Resident not found' }, 404)
+    }
+
+    const residentName = residentCheck.rows[0].full_name
+
+    // Insérer l'observation
     const result = await query(
       `INSERT INTO resident_observations (
         resident_id,
@@ -414,8 +450,21 @@ residents.post('/:id/observations', authenticate, requireStaffRole, async (c) =>
         observation_type,
         title,
         content,
-        severity || 'INFO',
-        visible_to_family || false
+        finalSeverity,
+        visible_to_family === true
+      ]
+    )
+
+    // Loguer l'activité dans activity_logs
+    const severityLabel = finalSeverity === 'URGENT' ? ' [URGENT]' : finalSeverity === 'WARNING' ? ' [ATTENTION]' : ''
+    await query(
+      `INSERT INTO activity_logs (user_id, resident_id, action, details)
+       VALUES ($1, $2, $3, $4)`,
+      [
+        user.id,
+        id,
+        'created_observation',
+        `Observation${severityLabel} ajoutée pour ${residentName}: ${title}`
       ]
     )
 

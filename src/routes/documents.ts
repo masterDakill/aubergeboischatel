@@ -5,6 +5,34 @@ import { query } from '../lib/db'
 const documents = new Hono()
 
 /**
+ * GET /api/documents/test
+ * Test endpoint (no auth required) - for debugging
+ */
+documents.get('/test', async (c) => {
+  try {
+    // Test documents table
+    const docsResult = await query('SELECT COUNT(*) as count FROM documents')
+    const usersResult = await query('SELECT COUNT(*) as count FROM users')
+    const residentsResult = await query('SELECT COUNT(*) as count FROM residents')
+
+    return c.json({
+      success: true,
+      counts: {
+        documents: docsResult.rows[0]?.count || 0,
+        users: usersResult.rows[0]?.count || 0,
+        residents: residentsResult.rows[0]?.count || 0
+      }
+    })
+  } catch (error: any) {
+    console.error('❌ Documents test error:', error)
+    return c.json({
+      success: false,
+      error: error.message || 'Test failed'
+    }, 500)
+  }
+})
+
+/**
  * Middleware: Verify authentication
  */
 async function authenticate(c: any, next: any) {
@@ -157,6 +185,7 @@ documents.get('/:id', authenticate, async (c) => {
 /**
  * POST /api/documents
  * Créer/uploader un document (STAFF uniquement)
+ * Supporte JSON (avec file_url) ou multipart/form-data (avec fichier)
  */
 documents.post('/', authenticate, async (c) => {
   try {
@@ -166,26 +195,66 @@ documents.post('/', authenticate, async (c) => {
       return c.json({ error: 'Forbidden: Staff role required' }, 403)
     }
 
-    const body = await c.req.json()
-    const {
-      resident_id,
-      title,
-      file_url,
-      file_type,
-      file_size_kb,
-      visible_to_client
-    } = body
+    let resident_id: string
+    let title: string
+    let file_url: string
+    let file_type: string | null = null
+    let file_size_kb: number | null = null
+    let visible_to_client = true
 
-    // Validation
-    if (!resident_id || !title || !file_url) {
-      return c.json({ error: 'resident_id, title, and file_url are required' }, 400)
+    const contentType = c.req.header('Content-Type') || ''
+
+    if (contentType.includes('multipart/form-data')) {
+      // Handle file upload via FormData
+      const formData = await c.req.formData()
+      resident_id = formData.get('resident_id') as string
+      title = formData.get('title') as string
+      const file = formData.get('file') as File | null
+      const visibleStr = formData.get('visible_to_client') as string
+
+      visible_to_client = visibleStr !== 'false'
+
+      if (!resident_id || !title) {
+        return c.json({ error: 'resident_id and title are required' }, 400)
+      }
+
+      if (!file) {
+        return c.json({ error: 'File is required' }, 400)
+      }
+
+      // Check file size (max 5MB for base64 storage)
+      if (file.size > 5 * 1024 * 1024) {
+        return c.json({ error: 'File too large. Maximum 5MB allowed.' }, 400)
+      }
+
+      // Convert file to base64 data URL
+      const arrayBuffer = await file.arrayBuffer()
+      const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
+      file_type = file.type || 'application/octet-stream'
+      file_url = `data:${file_type};base64,${base64}`
+      file_size_kb = Math.round(file.size / 1024)
+
+      console.log(`📄 File uploaded: ${file.name} (${file_size_kb}KB, ${file_type})`)
+    } else {
+      // Handle JSON request (legacy)
+      const body = await c.req.json()
+      resident_id = body.resident_id
+      title = body.title
+      file_url = body.file_url
+      file_type = body.file_type || null
+      file_size_kb = body.file_size_kb || null
+      visible_to_client = body.visible_to_client !== undefined ? body.visible_to_client : true
+
+      if (!resident_id || !title || !file_url) {
+        return c.json({ error: 'resident_id, title, and file_url are required' }, 400)
+      }
     }
 
     const result = await query(
       `INSERT INTO documents (
         resident_id,
         title,
-        file_url,
+        file_path,
         file_type,
         file_size_kb,
         uploaded_by,
@@ -196,11 +265,11 @@ documents.post('/', authenticate, async (c) => {
       [
         resident_id,
         title,
-        file_url,
-        file_type || null,
-        file_size_kb || null,
+        file_url, // stored in file_path column
+        file_type,
+        file_size_kb,
         user.id,
-        visible_to_client !== undefined ? visible_to_client : true
+        visible_to_client
       ]
     )
 

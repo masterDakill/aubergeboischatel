@@ -2,21 +2,62 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/cloudflare-workers'
 import { getEnvScript } from './lib/firebase.config'
+import { initDb, createDbClient, type DbClient } from './lib/db'
+import { requireAuth, requireClient, requireEmployee, requireAdmin, optionalAuth } from './middleware/auth'
 import authRoutes from './routes/auth'
 import dbTestRoutes from './routes/dbTest'
 import residentsRoutes from './routes/residents'
 import documentsRoutes from './routes/documents'
 import logsRoutes from './routes/logs'
 import usersRoutes from './routes/users'
+import { incidentsRouter } from './routes/incidents'
+import { observationsRouter } from './routes/observations'
+import { careTasksRouter } from './routes/careTasks'
+import { maintenanceRouter } from './routes/maintenance'
+import importRoutes from './routes/import'
+import mcpHubRoutes from './routes/mcpHub'
 
-const app = new Hono()
+// Define Cloudflare Workers Env type
+interface Env {
+  DATABASE_URL: string;
+  NEXT_PUBLIC_FIREBASE_API_KEY: string;
+  FIREBASE_ADMIN_PROJECT_ID: string;
+  FIREBASE_ADMIN_CLIENT_EMAIL: string;
+  FIREBASE_ADMIN_PRIVATE_KEY: string;
+  // MCOP Hub bindings
+  MCOP_HUB_URL: string;
+  MCOP_HUB_TOKEN?: string;
+}
+
+// Variables type for Hono context
+interface Variables {
+  db: DbClient;
+}
+
+const app = new Hono<{ Bindings: Env; Variables: Variables }>()
+
+// Initialize database on first request and inject DbClient
+app.use('*', async (c, next) => {
+  // Initialize Neon DB client with DATABASE_URL
+  if (c.env?.DATABASE_URL) {
+    initDb(c.env.DATABASE_URL);
+    // Inject DbClient into context for routes using c.get('db')
+    c.set('db', createDbClient(c.env.DATABASE_URL));
+  }
+  // Store env in globalThis for other modules
+  (globalThis as any).env = c.env;
+  await next();
+})
 
 // Enable CORS for API routes
 app.use('/api/*', cors())
 
 // Serve static files
 app.use('/static/*', serveStatic({ root: './public' }))
-app.use('/favicon.png', serveStatic({ root: './public', path: '/favicon.png' }))
+
+// Favicon redirect to static folder
+app.get('/favicon.png', (c) => c.redirect('/static/favicon.png'))
+app.get('/favicon.ico', (c) => c.redirect('/static/favicon.png'))
 
 // Mount API routes
 app.route('/api/auth', authRoutes)
@@ -25,6 +66,12 @@ app.route('/api/residents', residentsRoutes)
 app.route('/api/documents', documentsRoutes)
 app.route('/api/logs', logsRoutes)
 app.route('/api/users', usersRoutes)
+app.route('/api/incidents', incidentsRouter)
+app.route('/api/observations', observationsRouter)
+app.route('/api/care-tasks', careTasksRouter)
+app.route('/api/maintenance', maintenanceRouter)
+app.route('/api/import', importRoutes)
+app.route('/api/mcp', mcpHubRoutes)
 
 // API Routes
 app.get('/api/contact', (c) => {
@@ -77,11 +124,16 @@ app.get('/', (c) => {
     <meta property="og:image" content="/static/images/facade.jpg">
     
     <title>L'Auberge Boischatel - Résidence pour Aînés</title>
-    
-    <!-- Fonts -->
+
+    <!-- Preload critique pour LCP (image hero) -->
+    <link rel="preload" href="/static/images/facade-golden-hour-4k.jpg" as="image" fetchpriority="high">
+
+    <!-- Fonts - preconnect pour accélérer -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link href="/static/enhanced-styles.css" rel="stylesheet">
     
@@ -372,21 +424,22 @@ app.get('/', (c) => {
             image-rendering: crisp-edges;
         }
 
-        /* Subtle warm overlay - let the photo shine through */
+        /* Enhanced warm overlay - more contrast and depth */
         .hero::before {
             content: '';
             position: absolute;
             inset: 0;
             background: linear-gradient(
                 135deg,
-                rgba(31, 31, 31, 0.35) 0%,  /* Lighter overlay to show more photo */
-                rgba(90, 125, 140, 0.25) 50%,
-                rgba(169, 199, 181, 0.15) 100%
+                rgba(15, 15, 15, 0.5) 0%,
+                rgba(31, 31, 31, 0.35) 30%,
+                rgba(90, 125, 140, 0.2) 60%,
+                rgba(201, 164, 114, 0.15) 100%
             );
             z-index: 1;
         }
-        
-        /* Vignette effect to draw focus to center */
+
+        /* Enhanced vignette effect - stronger focus */
         .hero::after {
             content: '';
             position: absolute;
@@ -394,8 +447,9 @@ app.get('/', (c) => {
             background: radial-gradient(
                 ellipse at center,
                 transparent 0%,
-                transparent 40%,
-                rgba(0, 0, 0, 0.15) 100%
+                transparent 30%,
+                rgba(0, 0, 0, 0.25) 70%,
+                rgba(0, 0, 0, 0.4) 100%
             );
             z-index: 1;
             pointer-events: none;
@@ -475,31 +529,109 @@ app.get('/', (c) => {
         }
 
         .hero-badge {
-            display: inline-block;
-            padding: 0.5rem 1.25rem;
-            background: linear-gradient(135deg, var(--copper) 0%, rgba(201, 164, 114, 0.9) 100%);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 1.5rem;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
             color: white;
             border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 500;
             letter-spacing: 0.5px;
             margin-bottom: 2rem;
             width: fit-content;
-            box-shadow: 0 4px 15px rgba(201, 164, 114, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            animation: badgeFadeIn 1s ease-out 0.3s both;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--sage-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--sage-green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        @keyframes badgeFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .hero-title {
             font-family: var(--font-serif);
-            font-size: 4.5rem; /* Larger for more impact */
+            font-size: 4.5rem;
             font-weight: 700;
             color: white;
-            line-height: 1.1;
+            line-height: 1.25; /* Augmenté pour éviter de couper les lettres descendantes (g, y, p) */
             margin-bottom: 1.5rem;
-            text-shadow: 
-                0 2px 4px rgba(0, 0, 0, 0.3),
-                0 4px 12px rgba(0, 0, 0, 0.2),
-                0 8px 24px rgba(0, 0, 0, 0.15);
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
+            overflow: visible; /* S'assurer que rien n'est coupé */
+        }
+
+        .hero-title-main {
+            display: block;
+            padding-bottom: 0.1em; /* Espace pour les descendantes */
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.95) 50%, var(--copper) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            animation: titleReveal 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.5s both;
+        }
+
+        @keyframes titleReveal {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+                filter: blur(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        .hero-title-accent {
+            display: inline-block;
+            font-size: 1.6rem;
+            font-family: var(--font-sans);
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin-top: 1rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, var(--copper) 0%, #D4A574 50%, var(--copper) 100%);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(201, 164, 114, 0.5), 0 0 40px rgba(201, 164, 114, 0.3);
+            animation: accentReveal 1s ease-out 0.8s both, accentGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes accentGlow {
+            0%, 100% { box-shadow: 0 4px 20px rgba(201, 164, 114, 0.5), 0 0 40px rgba(201, 164, 114, 0.3); }
+            50% { box-shadow: 0 4px 30px rgba(201, 164, 114, 0.7), 0 0 60px rgba(201, 164, 114, 0.5); }
+        }
+
+        @keyframes accentReveal {
+            from {
+                opacity: 0;
+                letter-spacing: 8px;
+            }
+            to {
+                opacity: 1;
+                letter-spacing: 4px;
+            }
         }
 
         .hero-subtitle {
@@ -653,21 +785,180 @@ app.get('/', (c) => {
             opacity: 1;
         }
 
-        /* Horizontal Scroller Component */
-        .horizontal-scroller {
-            width: 100%;
+        /* Bento Gallery - Galerie Photos Immersive */
+        .bento-gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 200px;
+            gap: 1rem;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .bento-item {
+            position: relative;
+            border-radius: 20px;
             overflow: hidden;
-            padding: 3rem 0;
+            cursor: pointer;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .bento-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 40%, transparent 100%);
+            z-index: 1;
+            opacity: 0.6;
+            transition: opacity 0.4s ease;
+        }
+
+        .bento-item:hover::before {
+            opacity: 1;
+        }
+
+        .bento-item:hover {
+            transform: scale(1.02) translateY(-5px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+            z-index: 10;
+        }
+
+        .bento-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .bento-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .bento-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            z-index: 2;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .bento-item:hover .bento-overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .bento-tag {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: var(--copper);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .bento-overlay h3 {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Bento Grid Layout - Différentes tailles */
+        .bento-large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .bento-tall {
+            grid-row: span 2;
+        }
+
+        .bento-wide {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 1024px) {
+            .bento-gallery {
+                grid-template-columns: repeat(3, 1fr);
+                grid-auto-rows: 180px;
+            }
+            .bento-large {
+                grid-column: span 2;
+                grid-row: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .bento-gallery {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 150px;
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+            .bento-large {
+                grid-column: span 2;
+                grid-row: span 1;
+            }
+            .bento-tall {
+                grid-row: span 1;
+            }
+            .bento-wide {
+                grid-column: span 2;
+            }
+            .bento-overlay h3 {
+                font-size: 1rem;
+            }
+            .bento-tag {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bento-gallery {
+                grid-template-columns: 1fr;
+                grid-auto-rows: 200px;
+            }
+            .bento-large, .bento-wide {
+                grid-column: span 1;
+            }
         }
 
         .scroller-container {
             display: flex;
             gap: 2rem;
             overflow-x: auto;
-            scroll-behavior: smooth;
+            scroll-behavior: auto; /* Fast manual scroll */
+            scroll-snap-type: x proximity; /* Snap to items */
             scrollbar-width: none; /* Firefox */
             -ms-overflow-style: none; /* IE/Edge */
             padding: 0 2rem;
+            will-change: transform;
+            cursor: grab;
+        }
+
+        .scroller-container:active {
+            cursor: grabbing;
+        }
+
+        .scroller-container.dragging {
+            scroll-behavior: auto;
+            cursor: grabbing;
+        }
+
+        .scroller-container.scroll-linked {
+            overflow: visible;
+            transition: transform 0.1s ease-out;
         }
 
         .scroller-container::-webkit-scrollbar {
@@ -682,6 +973,13 @@ app.get('/', (c) => {
             padding: 2rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            scroll-snap-align: start;
+            user-select: none;
+        }
+
+        .scroller-item.photo-item {
+            padding: 0;
+            overflow: hidden;
         }
 
         .scroller-item:hover {
@@ -1873,14 +2171,12 @@ app.get('/', (c) => {
         }
 
         .footer-brand img {
-            width: 60px;
-            margin-bottom: 1.5rem;
+            width: 120px;
+            margin-bottom: 1rem;
         }
 
         .footer-brand h3 {
-            font-family: var(--font-serif);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            display: none; /* Logo seul, sans texte */
         }
 
         .footer-brand p {
@@ -2373,8 +2669,11 @@ app.get('/', (c) => {
         <div class="hero-content">
             <div class="hero-layout">
                 <div>
-                    <span class="hero-badge">Résidence pour aînés certifiée RPA</span>
-                    <h1 class="hero-title"><span class="text-clip-reveal" data-text="L'Auberge Boischatel">L'Auberge Boischatel</span></h1>
+                    <span class="hero-badge">Certifiée RPA Québec</span>
+                    <h1 class="hero-title">
+                        <span class="hero-title-main">L'Auberge Boischatel</span>
+                        <span class="hero-title-accent">Résidence pour personnes âgées</span>
+                    </h1>
                     <p class="hero-subtitle">Innovation bienveillante au service de la vie quotidienne.</p>
                     <p class="hero-tagline">Une résidence chaleureuse où modernité et humanité s'unissent pour offrir à nos aînés un milieu de vie sécuritaire, confortable et épanouissant.</p>
                     <div class="hero-cta-group">
@@ -2407,39 +2706,71 @@ app.get('/', (c) => {
                 <p>Notre approche ? Rester à l'écoute, anticiper les besoins, et améliorer constamment notre milieu de vie pour offrir à nos 38 résidents un environnement chaleureux, stimulant et rassurant.</p>
             </div>
             <div class="mission-image" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <div id="logo-3d-viewer" style="width: 100%; max-width: 400px; height: 350px; border-radius: 20px; overflow: hidden; background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);"></div>
-                <p style="margin-top: 1rem; color: var(--copper); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                <div id="logo-3d-viewer" style="width: 100%; max-width: 550px; height: 500px; border-radius: 0; overflow: visible; background: transparent;"></div>
+                <p style="margin-top: 0.5rem; color: var(--copper); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fas fa-hand-pointer"></i>
                     Essayez-le, c'est interactif !
                 </p>
             </div>
         </div>
 
-        <!-- Carousel Photos -->
-        <div class="horizontal-scroller" style="margin-top: 3rem;">
-            <div class="scroller-container" style="gap: 1.5rem; padding: 1rem 0;">
-                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                    <img src="/static/images/facade.jpg" alt="Façade de L'Auberge" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                    <img src="/static/images/salle-manger.png" alt="Salle à manger" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                    <img src="/static/images/chambre.png" alt="Chambre type" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                    <img src="/static/images/jardin.jpg" alt="Jardin" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                    <img src="/static/images/facade-golden-hour.jpg" alt="Façade au coucher du soleil" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="scroller-item" style="min-width: 300px; height: 220px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-                    <img src="/static/images/vue-nocturne.jpg" alt="Vue nocturne" style="width: 100%; height: 100%; object-fit: cover;">
+        <!-- Galerie Photos Bento Grid Immersive - Améliorée -->
+        <div class="bento-gallery" id="bento-gallery">
+            <div class="bento-item bento-large" data-parallax="0.1">
+                <img src="/static/images/vue-aerienne-boischatel.jpg" alt="Vue aérienne de Boischatel en automne" loading="lazy">
+                <div class="bento-overlay">
+                    <span class="bento-tag">Panorama</span>
+                    <h3>Boischatel en Automne</h3>
                 </div>
             </div>
-            <div class="scroller-nav">
-                <button class="scroller-btn" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
-                <button class="scroller-btn" data-direction="1"><i class="fas fa-chevron-right"></i></button>
+            <div class="bento-item bento-tall" data-parallax="0.15">
+                <img src="/static/images/chambre.png" alt="Chambre élégante" loading="lazy">
+                <div class="bento-overlay">
+                    <span class="bento-tag">Confort</span>
+                    <h3>Chambres Élégantes</h3>
+                </div>
+            </div>
+            <div class="bento-item" data-parallax="0.08">
+                <img src="/static/images/salle-manger.png" alt="Salle à manger" loading="lazy">
+                <div class="bento-overlay">
+                    <span class="bento-tag">Convivialité</span>
+                    <h3>Salle à Manger</h3>
+                </div>
+            </div>
+            <div class="bento-item" data-parallax="0.12">
+                <img src="/static/images/galerie-entree.jpg" alt="Entrée principale" loading="lazy">
+                <div class="bento-overlay">
+                    <span class="bento-tag">Accueil</span>
+                    <h3>Entrée Principale</h3>
+                </div>
+            </div>
+            <div class="bento-item bento-wide" data-parallax="0.1">
+                <img src="/static/images/facade-golden-hour.jpg" alt="Façade au coucher du soleil" loading="lazy">
+                <div class="bento-overlay">
+                    <span class="bento-tag">Patrimoine</span>
+                    <h3>Architecture Victorienne</h3>
+                </div>
+            </div>
+            <div class="bento-item" data-parallax="0.18">
+                <img src="/static/images/suite.png" alt="Suite confortable" loading="lazy">
+                <div class="bento-overlay">
+                    <span class="bento-tag">Premium</span>
+                    <h3>Suites Spacieuses</h3>
+                </div>
+            </div>
+            <div class="bento-item" data-parallax="0.14">
+                <img src="/static/images/exterieur-balcon.jpg" alt="Vue extérieure avec balcon" loading="lazy">
+                <div class="bento-overlay">
+                    <span class="bento-tag">Extérieur</span>
+                    <h3>Balcons & Terrasses</h3>
+                </div>
+            </div>
+            <div class="bento-item" data-parallax="0.1">
+                <img src="/static/images/galerie-terrasse-5424.jpg" alt="Terrasse couverte" loading="lazy">
+                <div class="bento-overlay">
+                    <span class="bento-tag">Détente</span>
+                    <h3>Galerie Couverte</h3>
+                </div>
             </div>
         </div>
 
@@ -2674,7 +3005,7 @@ app.get('/', (c) => {
         </div>
     </section>
 
-    <section id="activites">
+    <section id="activites" style="padding-bottom: 3rem;">
         <div class="section-header">
             <span class="section-badge">Activités & Milieu de Vie</span>
             <h2 class="section-title">Une vie sociale riche et stimulante</h2>
@@ -2736,7 +3067,7 @@ app.get('/', (c) => {
     </section>
 
     <!-- Section Visite 3D avec Modèle Polycam -->
-    <section id="visite3d" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 5rem 2rem;">
+    <section id="visite3d" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 4rem 2rem; max-width: 100%; margin: 0;">
         <div class="section-header">
             <span class="section-badge" style="background: var(--copper);">Visite Virtuelle 3D</span>
             <h2 class="section-title" style="color: white;">Explorez notre résidence en 3D</h2>
@@ -2867,92 +3198,7 @@ app.get('/', (c) => {
         </div>
     </section>
 
-    <section id="galerie">
-        <div class="section-header">
-            <span class="section-badge">Galerie</span>
-            <h2 class="section-title">Découvrez notre milieu de vie</h2>
-            <p class="section-subtitle">Une visite en images de L'Auberge Boischatel</p>
-        </div>
-
-        <div class="gallery-grid">
-            <div class="gallery-item liquid-image">
-                <img src="/static/images/salle-manger.png" alt="Salle à manger">
-                <div class="gallery-overlay">
-                    <h4>Salle à Manger</h4>
-                    <p>Espace lumineux et convivial pour les repas</p>
-                </div>
-            </div>
-
-            <div class="gallery-item liquid-image">
-                <img src="/static/images/chambre.png" alt="Chambre">
-                <div class="gallery-overlay">
-                    <h4>Chambres Privées</h4>
-                    <p>Confort, intimité et adaptation</p>
-                </div>
-            </div>
-
-            <div class="gallery-item liquid-image">
-                <img src="/static/images/jardin.jpg" alt="Jardin">
-                <div class="gallery-overlay">
-                    <h4>Jardins Paysagers</h4>
-                    <p>Espaces verts soigneusement entretenus</p>
-                </div>
-            </div>
-
-            <div class="gallery-item liquid-image">
-                <img src="/static/images/galerie.jpg" alt="Galerie">
-                <div class="gallery-overlay">
-                    <h4>Terrasse Couverte</h4>
-                    <p>Espace détente protégé avec vue</p>
-                </div>
-            </div>
-
-            <div class="gallery-item liquid-image">
-                <img src="/static/images/vue-nocturne.jpg" alt="Vue nocturne">
-                <div class="gallery-overlay">
-                    <h4>Ambiance Chaleureuse</h4>
-                    <p>Accueillante jour et nuit</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Brochure Marketing Section -->
-    <section id="brochure" style="background: white; padding: 5rem 2rem;">
-        <div class="section-header">
-            <span class="section-badge">Brochure</span>
-            <h2 class="section-title">Découvrez notre hospitalité québécoise</h2>
-            <p class="section-subtitle">L'Auberge Boischatel incarne l'excellence de l'hébergement pour aînés au Québec</p>
-        </div>
-
-        <div class="gallery-grid" style="max-width: 1200px; margin: 0 auto;">
-            <div class="gallery-item liquid-image">
-                <img src="/static/images/brochure-presentation.jpg" alt="Présentation L'Auberge Boischatel" style="object-fit: cover;">
-                <div class="gallery-overlay">
-                    <h4>Découvrez notre hospitalité</h4>
-                    <p>Un accueil chaleureux et professionnel</p>
-                </div>
-            </div>
-
-            <div class="gallery-item liquid-image">
-                <img src="/static/images/brochure-logo.jpg" alt="Logo L'Auberge Boischatel" style="object-fit: cover;">
-                <div class="gallery-overlay">
-                    <h4>L'Auberge Boischatel</h4>
-                    <p>Une signature d'excellence depuis toujours</p>
-                </div>
-            </div>
-
-            <div class="gallery-item liquid-image">
-                <img src="/static/images/brochure-carte.jpg" alt="Carte L'Auberge Boischatel" style="object-fit: cover;">
-                <div class="gallery-overlay">
-                    <h4>Identité visuelle</h4>
-                    <p>Un design qui reflète nos valeurs</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section with Horizontal Scroller -->
+    <!-- Sections Galerie et Brochure supprimées - contenu intégré dans Bento Gallery -->
     <!-- Services Info Section with Soft Interactive Background -->
     <section class="services-info-section" id="services">
         <div class="section-header">
@@ -3416,12 +3662,7 @@ app.get('/', (c) => {
       }
     </style>
 
-    <!-- Three.js for Advanced 3D Viewer -->
-    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-    
-    <!-- Firebase SDK (CDN) -->
+    <!-- Firebase SDK (CDN) - Chargement prioritaire pour auth -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
@@ -3432,9 +3673,56 @@ app.get('/', (c) => {
     <script src="/static/firebase-init.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="/static/3d-viewer.js"></script>
     <script src="/static/auth.js"></script>
+
+    <!-- Chargement différé des scripts lourds (3D et particles) -->
+    <script>
+        // Charger Three.js et particles.js uniquement après le rendu initial
+        function loadDeferredScripts() {
+            // Particles.js - léger, charger en premier
+            const particlesScript = document.createElement('script');
+            particlesScript.src = 'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js';
+            particlesScript.onload = function() {
+                if (typeof initParticles === 'function') initParticles();
+            };
+            document.body.appendChild(particlesScript);
+
+            // Three.js - charger après un délai pour ne pas bloquer
+            setTimeout(function() {
+                const threeScript = document.createElement('script');
+                threeScript.src = 'https://unpkg.com/three@0.128.0/build/three.min.js';
+                threeScript.onload = function() {
+                    // OrbitControls
+                    const orbitScript = document.createElement('script');
+                    orbitScript.src = 'https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js';
+                    orbitScript.onload = function() {
+                        // GLTFLoader
+                        const gltfScript = document.createElement('script');
+                        gltfScript.src = 'https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js';
+                        gltfScript.onload = function() {
+                            // 3D Viewer custom
+                            const viewerScript = document.createElement('script');
+                            viewerScript.src = '/static/3d-viewer.js';
+                            viewerScript.onload = function() {
+                                if (typeof init3DViewers === 'function') init3DViewers();
+                            };
+                            document.body.appendChild(viewerScript);
+                        };
+                        document.body.appendChild(gltfScript);
+                    };
+                    document.body.appendChild(orbitScript);
+                };
+                document.body.appendChild(threeScript);
+            }, 100); // Petit délai pour laisser le DOM se rendre
+        }
+
+        // Lancer après le chargement de la page
+        if (document.readyState === 'complete') {
+            loadDeferredScripts();
+        } else {
+            window.addEventListener('load', loadDeferredScripts);
+        }
+    </script>
     <script>
         // Scroll Progress Bar
         window.addEventListener('scroll', () => {
@@ -3445,82 +3733,102 @@ app.get('/', (c) => {
             scrollProgress.style.width = scrolled + '%';
         });
 
-        // Particles.js Background - Enhanced with Multicolor Brand Palette
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 50, density: { enable: true, value_area: 1000 } }, // Slightly increased for richer effect
-                color: {
-                    value: ['#5A7D8C', '#A9C7B5', '#C9A472'] // Multicolor: Bleu-gris, Vert sauge, Copper
-                },
-                shape: { type: 'circle' },
-                opacity: { 
-                    value: 0.35, 
-                    random: true,
-                    anim: {
+        // Fonction différée pour init 3D viewers (appelée après chargement Three.js)
+        function init3DViewers() {
+            if (typeof Advanced3DViewer === 'undefined') return;
+
+            const supportsWebGL = () => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    return !!window.WebGLRenderingContext && !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+                } catch (error) {
+                    return false;
+                }
+            };
+
+            const webglAvailable = supportsWebGL();
+
+            // Logo 3D interactif dans la section Mission
+            const logoContainer = document.getElementById('logo-3d-viewer');
+            if (webglAvailable && logoContainer) {
+                new Advanced3DViewer('logo-3d-viewer', '/static/models/logo-3d.glb', {
+                    autoRotate: true,
+                    autoRotateSpeed: 2.0,
+                    cameraControls: true,
+                    glow: true,
+                    glowIntensity: 0.5,
+                    glowColor: 0xC9A472,
+                    transparentBackground: true,
+                    minZoom: 3.5,
+                    maxZoom: 6,
+                    interactive: true
+                });
+            }
+
+            // Viewer 3D principal (modèle Polycam) - SANS EFFETS
+            const viewerContainer = document.getElementById('advanced-3d-viewer');
+            if (webglAvailable && viewerContainer) {
+                new Advanced3DViewer('advanced-3d-viewer', '/static/models/auberge-3d.glb', {
+                    autoRotate: true,
+                    autoRotateSpeed: 1.0,
+                    cameraControls: true,
+                    glow: false,
+                    backgroundColor: 0x1a1a1a,
+                    interactive: false
+                });
+            } else if (viewerContainer) {
+                viewerContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:white;background:linear-gradient(135deg,rgba(201,164,114,0.25),rgba(15,18,21,0.9));text-align:center;padding:1.5rem;">La visite 3D nécessite WebGL.</div>';
+            }
+        }
+
+        // Particles.js - Fonction différée (appelée après chargement du script)
+        function initParticles() {
+            if (typeof particlesJS === 'undefined') return;
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 30, density: { enable: true, value_area: 1200 } }, // Réduit pour performance
+                    color: {
+                        value: ['#5A7D8C', '#A9C7B5', '#C9A472']
+                    },
+                    shape: { type: 'circle' },
+                    opacity: {
+                        value: 0.3,
+                        random: true,
+                        anim: { enable: false } // Désactivé pour performance
+                    },
+                    size: {
+                        value: 3,
+                        random: true,
+                        anim: { enable: false } // Désactivé pour performance
+                    },
+                    line_linked: {
                         enable: true,
-                        speed: 0.5,
-                        opacity_min: 0.1,
-                        sync: false
-                    }
-                },
-                size: { 
-                    value: 3, 
-                    random: true,
-                    anim: {
+                        distance: 150,
+                        color: '#A9C7B5',
+                        opacity: 0.2,
+                        width: 1
+                    },
+                    move: {
                         enable: true,
                         speed: 1,
-                        size_min: 0.5,
-                        sync: false
+                        direction: 'none',
+                        random: true,
+                        straight: false,
+                        out_mode: 'out',
+                        bounce: false
                     }
                 },
-                line_linked: {
-                    enable: true,
-                    distance: 130,
-                    color: '#A9C7B5', // Sage green connections
-                    opacity: 0.25,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 1.5,
-                    direction: 'none',
-                    random: true,
-                    straight: false,
-                    out_mode: 'out',
-                    bounce: false,
-                    attract: {
-                        enable: true,
-                        rotateX: 600,
-                        rotateY: 1200
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: {
+                        onhover: { enable: false }, // Désactivé pour performance
+                        onclick: { enable: false },
+                        resize: true
                     }
-                }
-            },
-            interactivity: {
-                detect_on: 'canvas',
-                events: {
-                    onhover: { enable: true, mode: 'grab' },
-                    onclick: { enable: true, mode: 'bubble' },
-                    resize: true
                 },
-                modes: {
-                    grab: { 
-                        distance: 150, 
-                        line_linked: { opacity: 0.4 } 
-                    },
-                    bubble: { 
-                        distance: 250, 
-                        size: 5, 
-                        duration: 2, 
-                        opacity: 0.6, 
-                        speed: 3 
-                    },
-                    repulse: { distance: 100, duration: 0.4 },
-                    push: { particles_nb: 3 },
-                    remove: { particles_nb: 2 }
-                }
-            },
-            retina_detect: true
-        });
+                retina_detect: false // Désactivé pour performance
+            });
+        }
 
         // Scroll Animations Observer
         const observerOptions = {
@@ -3698,46 +4006,7 @@ app.get('/', (c) => {
                 element.addEventListener('click', createRipple);
             });
 
-            const supportsWebGL = () => {
-                try {
-                    const canvas = document.createElement('canvas');
-                    return !!window.WebGLRenderingContext && !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
-                } catch (error) {
-                    return false;
-                }
-            };
-
-            const webglAvailable = supportsWebGL();
-
-            // Logo 3D interactif dans la section Mission
-            const logoContainer = document.getElementById('logo-3d-viewer');
-            if (webglAvailable && typeof Advanced3DViewer !== 'undefined' && logoContainer) {
-                console.log('✅ Initializing 3D logo...');
-                new Advanced3DViewer('logo-3d-viewer', '/static/models/logo-3d.glb', {
-                    autoRotate: true,
-                    autoRotateSpeed: 1.5,
-                    cameraControls: true,
-                    glow: true,
-                    glowIntensity: 0.4,
-                    glowColor: 0xC9A472,
-                    backgroundColor: 0x1a1a1a
-                });
-            }
-
-            // Viewer 3D principal (modèle Polycam)
-            const viewerContainer = document.getElementById('advanced-3d-viewer');
-            if (webglAvailable && typeof Advanced3DViewer !== 'undefined' && viewerContainer) {
-                console.log('✅ Initializing 3D viewer with Polycam model...');
-                new Advanced3DViewer('advanced-3d-viewer', '/static/models/auberge-3d.glb', {
-                    autoRotate: true,
-                    autoRotateSpeed: 1.5,
-                    cameraControls: true,
-                    glow: false, // Désactivé pour afficher les textures du modèle Polycam
-                    backgroundColor: 0x1a1a1a
-                });
-            } else if (viewerContainer) {
-                viewerContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:white;background:linear-gradient(135deg,rgba(201,164,114,0.25),rgba(15,18,21,0.9));text-align:center;padding:1.5rem;">La visite 3D nécessite WebGL. Essayez sur un navigateur récent ou contactez-nous pour une vidéo guidée.</div>';
-            }
+            // Les 3D viewers sont maintenant chargés de façon différée via init3DViewers()
 
             // Mode Plein Écran pour le viewer 3D
             const fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -3807,7 +4076,7 @@ app.get('/', (c) => {
 </html>`)
 })
 
-// Client Dashboard
+// Client Dashboard - Page HTML publique, auth vérifiée côté client par client-dashboard.js
 app.get('/client/dashboard', (c) => {
   return c.html(`<!DOCTYPE html>
 <html lang="fr">
@@ -4033,7 +4302,7 @@ app.get('/client/dashboard', (c) => {
 </html>`)
 })
 
-// Staff Dashboard
+// Staff Dashboard - Page HTML publique, auth vérifiée côté client par staff-dashboard.js
 app.get('/staff/dashboard', (c) => {
   return c.html(`<!DOCTYPE html>
 <html lang="fr">
@@ -4043,13 +4312,18 @@ app.get('/staff/dashboard', (c) => {
     <title>Espace Employé - L'Auberge Boischatel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/dashboard-modern.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Loading Spinner -->
-    <div id="loading" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+    <!-- Loading Overlay with Modern Animation -->
+    <div id="loading" class="loading-overlay">
         <div class="text-center">
-            <i class="fas fa-spinner fa-spin text-4xl text-purple-600 mb-4"></i>
-            <p class="text-gray-600">Chargement...</p>
+            <div class="loading-spinner mb-4"></div>
+            <p class="text-gray-600 font-medium">Chargement du tableau de bord...</p>
+            <div class="loading-dots mt-3">
+                <span></span><span></span><span></span>
+            </div>
         </div>
     </div>
 
@@ -4183,17 +4457,14 @@ app.get('/staff/dashboard', (c) => {
             const content = document.getElementById('dashboard-content');
             if (loading) loading.style.display = 'none';
             if (content) {
-                content.innerHTML = \`
-                  <div class="max-w-3xl mx-auto mt-16 bg-slate-800/80 border border-red-500/40 text-red-100 rounded-2xl shadow-lg p-8 text-center">
-                    <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-500/20 text-red-200 mx-auto mb-4">
-                      <i class="fas fa-triangle-exclamation"></i>
-                    </div>
-                    <h2 class="text-xl font-semibold mb-2 text-white">Connexion Firebase indisponible</h2>
-                    <p class="text-sm text-red-100/90">
-                      \${window.firebaseInitError || 'Vérifiez la configuration FIREBASE_* dans les variables d\'environnement.'}
-                    </p>
-                  </div>
-                \`;
+                const errorMsg = window.firebaseInitError || "Vérifiez la configuration FIREBASE_* dans les variables d'environnement.";
+                content.innerHTML = '<div class="max-w-3xl mx-auto mt-16 bg-slate-800/80 border border-red-500/40 text-red-100 rounded-2xl shadow-lg p-8 text-center">' +
+                    '<div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-500/20 text-red-200 mx-auto mb-4">' +
+                    '<i class="fas fa-triangle-exclamation"></i>' +
+                    '</div>' +
+                    '<h2 class="text-xl font-semibold mb-2 text-white">Connexion Firebase indisponible</h2>' +
+                    '<p class="text-sm text-red-100/90">' + errorMsg + '</p>' +
+                    '</div>';
             }
         }
     </script>
@@ -4215,8 +4486,8 @@ app.get('/staff/dashboard', (c) => {
 </html>`)
 })
 
-// Admin Dashboard
-app.get('/admin/dashboard', (c) => {
+// Admin Dashboard - Protected route (requires ADMIN role only)
+app.get('/admin/dashboard', requireAuth, requireAdmin, (c) => {
   return c.html(`<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -4576,18 +4847,145 @@ app.get('/admin/dashboard', (c) => {
             
             createScrollProgress();
             
-            // Horizontal scroller navigation
+            // Horizontal scroller navigation (pour les boutons)
             document.querySelectorAll('.scroller-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const container = this.closest('.horizontal-scroller').querySelector('.scroller-container');
                     const scrollAmount = 420; // Width of card + gap
-                    
+
                     if (this.classList.contains('prev')) {
                         container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
                     } else {
                         container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
                     }
                 });
+            });
+
+            // Effet Parallax sur la galerie Bento
+            const bentoItems = document.querySelectorAll('.bento-item[data-parallax]');
+
+            if (bentoItems.length > 0) {
+                const updateParallax = () => {
+                    bentoItems.forEach(item => {
+                        const rect = item.getBoundingClientRect();
+                        const speed = parseFloat(item.dataset.parallax) || 0.1;
+                        const viewportCenter = window.innerHeight / 2;
+                        const itemCenter = rect.top + rect.height / 2;
+                        const distance = (itemCenter - viewportCenter) * speed;
+
+                        const img = item.querySelector('img');
+                        if (img && rect.top < window.innerHeight && rect.bottom > 0) {
+                            img.style.transform = 'translateY(' + distance + 'px) scale(1.05)';
+                        }
+                    });
+                };
+
+                let parallaxTicking = false;
+                window.addEventListener('scroll', () => {
+                    if (!parallaxTicking) {
+                        requestAnimationFrame(() => {
+                            updateParallax();
+                            parallaxTicking = false;
+                        });
+                        parallaxTicking = true;
+                    }
+                });
+
+                updateParallax();
+            }
+
+            // Animation d'entrée pour la galerie Bento
+            const observerBento = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.bento-item').forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(30px)';
+                item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observerBento.observe(item);
+            });
+
+            // Drag-to-scroll for scroller containers (fast manual scroll)
+            document.querySelectorAll('.scroller-container').forEach(container => {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+                let velocity = 0;
+                let lastX = 0;
+                let lastTime = 0;
+
+                container.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    container.classList.add('dragging');
+                    startX = e.pageX - container.offsetLeft;
+                    scrollLeft = container.scrollLeft;
+                    lastX = e.pageX;
+                    lastTime = Date.now();
+                    velocity = 0;
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    if (isDown) applyMomentum();
+                    isDown = false;
+                    container.classList.remove('dragging');
+                });
+
+                container.addEventListener('mouseup', () => {
+                    if (isDown) applyMomentum();
+                    isDown = false;
+                    container.classList.remove('dragging');
+                });
+
+                container.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - container.offsetLeft;
+                    const walk = (x - startX) * 2.5; // Multiplier for faster scroll
+                    container.scrollLeft = scrollLeft - walk;
+
+                    // Calculate velocity for momentum
+                    const now = Date.now();
+                    const dt = now - lastTime;
+                    if (dt > 0) {
+                        velocity = (e.pageX - lastX) / dt * 15;
+                    }
+                    lastX = e.pageX;
+                    lastTime = now;
+                });
+
+                // Apply momentum after release
+                function applyMomentum() {
+                    if (Math.abs(velocity) > 0.5) {
+                        const decelerate = () => {
+                            container.scrollLeft -= velocity;
+                            velocity *= 0.92; // Friction
+                            if (Math.abs(velocity) > 0.5) {
+                                requestAnimationFrame(decelerate);
+                            }
+                        };
+                        requestAnimationFrame(decelerate);
+                    }
+                }
+
+                // Touch support
+                container.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].pageX - container.offsetLeft;
+                    scrollLeft = container.scrollLeft;
+                }, { passive: true });
+
+                container.addEventListener('touchmove', (e) => {
+                    const x = e.touches[0].pageX - container.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    container.scrollLeft = scrollLeft - walk;
+                }, { passive: true });
             });
         })();
     </script>

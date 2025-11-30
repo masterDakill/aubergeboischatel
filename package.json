@@ -18,10 +18,12 @@
     "git:status": "git status"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "firebase": "^12.6.0",
     "firebase-admin": "^13.6.0",
     "hono": "^4.10.6",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241127.0",
