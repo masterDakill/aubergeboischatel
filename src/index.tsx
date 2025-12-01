@@ -4489,6 +4489,583 @@ app.get('/staff/dashboard', (c) => {
 </html>`)
 })
 
+// Login Page - Dedicated authentication page
+app.get('/login', (c) => {
+  return c.html(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - L'Auberge Boischatel</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --blue-grey: #5A7D8C;
+            --sage-green: #A9C7B5;
+            --cream: #F5F4F2;
+            --anthracite: #1F1F1F;
+            --copper: #C9A472;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--cream) 0%, #E8F2F0 50%, var(--cream) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(169, 199, 181, 0.15) 0%, transparent 70%);
+            animation: bgPulse 15s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(5%, 5%) scale(1.1); }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            padding: 1.5rem;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            box-shadow:
+                0 20px 60px rgba(90, 125, 140, 0.15),
+                0 0 0 1px rgba(169, 199, 181, 0.2);
+            animation: cardSlideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes cardSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            background: url('/static/images/logo.png') center/contain no-repeat;
+            animation: logoFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .login-header h1 {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 1.8rem;
+            color: var(--anthracite);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #6B7280;
+            font-size: 0.95rem;
+        }
+
+        /* Tabs */
+        .auth-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: var(--cream);
+            padding: 0.35rem;
+            border-radius: 12px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.85rem 1rem;
+            border: none;
+            background: transparent;
+            color: #6B7280;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .auth-tab.active {
+            background: white;
+            color: var(--anthracite);
+            box-shadow: 0 2px 8px rgba(90, 125, 140, 0.12);
+        }
+
+        .auth-tab:hover:not(.active) {
+            color: var(--blue-grey);
+        }
+
+        /* Forms */
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: formFadeIn 0.4s ease;
+        }
+
+        @keyframes formFadeIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--anthracite);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            transition: color 0.3s;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 2.75rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--blue-grey);
+            box-shadow: 0 0 0 4px rgba(90, 125, 140, 0.1);
+        }
+
+        .form-input:focus + i,
+        .input-wrapper:focus-within i {
+            color: var(--blue-grey);
+        }
+
+        .auth-error {
+            color: #DC2626;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            min-height: 1.2rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, var(--blue-grey), var(--sage-green));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(90, 125, 140, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .submit-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: #9CA3AF;
+            font-size: 0.85rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #E5E7EB;
+        }
+
+        /* Back link */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--blue-grey);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--copper);
+        }
+
+        .back-link i {
+            margin-right: 0.5rem;
+        }
+
+        /* Success message */
+        .success-message {
+            background: rgba(169, 199, 181, 0.15);
+            border: 1px solid var(--sage-green);
+            color: #166534;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo"></div>
+                <h1>L'Auberge Boischatel</h1>
+                <p>Connectez-vous à votre espace</p>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i>
+                <span>Connexion réussie ! Redirection...</span>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="signinTab" onclick="showTab('signin')">
+                    Connexion
+                </button>
+                <button class="auth-tab" id="signupTab" onclick="showTab('signup')">
+                    Inscription
+                </button>
+            </div>
+
+            <!-- Sign In Form -->
+            <form class="auth-form active" id="signinForm">
+                <div class="form-group">
+                    <label for="signinEmail">Adresse email</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="signinEmail" class="form-input" placeholder="votre@email.com" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signinPassword">Mot de passe</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="signinPassword" class="form-input" placeholder="••••••••" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+
+                <div class="auth-error" id="signinError"></div>
+
+                <button type="submit" class="submit-btn" id="signinSubmit">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Se connecter
+                </button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form class="auth-form" id="signupForm">
+                <div class="form-group">
+                    <label for="signupEmail">Adresse email</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="signupEmail" class="form-input" placeholder="votre@email.com" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">Mot de passe</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="signupPassword" class="form-input" placeholder="Minimum 6 caractères" required minlength="6">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupConfirm">Confirmer le mot de passe</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="signupConfirm" class="form-input" placeholder="••••••••" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+
+                <div class="auth-error" id="signupError"></div>
+
+                <button type="submit" class="submit-btn" id="signupSubmit">
+                    <i class="fas fa-user-plus"></i>
+                    Créer mon compte
+                </button>
+            </form>
+
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Retour à l'accueil
+            </a>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>${getEnvScript()}</script>
+
+    <script>
+        // Initialize Firebase
+        let auth = null;
+
+        (function initFirebase() {
+            if (window.ENV && window.ENV.FIREBASE_API_KEY && window.ENV.FIREBASE_API_KEY !== 'undefined') {
+                const config = {
+                    apiKey: window.ENV.FIREBASE_API_KEY,
+                    authDomain: window.ENV.FIREBASE_AUTH_DOMAIN,
+                    projectId: window.ENV.FIREBASE_PROJECT_ID,
+                    storageBucket: window.ENV.FIREBASE_STORAGE_BUCKET,
+                    messagingSenderId: window.ENV.FIREBASE_MESSAGING_SENDER_ID,
+                    appId: window.ENV.FIREBASE_APP_ID
+                };
+
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(config);
+                }
+                auth = firebase.auth();
+                console.log('✅ Firebase initialized');
+
+                // Check if already logged in
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        console.log('🔐 User already logged in, syncing...');
+                        await syncAndRedirect(user);
+                    }
+                });
+            } else {
+                console.error('❌ Firebase configuration missing');
+                document.getElementById('signinError').textContent = 'Configuration Firebase manquante';
+            }
+        })();
+
+        // Tab switching
+        function showTab(tab) {
+            document.getElementById('signinTab').classList.toggle('active', tab === 'signin');
+            document.getElementById('signupTab').classList.toggle('active', tab === 'signup');
+            document.getElementById('signinForm').classList.toggle('active', tab === 'signin');
+            document.getElementById('signupForm').classList.toggle('active', tab === 'signup');
+            // Clear errors
+            document.getElementById('signinError').textContent = '';
+            document.getElementById('signupError').textContent = '';
+        }
+
+        // Sync with backend and redirect
+        async function syncAndRedirect(firebaseUser) {
+            try {
+                const idToken = await firebaseUser.getIdToken();
+                const response = await axios.post('/api/auth/syncUser', { idToken });
+
+                if (response.data.success) {
+                    const user = response.data.user;
+                    console.log('✅ Synced, role:', user.role);
+
+                    // Show success message
+                    document.getElementById('successMessage').classList.add('show');
+
+                    // Redirect based on role
+                    setTimeout(() => {
+                        if (user.role === 'ADMIN') {
+                            window.location.href = '/admin/dashboard';
+                        } else if (user.role === 'EMPLOYEE') {
+                            window.location.href = '/staff/dashboard';
+                        } else {
+                            window.location.href = '/client/dashboard';
+                        }
+                    }, 800);
+                } else {
+                    throw new Error(response.data.error || 'Erreur de synchronisation');
+                }
+            } catch (error) {
+                console.error('❌ Sync error:', error);
+                throw error;
+            }
+        }
+
+        // Get error message
+        function getErrorMessage(code) {
+            const messages = {
+                'auth/invalid-email': 'Adresse email invalide',
+                'auth/user-disabled': 'Ce compte a été désactivé',
+                'auth/user-not-found': 'Aucun compte avec cet email',
+                'auth/wrong-password': 'Mot de passe incorrect',
+                'auth/invalid-credential': 'Email ou mot de passe incorrect',
+                'auth/email-already-in-use': 'Cette adresse email est déjà utilisée',
+                'auth/weak-password': 'Le mot de passe doit contenir au moins 6 caractères',
+                'auth/too-many-requests': 'Trop de tentatives, réessayez plus tard',
+                'auth/network-request-failed': 'Erreur réseau, vérifiez votre connexion'
+            };
+            return messages[code] || 'Erreur de connexion';
+        }
+
+        // Sign In form
+        document.getElementById('signinForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('signinEmail').value;
+            const password = document.getElementById('signinPassword').value;
+            const submitBtn = document.getElementById('signinSubmit');
+            const errorDiv = document.getElementById('signinError');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="spinner"></div> Connexion...';
+            errorDiv.textContent = '';
+
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                await syncAndRedirect(userCredential.user);
+            } catch (error) {
+                console.error('❌ Sign in error:', error);
+                errorDiv.textContent = getErrorMessage(error.code);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
+            }
+        });
+
+        // Sign Up form
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirm = document.getElementById('signupConfirm').value;
+            const submitBtn = document.getElementById('signupSubmit');
+            const errorDiv = document.getElementById('signupError');
+
+            // Validate password match
+            if (password !== confirm) {
+                errorDiv.textContent = 'Les mots de passe ne correspondent pas';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="spinner"></div> Création...';
+            errorDiv.textContent = '';
+
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await syncAndRedirect(userCredential.user);
+            } catch (error) {
+                console.error('❌ Sign up error:', error);
+                errorDiv.textContent = getErrorMessage(error.code);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Créer mon compte';
+            }
+        });
+    </script>
+</body>
+</html>`)
+})
+
 // Admin Dashboard - Protected route (requires ADMIN role only)
 app.get('/admin/dashboard', requireAuth, requireAdmin, (c) => {
   return c.html(`<!DOCTYPE html>

@@ -287,9 +287,13 @@ class AuthManager {
       `
     } else if (this.user.role === 'ADMIN') {
       links = `
-        <a href="/staff/dashboard" class="user-dropdown-item">
+        <a href="/admin/dashboard" class="user-dropdown-item">
           <i class="fas fa-tachometer-alt"></i>
-          Admin
+          Administration
+        </a>
+        <a href="/staff/dashboard" class="user-dropdown-item">
+          <i class="fas fa-briefcase"></i>
+          Tableau Employés
         </a>
         <a href="#" class="user-dropdown-item" onclick="authManager.signOut(); return false;">
           <i class="fas fa-sign-out-alt"></i>
@@ -316,7 +320,10 @@ class AuthManager {
     if (this.user.role === 'CLIENT') {
       console.log('➡️ Redirecting to /client/dashboard')
       window.location.href = '/client/dashboard'
-    } else if (this.user.role === 'EMPLOYEE' || this.user.role === 'ADMIN') {
+    } else if (this.user.role === 'ADMIN') {
+      console.log('➡️ Redirecting to /admin/dashboard')
+      window.location.href = '/admin/dashboard'
+    } else if (this.user.role === 'EMPLOYEE') {
       console.log('➡️ Redirecting to /staff/dashboard')
       window.location.href = '/staff/dashboard'
     } else {
