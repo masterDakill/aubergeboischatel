@@ -4072,6 +4072,9 @@ app.get('/', (c) => {
             }
         });
     </script>
+
+    <!-- Modern Animations 2025 -->
+    <script src="/static/modern-animations.js"></script>
 </body>
 </html>`)
 })
