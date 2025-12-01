@@ -4496,499 +4496,70 @@ app.get('/admin/dashboard', requireAuth, requireAdmin, (c) => {
     <title>Administration - L'Auberge Boischatel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-btn.active { background: #dc2626; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+    </style>
 </head>
-<body class="bg-gray-900 min-h-screen">
-    <div class="container mx-auto px-4 py-16">
-        <div class="max-w-6xl mx-auto">
-            <!-- Header -->
-            <div class="bg-gradient-to-r from-red-600 to-red-700 rounded-t-2xl shadow-2xl p-8">
-                <div class="flex items-center justify-between text-white">
-                    <div>
-                        <h1 class="text-4xl font-bold mb-2">
-                            <i class="fas fa-shield-alt mr-3"></i>
-                            Administration
-                        </h1>
-                        <p class="text-red-100">L'Auberge Boischatel - Panneau de Contrôle</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-red-100 text-sm mb-2">Accès restreint ADMIN</p>
-                        <button id="adminSignOutBtn"
-                                class="bg-white text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 transition font-semibold">
-                            <i class="fas fa-sign-out-alt mr-2"></i>
-                            Déconnexion
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Content -->
-            <div class="bg-white rounded-b-2xl shadow-2xl p-8">
-                
-                <!-- Quick Stats -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-lg p-6">
-                        <i class="fas fa-users text-3xl mb-2 opacity-80"></i>
-                        <p class="text-2xl font-bold">38</p>
-                        <p class="text-sm opacity-80">Total Utilisateurs</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg p-6">
-                        <i class="fas fa-home text-3xl mb-2 opacity-80"></i>
-                        <p class="text-2xl font-bold">35</p>
-                        <p class="text-sm opacity-80">Résidents Actifs</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg p-6">
-                        <i class="fas fa-file-alt text-3xl mb-2 opacity-80"></i>
-                        <p class="text-2xl font-bold">127</p>
-                        <p class="text-sm opacity-80">Documents</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-lg p-6">
-                        <i class="fas fa-history text-3xl mb-2 opacity-80"></i>
-                        <p class="text-2xl font-bold">245</p>
-                        <p class="text-sm opacity-80">Logs Aujourd'hui</p>
-                    </div>
-                </div>
-
-                <!-- Admin Sections -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    
-                    <!-- Users Management -->
-                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-red-100 rounded-full p-3 mr-4">
-                                <i class="fas fa-users-cog text-red-600 text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-800">Utilisateurs</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm">
-                            Gérer les comptes utilisateurs, rôles et permissions
-                        </p>
-                        <button onclick="alert('Gestion utilisateurs - À développer')" 
-                                class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-semibold">
-                            <i class="fas fa-cog mr-2"></i>
-                            Gérer
-                        </button>
-                    </div>
-
-                    <!-- Residents Management -->
-                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-purple-100 rounded-full p-3 mr-4">
-                                <i class="fas fa-home text-purple-600 text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-800">Résidents</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm">
-                            Supervision complète des résidents et chambres
-                        </p>
-                        <a href="/staff/dashboard" 
-                           class="block w-full text-center bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition font-semibold">
-                            <i class="fas fa-eye mr-2"></i>
-                            Voir Tous
-                        </a>
-                    </div>
-
-                    <!-- Links Management -->
-                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-blue-100 rounded-full p-3 mr-4">
-                                <i class="fas fa-link text-blue-600 text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-800">Liens Famille</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm">
-                            Associer utilisateurs et résidents
-                        </p>
-                        <button onclick="alert('Gestion liens - À développer')" 
-                                class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
-                            <i class="fas fa-link mr-2"></i>
-                            Configurer
-                        </button>
-                    </div>
-
-                    <!-- System Logs -->
-                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-green-100 rounded-full p-3 mr-4">
-                                <i class="fas fa-history text-green-600 text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-800">Journaux Système</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm">
-                            Consulter l'historique des actions
-                        </p>
-                        <button onclick="alert('Logs système - À développer')" 
-                                class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition font-semibold">
-                            <i class="fas fa-list mr-2"></i>
-                            Consulter
-                        </button>
-                    </div>
-
-                    <!-- Documents -->
-                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-yellow-100 rounded-full p-3 mr-4">
-                                <i class="fas fa-folder text-yellow-600 text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-800">Documents</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm">
-                            Gestion globale des documents
-                        </p>
-                        <button onclick="alert('Gestion documents - À développer')" 
-                                class="w-full bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition font-semibold">
-                            <i class="fas fa-folder-open mr-2"></i>
-                            Gérer
-                        </button>
-                    </div>
-
-                    <!-- Settings -->
-                    <div class="bg-gray-50 rounded-lg p-6 hover:shadow-lg transition border border-gray-200">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-gray-700 rounded-full p-3 mr-4">
-                                <i class="fas fa-cogs text-white text-2xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-800">Paramètres</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm">
-                            Configuration système et sécurité
-                        </p>
-                        <button onclick="alert('Paramètres - À développer')" 
-                                class="w-full bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition font-semibold">
-                            <i class="fas fa-wrench mr-2"></i>
-                            Configurer
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Back to Staff Dashboard -->
-                <div class="text-center pt-6 border-t border-gray-200">
-                    <a href="/staff/dashboard" 
-                       class="inline-block bg-gray-600 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition font-semibold">
-                        <i class="fas fa-arrow-left mr-2"></i>
-                        Retour Espace Employé
-                    </a>
-                    <a href="/" 
-                       class="inline-block ml-4 bg-gray-200 text-gray-800 px-8 py-3 rounded-lg hover:bg-gray-300 transition font-semibold">
-                        <i class="fas fa-home mr-2"></i>
-                        Accueil
-                    </a>
-                </div>
-            </div>
+<body class="bg-gray-100">
+    <!-- Loading State -->
+    <div id="loading" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-50">
+        <div class="text-center">
+            <div class="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-white text-lg">Chargement du panneau admin...</p>
         </div>
     </div>
 
-    <!-- Model Viewer for 3D Logo -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <!-- Dashboard Content -->
+    <div id="dashboard-content"></div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>${getEnvScript()}</script>
-    
-    <!-- Interactive Navigation Script -->
+
+    <!-- Firebase Init -->
     <script>
+        // Initialize Firebase
+        window.firebaseAppInitialized = false;
+        window.firebaseInitError = null;
+
         (function() {
-            const nav = document.querySelector('nav');
-            if (!nav) return;
-            let lastScrollTop = 0;
-            let scrollTimeout;
-            
-            // Smooth scroll for navigation links
-            document.querySelectorAll('.nav-links a, .hero-cta, .hero-cta-secondary').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    const href = this.getAttribute('href');
-                    if (href.startsWith('#')) {
-                        e.preventDefault();
-                        const target = document.querySelector(href);
-                        if (target) {
-                            target.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }
-                    }
-                });
-            });
-            
-            // Hide/show navigation on scroll with fade effect
-            window.addEventListener('scroll', function() {
-                clearTimeout(scrollTimeout);
-                
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                
-                // Add scrolled class for styling
-                if (scrollTop > 100) {
-                    nav.classList.add('scrolled');
-                } else {
-                    nav.classList.remove('scrolled');
-                }
-                
-                // Hide navigation when scrolling down, show when scrolling up
-                if (scrollTop > lastScrollTop && scrollTop > 200) {
-                    // Scrolling down
-                    nav.classList.add('hidden');
-                } else {
-                    // Scrolling up
-                    nav.classList.remove('hidden');
-                }
-                
-                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-                
-                // Show nav if user stops scrolling
-                scrollTimeout = setTimeout(() => {
-                    nav.classList.remove('hidden');
-                }, 150);
-            }, false);
-            
-            // Ripple effect for interactive elements
-            function createRipple(event) {
-                const button = event.currentTarget;
-                const circle = document.createElement('span');
-                const diameter = Math.max(button.clientWidth, button.clientHeight);
-                const radius = diameter / 2;
-                
-                circle.style.width = circle.style.height = diameter + 'px';
-                circle.style.left = event.clientX - button.offsetLeft - radius + 'px';
-                circle.style.top = event.clientY - button.offsetTop - radius + 'px';
-                circle.classList.add('ripple');
-                
-                const ripple = button.getElementsByClassName('ripple')[0];
-                if (ripple) {
-                    ripple.remove();
-                }
-                
-                button.appendChild(circle);
-            }
-            
-            // Add ripple to buttons
-            document.querySelectorAll('.hero-cta, .hero-cta-secondary, .login-button, .submit-btn').forEach(button => {
-                button.addEventListener('click', createRipple);
-            });
-            
-            // Liquid image effect
-            document.querySelectorAll('.liquid-image').forEach(image => {
-                image.addEventListener('mousemove', function(e) {
-                    const rect = this.getBoundingClientRect();
-                    const x = ((e.clientX - rect.left) / rect.width) * 100;
-                    const y = ((e.clientY - rect.top) / rect.height) * 100;
-                    this.style.setProperty('--mouse-x', x + '%');
-                    this.style.setProperty('--mouse-y', y + '%');
-                });
-            });
-            
-            // Scroll reveal animations
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-            
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, observerOptions);
-            
-            document.querySelectorAll('.scroll-fade-in, .scroll-slide-left, .scroll-slide-right').forEach(el => {
-                observer.observe(el);
-            });
-            
-            // Contact form handling
-            const contactForm = document.getElementById('contactForm');
-            if (contactForm) {
-                contactForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    
-                    const formData = {
-                        name: document.getElementById('name').value,
-                        email: document.getElementById('email').value,
-                        phone: document.getElementById('phone').value,
-                        visitDate: document.getElementById('visitDate').value,
-                        message: document.getElementById('message').value
+            try {
+                if (window.ENV && window.ENV.FIREBASE_API_KEY && window.ENV.FIREBASE_API_KEY !== 'undefined') {
+                    const firebaseConfig = {
+                        apiKey: window.ENV.FIREBASE_API_KEY,
+                        authDomain: window.ENV.FIREBASE_AUTH_DOMAIN,
+                        projectId: window.ENV.FIREBASE_PROJECT_ID,
+                        storageBucket: window.ENV.FIREBASE_STORAGE_BUCKET,
+                        messagingSenderId: window.ENV.FIREBASE_MESSAGING_SENDER_ID,
+                        appId: window.ENV.FIREBASE_APP_ID
                     };
-                    
-                    try {
-                        const response = await fetch('/api/contact', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(formData)
-                        });
-                        
-                        const result = await response.json();
-                        
-                        if (result.success) {
-                            alert(result.message || 'Merci ! Nous vous contacterons sous peu.');
-                            contactForm.reset();
-                        } else {
-                            alert(result.error || 'Une erreur est survenue. Veuillez réessayer.');
-                        }
-                    } catch (error) {
-                        console.error('Erreur:', error);
-                        alert('Erreur de connexion. Veuillez réessayer.');
+
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
                     }
-                });
-            }
-            
-            // Scroll progress bar
-            const createScrollProgress = () => {
-                const progressBar = document.createElement('div');
-                progressBar.className = 'scroll-progress';
-                document.body.appendChild(progressBar);
-                
-                window.addEventListener('scroll', () => {
-                    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-                    const scrolled = (window.scrollY / scrollHeight) * 100;
-                    progressBar.style.width = scrolled + '%';
-                });
-            };
-            
-            createScrollProgress();
-            
-            // Horizontal scroller navigation (pour les boutons)
-            document.querySelectorAll('.scroller-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const container = this.closest('.horizontal-scroller').querySelector('.scroller-container');
-                    const scrollAmount = 420; // Width of card + gap
-
-                    if (this.classList.contains('prev')) {
-                        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                    } else {
-                        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                    }
-                });
-            });
-
-            // Effet Parallax sur la galerie Bento
-            const bentoItems = document.querySelectorAll('.bento-item[data-parallax]');
-
-            if (bentoItems.length > 0) {
-                const updateParallax = () => {
-                    bentoItems.forEach(item => {
-                        const rect = item.getBoundingClientRect();
-                        const speed = parseFloat(item.dataset.parallax) || 0.1;
-                        const viewportCenter = window.innerHeight / 2;
-                        const itemCenter = rect.top + rect.height / 2;
-                        const distance = (itemCenter - viewportCenter) * speed;
-
-                        const img = item.querySelector('img');
-                        if (img && rect.top < window.innerHeight && rect.bottom > 0) {
-                            img.style.transform = 'translateY(' + distance + 'px) scale(1.05)';
-                        }
-                    });
-                };
-
-                let parallaxTicking = false;
-                window.addEventListener('scroll', () => {
-                    if (!parallaxTicking) {
-                        requestAnimationFrame(() => {
-                            updateParallax();
-                            parallaxTicking = false;
-                        });
-                        parallaxTicking = true;
-                    }
-                });
-
-                updateParallax();
-            }
-
-            // Animation d'entrée pour la galerie Bento
-            const observerBento = new IntersectionObserver((entries) => {
-                entries.forEach((entry, index) => {
-                    if (entry.isIntersecting) {
-                        setTimeout(() => {
-                            entry.target.style.opacity = '1';
-                            entry.target.style.transform = 'translateY(0)';
-                        }, index * 100);
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('.bento-item').forEach(item => {
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(30px)';
-                item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observerBento.observe(item);
-            });
-
-            // Drag-to-scroll for scroller containers (fast manual scroll)
-            document.querySelectorAll('.scroller-container').forEach(container => {
-                let isDown = false;
-                let startX;
-                let scrollLeft;
-                let velocity = 0;
-                let lastX = 0;
-                let lastTime = 0;
-
-                container.addEventListener('mousedown', (e) => {
-                    isDown = true;
-                    container.classList.add('dragging');
-                    startX = e.pageX - container.offsetLeft;
-                    scrollLeft = container.scrollLeft;
-                    lastX = e.pageX;
-                    lastTime = Date.now();
-                    velocity = 0;
-                });
-
-                container.addEventListener('mouseleave', () => {
-                    if (isDown) applyMomentum();
-                    isDown = false;
-                    container.classList.remove('dragging');
-                });
-
-                container.addEventListener('mouseup', () => {
-                    if (isDown) applyMomentum();
-                    isDown = false;
-                    container.classList.remove('dragging');
-                });
-
-                container.addEventListener('mousemove', (e) => {
-                    if (!isDown) return;
-                    e.preventDefault();
-                    const x = e.pageX - container.offsetLeft;
-                    const walk = (x - startX) * 2.5; // Multiplier for faster scroll
-                    container.scrollLeft = scrollLeft - walk;
-
-                    // Calculate velocity for momentum
-                    const now = Date.now();
-                    const dt = now - lastTime;
-                    if (dt > 0) {
-                        velocity = (e.pageX - lastX) / dt * 15;
-                    }
-                    lastX = e.pageX;
-                    lastTime = now;
-                });
-
-                // Apply momentum after release
-                function applyMomentum() {
-                    if (Math.abs(velocity) > 0.5) {
-                        const decelerate = () => {
-                            container.scrollLeft -= velocity;
-                            velocity *= 0.92; // Friction
-                            if (Math.abs(velocity) > 0.5) {
-                                requestAnimationFrame(decelerate);
-                            }
-                        };
-                        requestAnimationFrame(decelerate);
-                    }
+                    window.firebaseAppInitialized = true;
+                    console.log('✅ Firebase initialized for Admin Dashboard');
+                } else {
+                    window.firebaseInitError = 'Configuration Firebase manquante';
+                    console.warn('⚠️ Firebase config missing');
                 }
-
-                // Touch support
-                container.addEventListener('touchstart', (e) => {
-                    startX = e.touches[0].pageX - container.offsetLeft;
-                    scrollLeft = container.scrollLeft;
-                }, { passive: true });
-
-                container.addEventListener('touchmove', (e) => {
-                    const x = e.touches[0].pageX - container.offsetLeft;
-                    const walk = (x - startX) * 2;
-                    container.scrollLeft = scrollLeft - walk;
-                }, { passive: true });
-            });
+            } catch (error) {
+                window.firebaseInitError = error.message;
+                console.error('❌ Firebase init error:', error);
+            }
         })();
     </script>
+
+    <!-- Admin Dashboard Script -->
+    <script src="/static/admin-dashboard.js"></script>
 </body>
 </html>`)
 })
